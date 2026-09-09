@@ -18,6 +18,11 @@ const FAQS = [
   { q: "What happens after launch?", a: "You get the full file set, brand guidelines and a walkthrough for your team. We stay on call for launch week, and many clients keep us on a light monthly retainer for new campaigns." }
 ];
 
+// Hover-to-open belongs to mice only. On a touchscreen the browser fires an
+// emulated mouseenter before the click, so the row opened and the click then
+// closed it again - the first tap appeared to do nothing.
+const CAN_HOVER = window.matchMedia('(hover: hover)').matches;
+
 // ---------- build starfield ----------
 // Each layer is 200% wide: stars are placed in the left half and cloned into the
 // right half, so the CSS starFly drift (translateX -50%) loops without a seam.
@@ -71,8 +76,10 @@ SERVICES.forEach((s, i) => {
     row.classList.toggle('open', willOpen);
   };
   row.addEventListener('click', toggle);
-  row.addEventListener('mouseenter', () => row.classList.add('open'));
-  row.addEventListener('mouseleave', () => row.classList.remove('open'));
+  if (CAN_HOVER) {
+    row.addEventListener('mouseenter', () => row.classList.add('open'));
+    row.addEventListener('mouseleave', () => row.classList.remove('open'));
+  }
   servicesList.appendChild(row);
 });
 
@@ -95,10 +102,11 @@ FAQS.forEach((f, i) => {
   `;
   const q = item.querySelector(".faq-q");
   const open = (willOpen) => item.classList.toggle("open", willOpen);
-  // hover on desktop, same as .service-row; click stays for touch
   q.addEventListener('click', () => open(!item.classList.contains('open')));
-  item.addEventListener('mouseenter', () => open(true));
-  item.addEventListener('mouseleave', () => open(false));
+  if (CAN_HOVER) {
+    item.addEventListener('mouseenter', () => open(true));
+    item.addEventListener('mouseleave', () => open(false));
+  }
   faqList.appendChild(item);
 });
 

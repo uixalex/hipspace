@@ -537,4 +537,9 @@ body.menu-open { overflow: hidden; }
 @media (hover: none) {
   .work-peek { display: none; }
   .work-row:hover .work-name, .work-row:hover .work-meta { transform: none; }
+  /* a tap must open the row outright, not nudge the title first */
+  .service-row:hover .service-title-wrap { transform: none; }
+  /* snappier on touch: the desktop timing feels sluggish under a finger */
+  .service-body-wrap, .faq-a-wrap { transition: grid-template-rows .3s cubic-bezier(.22,1,.36,1), opacity .22s ease; }
+  .faq-toggle { transition: transform .3s cubic-bezier(.22,1,.36,1); }
 }
