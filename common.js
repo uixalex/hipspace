@@ -249,6 +249,10 @@ renderMobileNav();
 const io = new IntersectionObserver((entries) => {
   entries.forEach(e => {
     if (!e.isIntersecting) return;
+    // rows are built by the page script after this observer is set up, so the
+    // cascade delays are stamped on here, once the list is actually on screen
+    e.target.querySelectorAll(':scope > .work-row, :scope > .service-row, :scope > .faq-item')
+      .forEach((row, i) => row.style.setProperty('--rd', Math.min(i, 8) * 80 + 'ms'));
     e.target.classList.add('in-view');
     io.unobserve(e.target);
   });
@@ -260,14 +264,25 @@ document.querySelectorAll('.reveal-lines').forEach(el => {
   Array.from(el.children).forEach((child, i) => child.style.setProperty('--d', (i * 90) + 'ms'));
 });
 
-// fallback: only for what is already on screen at load — anything below the fold
-// must stay hidden until it is actually scrolled to
-setTimeout(() => {
+// The observer only fires when an element crosses the viewport edge. A jump
+// straight to a hash (index.html#work) can move a heading from below the fold to
+// above it in one go, crossing nothing, so it would stay invisible for good.
+// This sweep shows anything on screen or already scrolled past; whatever is
+// still below the fold keeps its entrance.
+function revealVisible() {
   document.querySelectorAll('.reveal:not(.in-view)').forEach(el => {
     const r = el.getBoundingClientRect();
-    if (r.top < window.innerHeight && r.bottom > 0) el.classList.add('in-view');
+    if (r.top < window.innerHeight) el.classList.add('in-view');
   });
-}, 1200);
+}
+setTimeout(revealVisible, 1200);
+window.addEventListener('hashchange', revealVisible);
+let sweepQueued = false;
+window.addEventListener('scroll', () => {
+  if (sweepQueued) return;
+  sweepQueued = true;
+  requestAnimationFrame(() => { sweepQueued = false; revealVisible(); });
+}, { passive: true });
 
 // the rocket spray needs a real pointer; on touch it would smear on every tap
 if (CAN_HOVER) {

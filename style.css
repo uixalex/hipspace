@@ -36,10 +36,33 @@ p { margin: 0; }
 /* ---------- reveal animations ---------- */
 .reveal {
   opacity: 0;
-  transform: translateY(42px);
-  transition: opacity .7s ease, transform .85s cubic-bezier(.22,1,.36,1);
+  transform: translateY(26px);
+  transition: opacity .75s cubic-bezier(.22,1,.36,1) var(--d,0s),
+              transform .85s cubic-bezier(.22,1,.36,1) var(--d,0s);
 }
 .reveal.in-view { opacity: 1; transform: none; }
+
+/* rows inside a revealed list arrive one after another instead of landing as
+   one slab; --rd is set per row in common.js when the list comes into view */
+.reveal .work-row,
+.reveal .service-row,
+.reveal .faq-item {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .55s cubic-bezier(.22,1,.36,1) var(--rd,0s),
+              transform .65s cubic-bezier(.22,1,.36,1) var(--rd,0s);
+}
+.reveal.in-view .work-row,
+.reveal.in-view .service-row,
+.reveal.in-view .faq-item { opacity: 1; transform: none; }
+
+/* motion is a nicety, not the content: respect the OS setting */
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .reveal-lines > *,
+  .reveal .work-row, .reveal .service-row, .reveal .faq-item {
+    opacity: 1; transform: none; transition: none;
+  }
+}
 
 /* children rise one after another; --d is set per child in script.js */
 .reveal-lines > * {
@@ -52,9 +75,7 @@ p { margin: 0; }
 
 /* ---------- full-height sections that stack while scrolling ---------- */
 .section-tall { min-height: 100svh; display: flex; align-items: center; }
-/* stacked sections must stay fully opaque: the footer is fixed behind the page,
-   so any transparency here would let it bleed through mid-page */
-.section-stack { position: sticky; top: 0; }
+
 
 /* ---------- HERO ---------- */
 #hero {
@@ -243,7 +264,7 @@ body.menu-open { overflow: hidden; }
 .service-body-inner p { margin: 0 0 0 clamp(30px,5vw,66px); max-width: 56ch; font-family: 'IBM Plex Mono', monospace; font-size: clamp(15px,1.15vw,17px); font-weight: 500; line-height: 1.8; }
 
 /* ---------- WORK ---------- */
-#work { position: relative; background: #fff; color: var(--blue); padding: clamp(90px,10vw,160px) 0 clamp(96px,11vw,170px); overflow: hidden; }
+#work { position: relative; background: #fff; color: var(--blue); padding: clamp(90px,10vw,160px) 0 clamp(56px,6.5vw,104px); overflow: hidden; }
 #work > .wrap { margin-bottom: clamp(40px,5vw,80px); }
 #work h2 { max-width: 20ch; font-weight: 700; font-size: clamp(30px,3.6vw,54px); line-height: 1.18; letter-spacing: -.025em; }
 .work-list { border-bottom: 1px solid rgba(31,47,196,.16); }
@@ -375,7 +396,9 @@ body.menu-open { overflow: hidden; }
 .detail-related-head h2 { max-width: 20ch; font-weight: 700; font-size: clamp(30px,3.6vw,54px); line-height: 1.18; letter-spacing: -.025em; }
 
 /* ---------- ABOUT ME ---------- */
-#alex { position: relative; min-height: 88svh; background: #fff; color: var(--blue); padding: clamp(64px,8vw,120px) 0; overflow: hidden; }
+/* min-height:auto beats .section-tall 100svh, which was centring the content
+   in a full-height box and leaving the gap above the heading */
+#alex { position: relative; min-height: auto; background: #fff; color: var(--blue); padding: clamp(44px,5.5vw,84px) 0 clamp(56px,7vw,104px); overflow: hidden; }
 .alex-bg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
 .stars-alex { animation: starFly 90s linear infinite; }
 .stars-alex span { background: rgba(31,47,196,.26) !important; }   /* white section: stars go blue */
@@ -389,14 +412,19 @@ body.menu-open { overflow: hidden; }
   transition: opacity .7s ease, transform .85s cubic-bezier(.22,1,.36,1);
 }
 #alex.in-view .alex-sequence { opacity: 1; transform: none; }
-#alex.in-view .alex-hello { transition-delay: 0ms; }
-#alex.in-view .alex-copy { transition-delay: 260ms; }
-#alex.in-view .cta-pill { transition-delay: 520ms; }
+/* the stagger only applies while the entrance is playing: transition-delay
+   would otherwise sit on the button forever and hold up its hover too */
+#alex.in-view:not(.seq-done) .alex-hello { transition-delay: 0ms; }
+#alex.in-view:not(.seq-done) .alex-copy { transition-delay: 260ms; }
+#alex.in-view:not(.seq-done) .cta-pill { transition-delay: 520ms; }
 .pink-ink { color: var(--pink); }
 /* brand pink is unreadable on white, so the accent line goes blue and heavier instead */
 #alex .pink-ink { color: var(--blue); font-weight: 600; }
 .cta-pill { align-self: flex-start; background: var(--pink); color: var(--blue); font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; padding: 15px 26px; border-radius: 999px; transition: transform .5s cubic-bezier(.22,1,.36,1), background .3s ease, color .3s ease; }
 .cta-pill:hover { background: var(--blue); color: #fff; transform: translateY(-4px); }
+/* the About Me card is blue, so this one runs the palette the other way */
+#alex .cta-pill { background: var(--blue); color: #fff; }
+#alex .cta-pill:hover { background: var(--pink); color: var(--blue); }
 #alex-copy { display: flex; flex-direction: column; gap: clamp(14px,1.4vw,20px); font-family: 'IBM Plex Mono', monospace; font-size: clamp(14px,1.05vw,16.5px); font-weight: 500; line-height: 1.75; max-width: 50ch; color: var(--ink-2); }
 
 /* three icons sit in a row just above the portrait; the middle one a touch higher */

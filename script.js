@@ -116,6 +116,9 @@ const alexIo = new IntersectionObserver((entries) => {
     if (!e.isIntersecting) return;
     e.target.classList.add('in-view');
     alexIo.unobserve(e.target);
+    // the CTA is last at 520ms + .5s; after that the stagger delays must go,
+    // or they would also hold up the button's hover
+    setTimeout(() => e.target.classList.add('seq-done'), 1400);
   });
 }, { threshold: 0.25 });
 alexIo.observe(alexSection);
