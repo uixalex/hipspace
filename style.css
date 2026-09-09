@@ -27,6 +27,11 @@ p { margin: 0; }
   position: fixed; inset: 0; width: 100vw; height: 100vh;
   pointer-events: none; z-index: 80;
 }
+/* no mouse, no spray: on touch it just smudges the screen on every tap */
+@media (hover: none) {
+  #cursor-canvas { display: none; }
+  body { cursor: auto; }
+}
 
 /* ---------- reveal animations ---------- */
 .reveal {
@@ -412,8 +417,10 @@ body.menu-open { overflow: hidden; }
 #faq { position: relative; background: var(--pink); color: var(--blue); padding: clamp(64px,9vw,140px) 0; }
 .faq-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(300px,1fr)); gap: clamp(32px,5vw,80px); align-items: start; }
 .faq-grid h2 { max-width: 18ch; font-weight: 700; font-size: clamp(30px,3.6vw,54px); line-height: 1.24; letter-spacing: -.02em; }
-.faq-item { border-top: 1px solid rgba(31,47,196,.28); padding: clamp(16px,2vw,22px) 0; }
-.faq-q { display: flex; align-items: center; gap: 16px; cursor: pointer; }
+.faq-item { border-top: 1px solid rgba(31,47,196,.28); }
+/* the padding lives on the button row, not the item, so a tap anywhere in
+   the band opens the answer instead of landing in dead space */
+.faq-q { display: flex; align-items: center; gap: 16px; cursor: pointer; padding: clamp(16px,2vw,22px) 0; }
 .faq-n { flex: 0 0 auto; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .12em; color: var(--ink-2); }
 .faq-q h3 { flex: 1; font-size: clamp(17px,1.35vw,21px); font-weight: 700; letter-spacing: -.01em; }
 /* pink on pink would vanish: the toggle inverts on the pink section */
@@ -422,7 +429,7 @@ body.menu-open { overflow: hidden; }
 .faq-a-wrap { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows .55s cubic-bezier(.22,1,.36,1), opacity .4s ease; }
 .faq-item.open .faq-a-wrap { grid-template-rows: 1fr; opacity: 1; }
 .faq-a-inner { overflow: hidden; }
-.faq-a-inner p { margin: 14px 0 0 34px; max-width: 54ch; font-family: 'IBM Plex Mono', monospace; font-size: clamp(15px,1.15vw,17px); font-weight: 500; line-height: 1.8; color: var(--ink-2); }
+.faq-a-inner p { margin: 0 0 clamp(18px,2.4vw,26px) 34px; max-width: 54ch; font-family: 'IBM Plex Mono', monospace; font-size: clamp(15px,1.15vw,17px); font-weight: 500; line-height: 1.8; color: var(--ink-2); }
 
 /* ---------- CTA ---------- */
 /* white on purpose: #faq above it is pink and the footer below is blue */
@@ -510,8 +517,10 @@ body.menu-open { overflow: hidden; }
   /* links and CTA move into the burger overlay */
   .nav-inner { flex-wrap: nowrap; gap: 16px; }
   .logo img { width: 54px; }
-  .nav-links, .nav-right { display: none; }
-  .nav-burger { display: flex; }
+  .nav-links { display: none; }
+  .nav-right { display: flex; margin-left: auto; gap: 12px; }
+  .nav-right a { display: none; }   /* the CTA lives in the overlay */
+  .nav-burger { display: flex; margin-left: 0; }
 
   /* the alien and its bubble sit on top of the body copy at this width */
   .alien-peek { display: none; }

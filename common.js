@@ -17,6 +17,10 @@ const PROJECTS = [
   { n: "07", name: "Teatar Dankan", meta: "Branding & Web Design", src: "assets/teatar-dankan.webp", site: "https://dankanbanjaluka.com/",    gallery: [], body: "" }
 ];
 
+// Hover-only behaviour is gated on this: a touchscreen reports no hover, and
+// the emulated mouse events it does fire would otherwise trigger mouse effects.
+const CAN_HOVER = window.matchMedia('(hover: hover)').matches;
+
 // ---------- canvas spray helpers ----------
 // Shared by the site-wide rocket cursor and the hero saucer trail in script.js.
 function resizeCanvas(canvas, ctx) {
@@ -265,33 +269,36 @@ setTimeout(() => {
   });
 }, 1200);
 
-// ---------- site-wide rocket cursor spray ----------
-const cursorCanvas = document.getElementById('cursor-canvas');
-const cursorCtx = cursorCanvas.getContext('2d');
-resizeCanvas(cursorCanvas, cursorCtx);
-window.addEventListener('resize', () => resizeCanvas(cursorCanvas, cursorCtx));
+// the rocket spray needs a real pointer; on touch it would smear on every tap
+if (CAN_HOVER) {
+  // ---------- site-wide rocket cursor spray ----------
+  const cursorCanvas = document.getElementById('cursor-canvas');
+  const cursorCtx = cursorCanvas.getContext('2d');
+  resizeCanvas(cursorCanvas, cursorCtx);
+  window.addEventListener('resize', () => resizeCanvas(cursorCanvas, cursorCtx));
 
-let cursorPuffs = [];
-let lastMouse = null;
-let mouse = null;
-let currentInk = '254,181,234';
+  let cursorPuffs = [];
+  let lastMouse = null;
+  let mouse = null;
+  let currentInk = '254,181,234';
 
-window.addEventListener('mousemove', (e) => {
-  mouse = { x: e.clientX, y: e.clientY };
-  const el = document.elementFromPoint(e.clientX, e.clientY);
-  const zone = el && el.closest ? el.closest('[data-ink]') : null;
-  currentInk = zone && zone.dataset.ink === 'blue' ? '31,47,196' : '254,181,234';
-}, { passive: true });
+  window.addEventListener('mousemove', (e) => {
+    mouse = { x: e.clientX, y: e.clientY };
+    const el = document.elementFromPoint(e.clientX, e.clientY);
+    const zone = el && el.closest ? el.closest('[data-ink]') : null;
+    currentInk = zone && zone.dataset.ink === 'blue' ? '31,47,196' : '254,181,234';
+  }, { passive: true });
 
-function cursorTick(t) {
-  requestAnimationFrame(cursorTick);
-  if (mouse) {
-    const tail = { x: mouse.x + 16, y: mouse.y + 15 };
-    emit(cursorPuffs, tail, lastMouse, t, 10, 0.12, currentInk);
-    lastMouse = tail;
+  function cursorTick(t) {
+    requestAnimationFrame(cursorTick);
+    if (mouse) {
+      const tail = { x: mouse.x + 16, y: mouse.y + 15 };
+      emit(cursorPuffs, tail, lastMouse, t, 10, 0.12, currentInk);
+      lastMouse = tail;
+    }
+    if (cursorPuffs.length > 500) cursorPuffs.splice(0, cursorPuffs.length - 500);
+    paint(cursorCtx, cursorCanvas, cursorPuffs, t, 620, 520);
+    cursorPuffs = cursorPuffs.filter(q => t - q.born <= 620);
   }
-  if (cursorPuffs.length > 500) cursorPuffs.splice(0, cursorPuffs.length - 500);
-  paint(cursorCtx, cursorCanvas, cursorPuffs, t, 620, 520);
-  cursorPuffs = cursorPuffs.filter(q => t - q.born <= 620);
+  requestAnimationFrame(cursorTick);
 }
-requestAnimationFrame(cursorTick);

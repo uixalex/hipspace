@@ -18,10 +18,7 @@ const FAQS = [
   { q: "What happens after launch?", a: "You get the full file set, brand guidelines and a walkthrough for your team. We stay on call for launch week, and many clients keep us on a light monthly retainer for new campaigns." }
 ];
 
-// Hover-to-open belongs to mice only. On a touchscreen the browser fires an
-// emulated mouseenter before the click, so the row opened and the click then
-// closed it again - the first tap appeared to do nothing.
-const CAN_HOVER = window.matchMedia('(hover: hover)').matches;
+// CAN_HOVER comes from common.js
 
 // ---------- build starfield ----------
 // Each layer is 200% wide: stars are placed in the left half and cloned into the
