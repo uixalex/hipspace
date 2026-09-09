@@ -110,6 +110,51 @@ p { margin: 0; }
 .beam-toggle.on { background: var(--pink); border-color: var(--pink); }
 .beam-toggle.on img { filter: brightness(0) saturate(100%) invert(13%) sepia(94%) saturate(7151%) hue-rotate(243deg) brightness(93%) contrast(105%); }
 
+/* ---------- mobile nav ---------- */
+/* the bar keeps only logo + burger on small screens; everything else moves
+   into the overlay, which common.js builds from the existing nav links */
+.nav-burger {
+  display: none; width: 44px; height: 44px; flex: 0 0 auto; margin-left: auto; padding: 0;
+  border: 1px solid rgba(255,255,255,.45); border-radius: 50%; background: transparent;
+  flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+}
+.nav-burger span { display: block; width: 18px; height: 1.5px; background: #fff; border-radius: 2px; }
+
+.mnav {
+  position: fixed; inset: 0; z-index: 90; background: var(--blue); color: #fff;
+  display: flex; flex-direction: column;
+  visibility: hidden; transform: translateY(-100%);
+  transition: transform .55s cubic-bezier(.22,1,.36,1), visibility 0s linear .55s;
+}
+.mnav.open { visibility: visible; transform: none; transition: transform .55s cubic-bezier(.22,1,.36,1), visibility 0s; }
+.mnav::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(120% 80% at 80% 15%, rgba(254,181,234,.16) 0%, rgba(254,181,234,0) 60%);
+}
+.mnav-bar { position: relative; z-index: 1; display: flex; align-items: center; padding: clamp(24px,4vw,44px) var(--gutter); }
+.mnav-bar .logo img { width: 54px; }
+.mnav-close {
+  width: 44px; height: 44px; flex: 0 0 auto; margin-left: auto; padding: 0; position: relative;
+  border: 1px solid rgba(255,255,255,.45); border-radius: 50%; background: transparent;
+}
+.mnav-close span { position: absolute; left: 50%; top: 50%; width: 18px; height: 1.5px; margin: -.75px 0 0 -9px; background: #fff; border-radius: 2px; }
+.mnav-close span:first-child { transform: rotate(45deg); }
+.mnav-close span:last-child { transform: rotate(-45deg); }
+
+.mnav-links { position: relative; z-index: 1; flex: 1; display: flex; flex-direction: column; justify-content: center; gap: clamp(12px,2.6vh,24px); padding: 0 var(--gutter); }
+.mnav-links a {
+  display: flex; align-items: baseline; gap: 16px; color: #fff;
+  font-family: 'IBM Plex Mono', monospace; font-weight: 700;
+  font-size: clamp(30px,9vw,46px); line-height: 1.1; letter-spacing: -.02em;
+  opacity: 0; transform: translateY(20px);
+  transition: opacity .5s ease var(--d,0s), transform .6s cubic-bezier(.22,1,.36,1) var(--d,0s);
+}
+.mnav.open .mnav-links a { opacity: 1; transform: none; }
+.mnav-links .n { flex: 0 0 auto; font-size: 12px; font-weight: 500; letter-spacing: .14em; color: var(--pink); }
+.mnav-foot { position: relative; z-index: 1; display: flex; padding: 0 var(--gutter) clamp(36px,8vh,64px); }
+.mnav-foot .cta-pill { align-self: flex-start; }
+body.menu-open { overflow: hidden; }
+
 .hero-content { position: relative; z-index: 2; flex: 1; padding: clamp(56px,7vw,110px) var(--gutter) clamp(48px,6vw,86px); display: flex; align-items: center; }
 .hero-inner { position: relative; width: 100%; max-width: var(--shell); margin: 0 auto; }
 .hero-text { position: relative; z-index: 2; max-width: min(100%,900px); display: flex; flex-direction: column; gap: clamp(18px,2.4vw,30px); }
@@ -462,12 +507,21 @@ p { margin: 0; }
   .alex-shot { width: 100%; margin: 0; }
 }
 @media (max-width: 720px) {
-  /* no hamburger yet: the links drop to their own row instead of running off
-     the screen, so the logo and "let's launch" stay reachable */
-  .nav-inner { flex-wrap: wrap; gap: 16px; }
+  /* links and CTA move into the burger overlay */
+  .nav-inner { flex-wrap: nowrap; gap: 16px; }
   .logo img { width: 54px; }
-  .nav-links { order: 3; width: 100%; margin-left: 0; justify-content: space-between; gap: 12px; font-size: 14px; }
-  .nav-right { margin-left: auto; }
+  .nav-links, .nav-right { display: none; }
+  .nav-burger { display: flex; }
+
+  /* the alien and its bubble sit on top of the body copy at this width */
+  .alien-peek { display: none; }
+
+  /* footer: stacked and centred instead of three links crushed edge to edge */
+  #contact { min-height: auto; padding: clamp(52px,13vw,80px) var(--gutter) clamp(28px,7vw,40px); }
+  .footer-inner { gap: clamp(22px,5vw,32px); }
+  .footer-links { flex-direction: column; align-items: center; gap: 16px; font-size: 15px; }
+  .footer-logo { width: 84%; margin: clamp(8px,3vw,18px) 0; }
+  .footer-bottom { flex-direction: column; align-items: center; text-align: center; gap: 12px; font-size: 13.5px; padding-top: clamp(22px,5vw,28px); }
   .detail-intro h2 { max-width: 12ch; font-size: clamp(46px,15vw,72px); }
   .detail-info { grid-template-columns: 1fr; gap: 28px; padding-top: 34px; }
   .detail-gallery { grid-template-columns: 1fr; padding-top: 64px; }

@@ -189,6 +189,57 @@ function renderFooter() {
 }
 renderFooter();
 
+// ---------- mobile nav ----------
+// Built from the nav that is already on the page, so each page keeps its own
+// hrefs (the case study points back at index.html) with no duplicated markup.
+function renderMobileNav() {
+  const navInner = document.querySelector('.nav-inner');
+  if (!navInner || document.querySelector('.mnav')) return;
+
+  const links = [...document.querySelectorAll('.nav-links a')]
+    .map(a => ({ href: a.getAttribute('href'), text: a.textContent.trim() }));
+  if (!links.length) return;
+
+  const launch = document.querySelector('.nav-right a[href="#contact"]');
+  const logo = document.querySelector('.logo');
+  const logoHref = logo ? logo.getAttribute('href') : 'index.html';
+
+  const burger = document.createElement('button');
+  burger.type = 'button';
+  burger.className = 'nav-burger';
+  burger.setAttribute('aria-label', 'Open menu');
+  burger.setAttribute('aria-expanded', 'false');
+  burger.innerHTML = '<span></span><span></span><span></span>';
+  navInner.appendChild(burger);
+
+  const mnav = document.createElement('div');
+  mnav.className = 'mnav';
+  mnav.hidden = false;
+  mnav.innerHTML = `
+    <div class="mnav-bar">
+      <a href="${logoHref}" class="logo"><img src="assets/logo.png" alt="hip space" /></a>
+      <button class="mnav-close" type="button" aria-label="Close menu"><span></span><span></span></button>
+    </div>
+    <nav class="mnav-links">
+      ${links.map((l, i) => `<a href="${l.href}" style="--d:${i * 70}ms"><span class="n">${String(i + 1).padStart(2, '0')}</span>${l.text}</a>`).join('')}
+    </nav>
+    <div class="mnav-foot">${launch ? `<a class="cta-pill" href="${launch.getAttribute('href')}">${launch.textContent.trim()}</a>` : ''}</div>
+  `;
+  document.body.appendChild(mnav);
+
+  const setOpen = (open) => {
+    mnav.classList.toggle('open', open);
+    document.body.classList.toggle('menu-open', open);
+    burger.setAttribute('aria-expanded', String(open));
+  };
+  burger.addEventListener('click', () => setOpen(true));
+  mnav.querySelector('.mnav-close').addEventListener('click', () => setOpen(false));
+  // any link closes it: same-page anchors would otherwise scroll behind the overlay
+  mnav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setOpen(false)));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
+}
+renderMobileNav();
+
 // ---------- scroll reveal ----------
 // After renderFooter(): .footer-links carries .reveal and must be observed too.
 const io = new IntersectionObserver((entries) => {
