@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>hip space — design studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<canvas id="cursor-canvas"></canvas>
+
+<div class="page">
+
+  <!-- HERO -->
+  <section id="hero" class="section-stack" data-ink="pink">
+    <div class="hero-bg">
+      <div class="nebula nebula-1"></div>
+      <div class="nebula nebula-2"></div>
+      <div class="stars stars-far"></div>
+      <div class="stars stars-near"></div>
+    </div>
+
+    <canvas id="trail-canvas"></canvas>
+
+    <header class="nav">
+      <div class="nav-inner">
+        <a href="index.html" class="logo"><img src="assets/logo.png" alt="hip space" /></a>
+        <nav class="nav-links">
+          <a href="#about">about</a>
+          <a href="#services">services</a>
+          <a href="#work">work</a>
+          <a href="#blog">blog</a>
+        </nav>
+        <div class="nav-right">
+          <a href="#contact">let's launch</a>
+          <button id="beam-toggle" class="beam-toggle" title="beam on">
+            <img src="assets/saucer.png" alt="" />
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="hero-content">
+      <div class="hero-inner">
+        <div class="hero-text">
+          <h1>Launching brands beyond the orbit</h1>
+          <p class="mono">Tired of design that feels safe?</p>
+        </div>
+        <div class="ufo-wrap">
+          <div class="ufo-glow"></div>
+          <div class="ufo-fly" id="ufo-fly">
+            <div class="beam-cone"><div class="beam-fill" id="beam-fill"></div></div>
+            <img id="ufo-img" src="assets/saucer.png" alt="Flying saucer" class="ufo-bob" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="section-tall section-stack" data-ink="pink">
+    <div class="about-bg">
+      <div class="stars stars-about"></div>
+    </div>
+    <div class="wrap">
+      <div class="about-grid">
+        <h2 class="reveal">We're a small studio with a big appetite for unexplored space.</h2>
+        <div class="mono-copy reveal" id="about-copy">
+          <p>Hipspace is a branding and web design studio helping businesses turn what makes them different into a brand with a strong point of view.</p>
+          <p>From brand strategy and visual identity to campaigns and websites, we create the essential pieces your brand needs to launch, grow and be recognised.</p>
+          <p>For founders and creative companies that want to stand out, without looking like everyone else.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services" data-ink="blue">
+    <div class="wrap">
+      <div class="services-head reveal">
+        <h2>What we launch.</h2>
+      </div>
+      <div class="services-list reveal" id="services-list"></div>
+    </div>
+  </section>
+
+  <!-- WORK -->
+  <section id="work" data-ink="pink">
+    <div class="wrap">
+      <h2 class="reveal">Missions we've completed.</h2>
+    </div>
+    <div class="work-list reveal" id="work-list"></div>
+  </section>
+
+  <!-- ABOUT ME -->
+  <section id="alex" class="section-tall section-stack" data-ink="pink">
+    <div class="alex-bg"><div class="stars stars-alex"></div></div>
+
+    <div class="wrap alex-wrap">
+      <div class="alex-grid">
+        <div class="alex-lead">
+          <h2 class="alex-hello alex-sequence">Hello, I am Alex</h2>
+
+          <div class="alex-copy alex-sequence" id="alex-copy">
+            <p>I've spent 7 years designing digital products, interfaces, and systems. But somewhere along the way, I realized what I really wanted was to work on brands and projects that actually matter, with character, creativity and authenticity. That is why I built Hipspace.</p>
+            <p class="pink-ink">If you want a partner who understands your vision and isn't afraid to go beyond ordinary, let's launch your brand into orbit!</p>
+          </div>
+
+          <a href="#contact" class="cta-pill alex-sequence">let's talk &rarr;</a>
+        </div>
+
+        <div class="alex-shot reveal">
+
+          <!-- pencil · old pentium · alien brain, sitting above the portrait -->
+          <div class="alex-icons" aria-hidden="true">
+
+            <span class="alex-icon">
+              <svg viewBox="0 0 32 32" fill="none">
+                <path class="fill-pink" d="M8.16 20.16 20.16 8.16l3.68 3.68-12 12z" />
+                <path class="ln" d="M8.16 20.16 20.16 8.16l3.68 3.68-12 12z" />
+                <path class="dot" d="M20.16 8.16 22.99 5.33l3.68 3.68-2.83 2.83z" />
+                <path class="ln" d="M20.16 8.16 22.99 5.33l3.68 3.68-2.83 2.83z" />
+                <path class="dot" d="M8.16 20.16 11.84 23.84 6.46 25.54z" />
+                <path class="ln" d="M8.16 20.16 11.84 23.84 6.46 25.54z" />
+              </svg>
+            </span>
+
+            <span class="alex-icon">
+              <svg viewBox="0 0 32 32" fill="none">
+                <rect class="fill-pink" x="4" y="6" width="24" height="17" rx="2.6" />
+                <rect class="ln" x="4" y="6" width="24" height="17" rx="2.6" />
+                <rect class="ln" x="7.2" y="9" width="17.6" height="10.4" rx="1.5" fill="#fff" />
+                <path class="ln" d="M9.8 12.2h8.4M9.8 14.9h5.6M9.8 17.6h3.6" />
+                <circle class="dot" cx="25.4" cy="21.2" r=".95" />
+                <path class="ln" d="M12.8 23h6.4v3.1h-6.4z" />
+                <path class="fill-pink" d="M8.4 26.1h15.2a1.3 1.3 0 0 1 0 2.6H8.4a1.3 1.3 0 0 1 0-2.6z" />
+                <path class="ln" d="M8.4 26.1h15.2a1.3 1.3 0 0 1 0 2.6H8.4a1.3 1.3 0 0 1 0-2.6z" />
+              </svg>
+            </span>
+
+            <span class="alex-icon">
+              <svg viewBox="0 0 32 32" fill="none">
+                <path class="ln" d="M13 6.8 11.4 3.6M19 6.8l1.6-3.2" />
+                <circle class="fill-pink" cx="10.9" cy="2.6" r="1.5" />
+                <circle class="ln" cx="10.9" cy="2.6" r="1.5" />
+                <circle class="fill-pink" cx="21.1" cy="2.6" r="1.5" />
+                <circle class="ln" cx="21.1" cy="2.6" r="1.5" />
+                <path class="fill-pink" d="M16 6.6c2.9-2 6.7-1.1 8 1.8 2.6.2 4.4 2.2 4.4 4.6 0 1-.3 1.9-.8 2.7.6.8.9 1.7.9 2.7 0 2.6-2.2 4.7-5 4.7-.7 1.6-2.4 2.7-4.4 2.7-2 0-3.7-1.1-4.4-2.7-2.8 0-5-2.1-5-4.7 0-1 .3-1.9.9-2.7-.5-.8-.8-1.7-.8-2.7 0-2.4 1.8-4.4 4.4-4.6 1.3-2.9 5.1-3.8 8-1.8z" />
+                <path class="ln" d="M16 6.6c2.9-2 6.7-1.1 8 1.8 2.6.2 4.4 2.2 4.4 4.6 0 1-.3 1.9-.8 2.7.6.8.9 1.7.9 2.7 0 2.6-2.2 4.7-5 4.7-.7 1.6-2.4 2.7-4.4 2.7-2 0-3.7-1.1-4.4-2.7-2.8 0-5-2.1-5-4.7 0-1 .3-1.9.9-2.7-.5-.8-.8-1.7-.8-2.7 0-2.4 1.8-4.4 4.4-4.6 1.3-2.9 5.1-3.8 8-1.8z" />
+                <path class="ln" d="M16 7.6v17.2" />
+                <path class="ln" d="M12.4 10.6c-1.6.9-2.2 2.6-1.4 4M11 17.6c1.4-.8 3.2-.4 4 .9M19.6 10.6c1.6.9 2.2 2.6 1.4 4M21 17.6c-1.4-.8-3.2-.4-4 .9" />
+              </svg>
+            </span>
+
+          </div>
+
+          <div class="alex-photo"><img src="assets/alex-id-card.png" alt="Hipspace identification card: Aleksandra, creative founder" /></div>
+        </div>
+      </div>
+
+    
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" data-ink="blue">
+    <div class="wrap faq-grid">
+      <div class="reveal">
+        <h2>Questions clients ask before we start.</h2>
+      </div>
+      <div class="faq-list reveal" id="faq-list"></div>
+    </div>
+  </section>
+
+  <!-- CTA: white, because #faq above it is pink -->
+  <section id="cta" data-ink="pink">
+    <div class="cta-bg"><div class="stars stars-cta"></div></div>
+    <div class="wrap">
+      <div class="cta-inner reveal">
+        <h2>Got something worth launching?<br />Let&rsquo;s put it into orbit.</h2>
+        <a href="#contact" class="cta-pill">let&rsquo;s launch &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- FOOTER: markup lives in renderFooter() in common.js, shared by every page -->
+<div id="site-footer"></div>
+
+<script src="common.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

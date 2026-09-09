@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>case study — hip space</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<canvas id="cursor-canvas"></canvas>
+
+<div class="page">
+
+  <!-- HERO: full-bleed project image with the nav sitting over it -->
+  <section class="cs-hero" data-ink="pink">
+    <div class="detail-image" id="detail-image"></div>
+
+    <header class="nav">
+      <div class="nav-inner">
+        <a href="index.html" class="logo"><img src="assets/logo.png" alt="hip space" /></a>
+        <nav class="nav-links">
+          <a href="index.html#about">about</a>
+          <a href="index.html#services">services</a>
+          <a href="index.html#work">work</a>
+          <a href="index.html#blog">blog</a>
+        </nav>
+        <div class="nav-right">
+          <a href="#contact">let's launch</a>
+        </div>
+      </div>
+    </header>
+
+    <!-- the image carries the page; the name is here for screen readers and SEO -->
+    <h1 class="sr-only" id="detail-name-sr"></h1>
+  </section>
+
+  <div class="cs-body" data-ink="pink">
+    <div class="detail-info wrap">
+      <div class="detail-intro">
+        <h2 id="detail-name"></h2>
+        <a class="cta-pill" id="detail-site" href="#" target="_blank" rel="noreferrer">visit site <span aria-hidden="true">↗</span></a>
+      </div>
+      <p class="detail-description" id="detail-desc"></p>
+    </div>
+
+    <div class="detail-gallery wrap" id="detail-gallery"></div>
+
+    <!-- white like #work on home, so data-ink is pink for the cursor spray -->
+    <section class="detail-related" data-ink="pink">
+      <div class="wrap">
+        <div class="detail-related-head">
+          <span class="mono">keep exploring</span>
+          <h2>More work from the studio.</h2>
+        </div>
+      </div>
+      <!-- outside .wrap: .work-row-inner carries its own gutter so the blue
+           hover background can run edge to edge, exactly as on the home page -->
+      <div class="work-list reveal" id="detail-related-list"></div>
+    </section>
+  </div>
+
+</div>
+
+<div id="site-footer"></div>
+
+<script src="common.js"></script>
+<script src="case-study.js"></script>
+</body>
+</html>

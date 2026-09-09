@@ -1,0 +1,486 @@
+:root {
+  --blue: #1F2FC4;
+  --pink: #FEB5EA;
+  --cream: #F0EDE6;
+  --ink-2: #2A34A8;
+  --shell: 1440px;
+  --gutter: clamp(24px,5vw,64px);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--blue);
+  font-family: 'Poppins', system-ui, sans-serif;
+  cursor: url("assets/cursor-rocket.png") 11 11, auto;
+}
+a, button, img, span, div { cursor: inherit; }
+a { color: #fff; text-decoration: none; }
+a:hover { color: var(--pink); }
+h1, h2, h3 { margin: 0; }
+p { margin: 0; }
+.mono { font-family: 'IBM Plex Mono', monospace; }
+.wrap { max-width: calc(var(--shell) + var(--gutter) * 2); margin: 0 auto; padding: 0 var(--gutter); }
+
+#cursor-canvas {
+  position: fixed; inset: 0; width: 100vw; height: 100vh;
+  pointer-events: none; z-index: 80;
+}
+
+/* ---------- reveal animations ---------- */
+.reveal {
+  opacity: 0;
+  transform: translateY(42px);
+  transition: opacity .7s ease, transform .85s cubic-bezier(.22,1,.36,1);
+}
+.reveal.in-view { opacity: 1; transform: none; }
+
+/* children rise one after another; --d is set per child in script.js */
+.reveal-lines > * {
+  display: block;
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .7s ease var(--d,0s), transform .85s cubic-bezier(.22,1,.36,1) var(--d,0s);
+}
+.reveal-lines.in-view > * { opacity: 1; transform: none; }
+
+/* ---------- full-height sections that stack while scrolling ---------- */
+.section-tall { min-height: 100svh; display: flex; align-items: center; }
+/* stacked sections must stay fully opaque: the footer is fixed behind the page,
+   so any transparency here would let it bleed through mid-page */
+.section-stack { position: sticky; top: 0; }
+
+/* ---------- HERO ---------- */
+#hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background: var(--blue);
+  overflow: hidden;
+  color: #fff;
+  transition: background .9s ease;
+}
+#hero.dark-mode { background: #070B33; }
+
+.hero-bg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.hero-bg::before {
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(120% 90% at 78% 62%, rgba(255,255,255,.10) 0%, rgba(255,255,255,0) 60%);
+}
+.nebula { position: absolute; border-radius: 50%; filter: blur(30px); }
+.nebula-1 {
+  top: -18%; left: 8%; width: 46%; aspect-ratio: 1;
+  background: radial-gradient(circle, rgba(254,181,234,.30) 0%, rgba(254,181,234,0) 66%);
+  animation: nebula 22s ease-in-out infinite;
+}
+.nebula-2 {
+  bottom: -26%; right: -6%; width: 52%; aspect-ratio: 1;
+  background: radial-gradient(circle, rgba(146,163,255,.34) 0%, rgba(146,163,255,0) 68%);
+  animation: nebula 28s ease-in-out infinite 4s;
+}
+.stars { position: absolute; top: 0; bottom: 0; left: 0; width: 200%; will-change: transform; }
+.stars-far { animation: starFly 70s linear infinite; }
+.stars-near { animation: starFly 30s linear infinite; }
+.stars span {
+  position: absolute; border-radius: 50%; background: #fff; display: block;
+  animation: twinkle 5s ease-in-out infinite;
+}
+
+/* above .hero-content (z-index 2) so the saucer's dust settles on the letters */
+#trail-canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 3; }
+
+.nav { position: relative; z-index: 3; padding: clamp(24px,4vw,44px) var(--gutter); }
+.nav-inner { max-width: var(--shell); margin: 0 auto; display: flex; align-items: center; gap: clamp(24px,5vw,56px); }
+.logo { display: flex; align-items: center; flex: 0 0 auto; }
+.logo img { display: block; width: 72px; height: auto; }
+.nav-links { margin-left: auto; display: flex; align-items: center; gap: 34px; font-family: 'IBM Plex Mono', monospace; font-size: 17px; }
+.nav-right { display: flex; align-items: center; gap: clamp(14px,2vw,24px); font-family: 'IBM Plex Mono', monospace; font-size: 17px; }
+.nav-right > a { text-decoration: underline; text-decoration-color: var(--pink); text-decoration-thickness: 2px; text-underline-offset: 6px; }
+.beam-toggle {
+  width: 44px; height: 44px; flex: 0 0 auto; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.45); background: transparent;
+  display: flex; align-items: center; justify-content: center; padding: 0;
+  transition: background .45s ease, border-color .45s ease, transform .7s cubic-bezier(.22,1,.36,1);
+}
+.beam-toggle:hover { border-color: var(--pink); }
+/* filter, not mask: Chrome blocks mask images over file:// and the site is opened as a local file */
+.beam-toggle img { width: 26px; height: auto; display: block; filter: brightness(0) invert(1); transition: filter .45s ease; }
+.beam-toggle.on { background: var(--pink); border-color: var(--pink); }
+.beam-toggle.on img { filter: brightness(0) saturate(100%) invert(13%) sepia(94%) saturate(7151%) hue-rotate(243deg) brightness(93%) contrast(105%); }
+
+.hero-content { position: relative; z-index: 2; flex: 1; padding: clamp(56px,7vw,110px) var(--gutter) clamp(48px,6vw,86px); display: flex; align-items: center; }
+.hero-inner { position: relative; width: 100%; max-width: var(--shell); margin: 0 auto; }
+.hero-text { position: relative; z-index: 2; max-width: min(100%,900px); display: flex; flex-direction: column; gap: clamp(18px,2.4vw,30px); }
+.hero-text h1 { max-width: 18ch; font-weight: 700; font-size: clamp(38px,6vw,84px); line-height: 1.02; letter-spacing: -.04em; }
+.hero-text p { max-width: 34ch; font-size: clamp(13.5px,1.05vw,16px); font-weight: 500; line-height: 1.7; color: rgba(255,255,255,.86); }
+
+.ufo-wrap {
+  position: absolute; left: 49%; right: auto; top: clamp(-250px,-17vw,-120px);
+  width: min(42%,360px); z-index: 3; pointer-events: none;
+}
+.ufo-glow {
+  position: absolute; left: 8%; top: 6%; width: 84%; aspect-ratio: 1; border-radius: 50%;
+  background: radial-gradient(circle, rgba(254,181,234,.22) 0%, rgba(254,181,234,0) 68%);
+  filter: blur(6px); animation: ufoGlow 6s ease-in-out infinite;
+}
+.ufo-fly { position: relative; width: 100%; animation: ufoCross 16s ease-in-out infinite; }
+.beam-cone {
+  position: absolute; left: 47%; top: 68%; width: 78%; height: 112%; margin-left: -39%;
+  transform: rotate(25deg); transform-origin: 50% 0%; pointer-events: none;
+}
+.beam-fill {
+  width: 100%; height: 100%;
+  background: linear-gradient(180deg, rgba(254,181,234,0) 0%, rgba(254,181,234,0) 72%);
+  clip-path: polygon(43% 0, 57% 0, 100% 100%, 0 100%);
+  animation: beamFlicker 1.6s ease-in-out infinite;
+  transition: background 0.4s ease;
+}
+#hero.dark-mode .beam-fill {
+  background: linear-gradient(180deg, rgba(254,181,234,.85) 0%, rgba(254,181,234,.38) 42%, rgba(254,181,234,0) 88%);
+  mix-blend-mode: screen;   /* lights the letters up instead of tinting them */
+}
+#hero.dark-mode .hero-text h1 { text-shadow: 0 0 40px rgba(254,181,234,.22); }
+.ufo-fly::after {
+  content: ""; position: absolute; left: 47%; top: 60%; width: 34%; height: 18%; margin-left: -17%;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center, rgba(254,181,234,.95) 0%, rgba(254,181,234,0) 70%);
+  filter: blur(8px); opacity: 0; transition: opacity .45s ease; pointer-events: none;
+  animation: ufoBob 4.4s ease-in-out infinite;
+}
+#hero.dark-mode .ufo-fly::after { opacity: 1; }
+.ufo-bob { position: relative; display: block; width: 100%; height: auto; pointer-events: auto; animation: ufoBob 4.4s ease-in-out infinite; filter: drop-shadow(0 18px 40px rgba(0,0,0,.28)); }
+.ufo-bob.spin { transition: transform .7s cubic-bezier(.22,1,.36,1); }
+
+/* ---------- ABOUT ---------- */
+#about { position: relative; background: #fff; color: var(--blue); padding: clamp(64px,9vw,140px) 0; overflow: hidden; }
+#about > .wrap { position: relative; z-index: 1; width: 100%; }
+.about-bg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+/* light-mode starfield: no drift, only twinkle, and faint enough to stay behind the copy */
+.stars-about span { background: rgba(31,47,196,.30) !important; }
+.about-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: clamp(28px,5vw,72px); align-items: start; }
+/* type carries the full-height section instead of decoration */
+.about-grid h2 { font-weight: 700; font-size: clamp(32px,4.3vw,68px); line-height: 1.12; letter-spacing: -.03em; }
+.mono-copy { display: flex; flex-direction: column; gap: clamp(18px,2vw,26px); font-family: 'IBM Plex Mono', monospace; font-size: clamp(16px,1.35vw,20px); font-weight: 500; line-height: 1.7; color: var(--ink-2); max-width: 50ch; min-height: 14em; }
+
+/* ---------- SERVICES ---------- */
+#services { position: relative; background: var(--pink); color: var(--blue); padding: clamp(64px,9vw,140px) 0; }
+.services-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: clamp(28px,4vw,60px); }
+.services-head h2 { font-weight: 700; font-size: clamp(30px,3.6vw,54px); line-height: 1.2; letter-spacing: -.025em; }
+.label { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; }
+.services-list { border-bottom: 1px solid rgba(31,47,196,.3); }
+.service-row { position: relative; overflow: hidden; border-top: 1px solid rgba(31,47,196,.3); padding: clamp(20px,2.6vw,34px) 0; cursor: pointer; display: flex; flex-direction: column; gap: clamp(10px,1.4vw,18px); }
+.service-head { display: flex; align-items: baseline; gap: clamp(14px,2.4vw,34px); }
+.service-n { flex: 0 0 auto; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .16em; }
+.service-title-wrap { flex: 1 1 auto; display: flex; flex-wrap: wrap; align-items: baseline; gap: clamp(10px,2vw,26px); transition: transform .6s cubic-bezier(.22,1,.36,1); }
+.service-row:hover .service-title-wrap { transform: translateX(10px); }
+.service-title-wrap h3 { font-weight: 700; font-size: clamp(24px,3.4vw,46px); line-height: 1.12; letter-spacing: -.025em; }
+.alien-peek {
+  position: absolute; right: clamp(12px,2vw,40px); bottom: 0; display: flex; align-items: flex-end; gap: 10px; z-index: 2;
+  transform: translateY(104%); opacity: 0; transition: transform .7s cubic-bezier(.22,1,.36,1), opacity .5s ease; pointer-events: none;
+}
+.service-row.open .alien-peek { transform: translateY(18%); opacity: 1; }
+.speech-bubble {
+  position: relative; background: #fff; color: var(--blue); font-family: 'IBM Plex Mono', monospace;
+  font-size: 14px; font-weight: 600; padding: 11px 16px; border-radius: 14px; white-space: nowrap; margin-bottom: 26px;
+}
+.speech-bubble::after { content: ""; position: absolute; right: -7px; bottom: 12px; width: 14px; height: 14px; background: #fff; transform: rotate(45deg); border-radius: 3px; }
+.alien-peek img { width: clamp(58px,6vw,84px); display: block; }
+.service-body-wrap { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows .55s cubic-bezier(.22,1,.36,1), opacity .4s ease; }
+.service-row.open .service-body-wrap { grid-template-rows: 1fr; opacity: 1; }
+.service-body-inner { overflow: hidden; }
+.service-body-inner p { margin: 0 0 0 clamp(30px,5vw,66px); max-width: 56ch; font-family: 'IBM Plex Mono', monospace; font-size: clamp(15px,1.15vw,17px); font-weight: 500; line-height: 1.8; }
+
+/* ---------- WORK ---------- */
+#work { position: relative; background: #fff; color: var(--blue); padding: clamp(90px,10vw,160px) 0 clamp(96px,11vw,170px); overflow: hidden; }
+#work > .wrap { margin-bottom: clamp(40px,5vw,80px); }
+#work h2 { max-width: 20ch; font-weight: 700; font-size: clamp(30px,3.6vw,54px); line-height: 1.18; letter-spacing: -.025em; }
+.work-list { border-bottom: 1px solid rgba(31,47,196,.16); }
+.work-row {
+  position: relative; z-index: 1; border-top: 1px solid rgba(31,47,196,.16);
+  cursor: pointer; transition: background .5s ease; background: transparent;
+}
+.work-row:hover { background: var(--blue); z-index: 5; }
+/* the whole band is the link: the row's padding lives here, on the <a>, and the
+   side padding centres the content on --shell instead of a max-width + margin,
+   so there is no dead strip left to click on */
+.work-row-inner {
+  position: relative; width: 100%;
+  padding: clamp(34px,4.4vw,62px) max(var(--gutter), calc((100% - var(--shell)) / 2));
+  display: flex; align-items: center; gap: clamp(18px,4vw,64px);
+}
+.work-n { flex: 0 0 auto; width: clamp(28px,4vw,54px); font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 500; letter-spacing: .14em; color: var(--blue); transition: color .35s ease; }
+.work-name { flex: 1 1 auto; font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: clamp(22px,2.6vw,36px); line-height: 1.16; letter-spacing: -.02em; color: var(--blue); transition: transform .6s cubic-bezier(.22,1,.36,1), color .35s ease; }
+.work-end { flex: 0 0 auto; margin-left: auto; display: flex; align-items: center; gap: clamp(10px,1.2vw,18px); }
+.work-arrow { flex: 0 0 auto; font-size: clamp(17px,1.6vw,24px); line-height: 1; color: var(--ink-2); transition: transform .6s cubic-bezier(.22,1,.36,1), color .35s ease; }
+.work-row:hover .work-arrow { color: #fff; transform: translate(5px,-5px); }
+.work-meta { flex: 0 0 auto; text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2); transition: transform .6s cubic-bezier(.22,1,.36,1), color .35s ease; }
+.work-row:hover .work-name { transform: translateX(16px); }
+.work-row:hover .work-meta { transform: translateX(-8px); }
+.work-row:hover .work-n,
+.work-row:hover .work-name { color: #fff; }
+.work-row:hover .work-meta { color: rgba(255,255,255,.78); }
+
+.work-peek {
+  position: absolute; left: 46%; top: 50%; width: clamp(200px,24vw,340px); z-index: 3; pointer-events: none;
+  transform: translate3d(var(--px,0px), calc(-50% + 28px + var(--py,0px)), 0);
+  opacity: 0; transition: opacity .2s ease .12s;
+}
+.work-row:hover .work-peek { opacity: 1; transition: opacity .12s ease; }
+
+.work-peek-saucer-wrap {
+  position: absolute; left: 50%; top: -95%; width: 56%; margin-left: -28%; z-index: 2;
+  transform: translateY(-34px); opacity: 0;
+  transition: transform .4s cubic-bezier(.4,0,1,1) .12s, opacity .3s ease .12s;
+}
+.work-row:hover .work-peek-saucer-wrap {
+  transform: translateY(0); opacity: 1;
+  transition: transform .5s cubic-bezier(.22,1,.36,1) 0s, opacity .35s ease 0s;
+}
+.work-peek-saucer-wrap::after {
+  content: ""; position: absolute; left: 50%; bottom: 4%; width: 50%; height: 24%; margin-left: -25%;
+  background: radial-gradient(ellipse at center, rgba(254,181,234,.95), rgba(254,181,234,0) 70%);
+  filter: blur(6px); pointer-events: none;
+}
+.work-peek-saucer { width: 100%; display: block; animation: floaty 7s ease-in-out infinite; }
+
+.work-peek-beam {
+  position: absolute; left: 50%; top: -58%; width: 44%; height: 66%; margin-left: -22%; z-index: 1;
+  background: linear-gradient(180deg, rgba(254,181,234,.85) 0%, rgba(254,181,234,.45) 45%, rgba(254,181,234,0) 100%);
+  clip-path: polygon(40% 0, 60% 0, 100% 100%, 0 100%); filter: blur(3px); pointer-events: none;
+  transform-origin: top center; transform: scaleY(0); opacity: 0;
+  transition: transform .26s cubic-bezier(.4,0,1,1) .06s, opacity .22s ease .06s;
+}
+.work-row:hover .work-peek-beam {
+  transform: scaleY(1); opacity: 1;
+  transition: transform .34s ease-out .14s, opacity .3s ease .14s;
+}
+
+.work-peek-card {
+  position: relative; border-radius: 12px; overflow: hidden; box-shadow: 0 22px 50px rgba(31,47,196,.28);
+  animation: floaty 9s ease-in-out infinite;
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path .3s cubic-bezier(.4,0,1,1) 0s;
+}
+.work-row:hover .work-peek-card { clip-path: inset(0 0 0 0); transition: clip-path .7s cubic-bezier(.22,1,.36,1) .28s; }
+.work-peek-img {
+  width: 100%; aspect-ratio: 16/10; background-size: cover; background-position: center;
+  transform: scale(1.16); transform-origin: center; will-change: transform;
+  transition: transform .3s cubic-bezier(.4,0,1,1) 0s;
+}
+.work-row:hover .work-peek-img { transform: scale(1); transition: transform .7s cubic-bezier(.22,1,.36,1) .28s; }
+
+/* ---------- CASE STUDY ---------- */
+/* same shape as #hero: the image is the absolute backdrop and .nav rides over it
+   as the first in-flow child */
+.cs-hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background: var(--blue);
+  overflow: hidden;
+  color: #fff;
+}
+/* the pinned footer sits behind the page, so the content below the hero needs
+   an opaque ground of its own */
+.cs-body { position: relative; background: #fff; color: var(--blue); }
+
+/* the nav sits on an arbitrary project photo, so it carries its own soft
+   backdrop; tied to the nav box, it follows the links when they wrap on mobile */
+.cs-hero .nav {
+  background: linear-gradient(180deg, rgba(8,12,52,.66) 0%, rgba(8,12,52,.58) 62%, rgba(8,12,52,0) 100%);
+}
+
+.detail-image { position: absolute; inset: 0; z-index: 0; background: var(--pink); background-size: cover; background-position: center; }
+/* the top scrim keeps the white nav readable over light project images */
+.detail-image::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(180deg, rgba(0,0,0,.26) 0%, rgba(0,0,0,0) 24%),
+    linear-gradient(135deg, rgba(254,181,234,.18), transparent 45%);
+}
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+  overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+.detail-info { display: grid; grid-template-columns: minmax(260px,.8fr) minmax(320px,1fr); gap: clamp(32px,8vw,140px); align-items: start; padding-top: clamp(42px,6vw,88px); }
+.detail-intro { display: flex; flex-direction: column; align-items: flex-start; gap: clamp(22px,3vw,36px); }
+.detail-intro h2 { max-width: 12ch; font-size: clamp(44px,6vw,88px); line-height: .96; letter-spacing: -.055em; }
+.detail-description { max-width: 48ch; margin: 0; font-size: clamp(16px,1.3vw,20px); line-height: 1.75; color: var(--ink-2); }
+.detail-info .cta-pill { display: inline-flex; align-items: center; gap: 10px; }
+.detail-info .cta-pill span { font-size: 18px; line-height: 0; }
+.detail-gallery { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: clamp(14px,2vw,28px); padding-top: clamp(70px,10vw,150px); }
+/* projects without gallery images must not leave the padding behind as a gap */
+.detail-gallery:empty { display: none; }
+.detail-gallery-item { margin: 0; overflow: hidden; background: #f5f3f6; }
+.detail-gallery-item-wide { grid-column: 1 / -1; }
+.detail-gallery-item img { display: block; width: 100%; height: auto; transition: transform .7s cubic-bezier(.22,1,.36,1); }
+.detail-gallery-item:hover img { transform: scale(1.025); }
+.detail-related { position: relative; margin-top: clamp(100px,13vw,190px); padding: clamp(70px,9vw,130px) 0; background: #fff; color: var(--blue); overflow: hidden; }
+.detail-related-head { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; margin-bottom: clamp(40px,5vw,80px); }
+.detail-related-head > span { font-size: 11px; letter-spacing: .15em; text-transform: uppercase; color: var(--ink-2); }
+.detail-related-head h2 { max-width: 20ch; font-weight: 700; font-size: clamp(30px,3.6vw,54px); line-height: 1.18; letter-spacing: -.025em; }
+
+/* ---------- ABOUT ME ---------- */
+#alex { position: relative; min-height: 88svh; background: #fff; color: var(--blue); padding: clamp(64px,8vw,120px) 0; overflow: hidden; }
+.alex-bg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.stars-alex { animation: starFly 90s linear infinite; }
+.stars-alex span { background: rgba(31,47,196,.26) !important; }   /* white section: stars go blue */
+.alex-wrap { position: relative; z-index: 1; width: 100%; }
+.alex-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: clamp(32px,6vw,80px); align-items: center; }
+.alex-lead { display: flex; flex-direction: column; align-items: flex-start; gap: clamp(22px,2.6vw,34px); }
+.alex-hello { font-weight: 700; font-size: clamp(34px,5vw,80px); line-height: 1.08; letter-spacing: -.03em; color: var(--blue); }
+.alex-sequence {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .7s ease, transform .85s cubic-bezier(.22,1,.36,1);
+}
+#alex.in-view .alex-sequence { opacity: 1; transform: none; }
+#alex.in-view .alex-hello { transition-delay: 0ms; }
+#alex.in-view .alex-copy { transition-delay: 260ms; }
+#alex.in-view .cta-pill { transition-delay: 520ms; }
+.pink-ink { color: var(--pink); }
+/* brand pink is unreadable on white, so the accent line goes blue and heavier instead */
+#alex .pink-ink { color: var(--blue); font-weight: 600; }
+.cta-pill { align-self: flex-start; background: var(--pink); color: var(--blue); font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; padding: 15px 26px; border-radius: 999px; transition: transform .5s cubic-bezier(.22,1,.36,1), background .3s ease, color .3s ease; }
+.cta-pill:hover { background: var(--blue); color: #fff; transform: translateY(-4px); }
+#alex-copy { display: flex; flex-direction: column; gap: clamp(14px,1.4vw,20px); font-family: 'IBM Plex Mono', monospace; font-size: clamp(14px,1.05vw,16.5px); font-weight: 500; line-height: 1.75; max-width: 50ch; color: var(--ink-2); }
+
+/* three icons sit in a row just above the portrait; the middle one a touch higher */
+.alex-shot { position: relative; width: min(100%, 620px); margin-left: auto; }
+.alex-icons { display: none; }
+.alex-icon { display: block; width: clamp(44px,5.6vw,72px); color: var(--blue); }
+.alex-icon:nth-child(2) { margin-bottom: clamp(10px,1.8vw,24px); }
+.alex-icon svg { width: 100%; height: auto; display: block; }
+.alex-icon .ln { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.alex-icon .dot { fill: currentColor; }
+.alex-icon .fill-pink { fill: var(--pink); }
+
+.alex-photo { position: relative; width: 100%; overflow: visible; }
+/* origin sits on the clip's pivot (~52% across, ~9% down) so it pivots there */
+.alex-photo img { width: 100%; height: auto; display: block; transform-origin: 52% 9%; animation: idSwing 6s ease-in-out infinite; }
+
+/* ---------- FAQ ---------- */
+#faq { position: relative; background: var(--pink); color: var(--blue); padding: clamp(64px,9vw,140px) 0; }
+.faq-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(300px,1fr)); gap: clamp(32px,5vw,80px); align-items: start; }
+.faq-grid h2 { max-width: 18ch; font-weight: 700; font-size: clamp(30px,3.6vw,54px); line-height: 1.24; letter-spacing: -.02em; }
+.faq-item { border-top: 1px solid rgba(31,47,196,.28); padding: clamp(16px,2vw,22px) 0; }
+.faq-q { display: flex; align-items: center; gap: 16px; cursor: pointer; }
+.faq-n { flex: 0 0 auto; font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .12em; color: var(--ink-2); }
+.faq-q h3 { flex: 1; font-size: clamp(17px,1.35vw,21px); font-weight: 700; letter-spacing: -.01em; }
+/* pink on pink would vanish: the toggle inverts on the pink section */
+.faq-toggle { margin-left: auto; flex: 0 0 auto; width: 34px; height: 34px; border-radius: 50%; background: var(--blue); color: var(--pink); display: flex; align-items: center; justify-content: center; font-size: 20px; line-height: 1; transition: transform .5s cubic-bezier(.22,1,.36,1); }
+.faq-item.open .faq-toggle { transform: rotate(135deg); }
+.faq-a-wrap { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows .55s cubic-bezier(.22,1,.36,1), opacity .4s ease; }
+.faq-item.open .faq-a-wrap { grid-template-rows: 1fr; opacity: 1; }
+.faq-a-inner { overflow: hidden; }
+.faq-a-inner p { margin: 14px 0 0 34px; max-width: 54ch; font-family: 'IBM Plex Mono', monospace; font-size: clamp(15px,1.15vw,17px); font-weight: 500; line-height: 1.8; color: var(--ink-2); }
+
+/* ---------- CTA ---------- */
+/* white on purpose: #faq above it is pink and the footer below is blue */
+#cta { position: relative; background: #fff; color: var(--blue); padding: clamp(80px,11vw,160px) 0; overflow: hidden; }
+.cta-bg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+.stars-cta { animation: starFly 80s linear infinite; }
+.stars-cta span { background: rgba(31,47,196,.26) !important; }   /* white section: stars go blue */
+#cta > .wrap { position: relative; z-index: 1; }
+.cta-inner { display: flex; flex-direction: column; align-items: center; text-align: center; gap: clamp(26px,3.4vw,46px); }
+#cta h2 { font-weight: 700; font-size: clamp(32px,5vw,76px); line-height: 1.06; letter-spacing: -.035em; }
+/* .cta-pill defaults to flex-start; this one is centred under the heading */
+#cta .cta-pill { align-self: center; }
+
+/* ---------- FOOTER ---------- */
+/* a plain footer at the end of the page: no pinning, no spacer */
+.page { position: relative; }
+#contact {
+  background: var(--blue); color: #fff;
+  padding: clamp(52px,6.5vw,96px) var(--gutter) clamp(28px,3vw,44px);
+  display: flex; align-items: center; min-height: min(84svh, 760px);
+}
+.footer-inner { position: relative; z-index: 1; width: 100%; max-width: var(--shell); margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: clamp(16px,2.4vw,34px); }
+.footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: clamp(20px,3vw,48px); font-size: 16px; }
+.footer-links a { border-bottom: 1px solid rgba(255,255,255,.45); padding-bottom: 3px; }
+.footer-logo { position: relative; width: min(74%,620px); aspect-ratio: 475/351; margin: clamp(4px,1vw,12px) 0; }
+.footer-logo .letter { position: absolute; display: block; height: auto; transform-origin: 50% 100%; transition: transform .55s cubic-bezier(.22,1,.36,1); }
+.footer-logo .letter:hover { transform: translateY(-22px) rotate(-4deg) scale(1.05); }
+.footer-bottom { width: 100%; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; border-top: 1px solid rgba(255,255,255,.18); padding-top: clamp(20px,2.5vw,32px); font-size: 15px; color: rgba(255,255,255,.75); }
+.footer-bottom a { color: var(--pink); }
+
+/* ---------- keyframes ---------- */
+@keyframes ufoCross {
+  0%   { transform: translate3d(14%,-4%,0) rotate(0deg); }
+  16%  { transform: translate3d(-12%,3%,0) rotate(-5deg); }
+  34%  { transform: translate3d(-52%,6%,0) rotate(4deg); }
+  52%  { transform: translate3d(-96%,2%,0) rotate(-3deg); }
+  70%  { transform: translate3d(-44%,5%,0) rotate(-7deg); }
+  86%  { transform: translate3d(-6%,-2%,0) rotate(5deg); }
+  100% { transform: translate3d(14%,-4%,0) rotate(0deg); }
+}
+@keyframes ufoBob {
+  0%, 100% { transform: translateY(0) rotate(25deg) scale(1); }
+  50%      { transform: translateY(-16px) rotate(20deg) scale(1.03); }
+}
+@keyframes ufoGlow {
+  0%, 100% { opacity: .18; transform: scale(1); }
+  50%      { opacity: .42; transform: scale(1.12); }
+}
+@keyframes nebula {
+  0%, 100% { transform: translate3d(0,0,0) scale(1); opacity: .5; }
+  50%      { transform: translate3d(40px,-30px,0) scale(1.14); opacity: .85; }
+}
+@keyframes starFly {
+  from { transform: translate3d(0,0,0); }
+  to   { transform: translate3d(-50%,0,0); }
+}
+@keyframes twinkle {
+  0%, 100% { opacity: .15; }
+  50%      { opacity: .9; }
+}
+@keyframes beamFlicker {
+  0%, 100% { transform: scaleX(1); filter: blur(4px); }
+  50%      { transform: scaleX(1.06); filter: blur(6px); }
+}
+@keyframes orbitTurn {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+/* the card hangs from the clip at the top, so it swings around it */
+@keyframes idSwing {
+  0%, 100% { transform: rotate(-1.5deg); }
+  50%      { transform: rotate(1.5deg); }
+}
+@keyframes floaty {
+  0%, 100% { transform: translate3d(0,0,0) rotate(0deg); }
+  50%      { transform: translate3d(0,-14px,0) rotate(-.6deg); }
+}
+
+/* ---------- work: touch / narrow ---------- */
+@media (max-width: 720px) {
+  .alex-grid { grid-template-columns: 1fr; gap: clamp(28px,6vw,44px); }
+  .alex-shot { width: 100%; margin: 0; }
+}
+@media (max-width: 720px) {
+  /* no hamburger yet: the links drop to their own row instead of running off
+     the screen, so the logo and "let's launch" stay reachable */
+  .nav-inner { flex-wrap: wrap; gap: 16px; }
+  .logo img { width: 54px; }
+  .nav-links { order: 3; width: 100%; margin-left: 0; justify-content: space-between; gap: 12px; font-size: 14px; }
+  .nav-right { margin-left: auto; }
+  .detail-intro h2 { max-width: 12ch; font-size: clamp(46px,15vw,72px); }
+  .detail-info { grid-template-columns: 1fr; gap: 28px; padding-top: 34px; }
+  .detail-gallery { grid-template-columns: 1fr; padding-top: 64px; }
+  .detail-gallery-item-wide { grid-column: auto; }
+  .ufo-wrap { left: auto; right: -8%; top: clamp(-200px,-32vw,-104px); width: min(50%,260px); }
+  .work-peek { display: none; }
+  .work-row-inner { flex-wrap: wrap; align-items: baseline; column-gap: 14px; row-gap: 6px; }
+  .work-n { width: auto; }
+  .work-name { flex: 1 1 auto; min-width: 0; font-size: clamp(20px,5.6vw,30px); }
+  .work-end { flex: 1 1 100%; margin-left: 0; justify-content: space-between; width: 100%; }
+  .work-meta { text-align: left; font-size: 10.5px; }
+}
+@media (hover: none) {
+  .work-peek { display: none; }
+  .work-row:hover .work-name, .work-row:hover .work-meta { transform: none; }
+}
