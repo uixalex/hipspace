@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Project inquiry | Hipspace</title>
+<meta name="description" content="Start a project with Hipspace — branding, visual identity and web design." />
+<meta name="robots" content="index, follow" />
+<link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png" />
+<link rel="icon" href="assets/favicon-16.png" sizes="16x16" type="image/png" />
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+<link rel="manifest" href="site.webmanifest" />
+<meta name="theme-color" content="#1F2FC4" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<canvas id="cursor-canvas"></canvas>
+
+<div class="inquiry-page">
+  <section class="inquiry-hero" data-ink="pink">
+    <div class="inquiry-stars stars stars-far"></div>
+    <header class="nav">
+      <div class="nav-inner">
+        <a href="index.html" class="logo"><img src="assets/logo.png" alt="hip space" /></a>
+        <nav class="nav-links">
+          <a href="index.html#about">about</a>
+          <a href="index.html#services">services</a>
+          <a href="index.html#work">work</a>
+          <a href="index.html#blog">blog</a>
+        </nav>
+        <div class="nav-right"><a href="inquiry.html" class="nav-cta">let's launch</a></div>
+      </div>
+    </header>
+    <div class="inquiry-hero-copy">
+      <span class="inquiry-kicker">Project inquiry</span>
+      <h1>Let&rsquo;s talk about your project.</h1>
+      <p>Tell me a little about what you&rsquo;re building, what you need and where you&rsquo;re at. I&rsquo;ll review your inquiry and get back to you with the next steps.</p>
+    </div>
+  </section>
+
+  <main class="inquiry-main" data-ink="pink">
+    <form class="inquiry-form" id="project-inquiry" action="mailto:alex@hipspacestudio.com" method="post" enctype="text/plain">
+      <section class="form-block">
+        <span class="form-step">01 — Your details</span>
+        <h2>Let&rsquo;s start with the basics.</h2>
+        <div class="form-fields">
+          <div class="form-field"><label for="name">Name <span class="required">*</span></label><input id="name" name="name" type="text" placeholder="Your name" autocomplete="name" required /></div>
+          <div class="form-field"><label for="email">Email <span class="required">*</span></label><input id="email" name="email" type="email" placeholder="Your email" autocomplete="email" required /></div>
+          <div class="form-field full"><label for="company">Company / Brand</label><input id="company" name="company" type="text" placeholder="Company or brand name" autocomplete="organization" /></div>
+        </div>
+      </section>
+
+      <section class="form-block">
+        <span class="form-step">02 — What do you need?</span>
+        <h2>What can I help you with? <span class="required">*</span></h2>
+        <fieldset class="choice-grid">
+          <legend class="sr-only">Services needed</legend>
+          <label class="choice"><input type="checkbox" name="services" value="Branding &amp; Visual Identity" /><span class="choice-mark"></span>Branding &amp; Visual Identity</label>
+          <label class="choice"><input type="checkbox" name="services" value="Social &amp; Campaign Design" /><span class="choice-mark"></span>Social &amp; Campaign Design</label>
+          <label class="choice"><input type="checkbox" name="services" value="Web Design" /><span class="choice-mark"></span>Web Design</label>
+          <label class="choice"><input type="checkbox" name="services" value="Branding + Web Design" /><span class="choice-mark"></span>Branding + Web Design</label>
+          <label class="choice"><input type="checkbox" name="services" value="Something else" /><span class="choice-mark"></span>Something else</label>
+        </fieldset>
+      </section>
+
+      <section class="form-block">
+        <span class="form-step">03 — Tell me about the project</span>
+        <h2>What are you working on? <span class="required">*</span></h2>
+        <div class="form-fields"><div class="form-field full"><label class="sr-only" for="project">Tell me about your project</label><textarea id="project" name="project" placeholder="Tell me about your business, project, what you need and what you&rsquo;re hoping to achieve." required></textarea></div></div>
+      </section>
+
+      <section class="form-block">
+        <span class="form-step">04 — Where are you with the project?</span>
+        <h2>What stage are you at? <span class="required">*</span></h2>
+        <fieldset class="choice-grid">
+          <legend class="sr-only">Project stage</legend>
+          <label class="choice choice-radio"><input type="radio" name="stage" value="Just an idea" required /><span class="choice-mark"></span>Just an idea</label>
+          <label class="choice choice-radio"><input type="radio" name="stage" value="Starting a new brand" /><span class="choice-mark"></span>Starting a new brand</label>
+          <label class="choice choice-radio"><input type="radio" name="stage" value="Existing brand" /><span class="choice-mark"></span>Existing brand</label>
+          <label class="choice choice-radio"><input type="radio" name="stage" value="Rebranding / redesign" /><span class="choice-mark"></span>Rebranding / redesign</label>
+          <label class="choice choice-radio"><input type="radio" name="stage" value="Ready to launch" /><span class="choice-mark"></span>Ready to launch</label>
+          <label class="choice choice-radio"><input type="radio" name="stage" value="Other" /><span class="choice-mark"></span>Other</label>
+        </fieldset>
+      </section>
+
+      <section class="form-block">
+        <span class="form-step">05 — What are you looking for?</span>
+        <h2>What would you like this project to achieve?</h2>
+        <div class="form-fields"><div class="form-field full"><label class="sr-only" for="success">Project goals</label><textarea id="success" name="project goals" placeholder="What would success look like for you?"></textarea></div></div>
+      </section>
+
+      <section class="form-block">
+        <span class="form-step">06 — Timeline</span>
+        <h2>When would you like to start? <span class="required">*</span></h2>
+        <fieldset class="choice-grid">
+          <legend class="sr-only">Preferred start time</legend>
+          <label class="choice choice-radio"><input type="radio" name="timeline" value="As soon as possible" required /><span class="choice-mark"></span>As soon as possible</label>
+          <label class="choice choice-radio"><input type="radio" name="timeline" value="Within the next month" /><span class="choice-mark"></span>Within the next month</label>
+          <label class="choice choice-radio"><input type="radio" name="timeline" value="1–3 months" /><span class="choice-mark"></span>1–3 months</label>
+          <label class="choice choice-radio"><input type="radio" name="timeline" value="3+ months" /><span class="choice-mark"></span>3+ months</label>
+          <label class="choice choice-radio"><input type="radio" name="timeline" value="Just exploring for now" /><span class="choice-mark"></span>Just exploring for now</label>
+        </fieldset>
+      </section>
+      <div class="form-send"><button class="cta-pill" type="submit">Send inquiry &rarr;</button></div>
+    </form>
+
+    <section class="inquiry-next">
+      <div class="inquiry-next-inner">
+        <span class="inquiry-kicker">What happens next?</span>
+        <h2>Simple, clear next steps.</h2>
+        <div class="next-grid">
+          <article class="next-card"><span class="next-n">01</span><h3>I review your inquiry</h3><p>I&rsquo;ll look through the details and see if the project is a good fit.</p></article>
+          <article class="next-card"><span class="next-n">02</span><h3>We talk</h3><p>If it looks like a fit, we&rsquo;ll discuss your goals, scope and timeline.</p></article>
+          <article class="next-card"><span class="next-n">03</span><h3>You get a proposal</h3><p>I&rsquo;ll put together a tailored proposal based on what your project needs.</p></article>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div id="site-footer"></div>
+
+<script src="common.js"></script>
+<script>
+  // Make the group of service checkboxes required while retaining multi-select.
+  const services = [...document.querySelectorAll('input[name="services"]')];
+  const validateServices = () => services[0].setCustomValidity(services.some(input => input.checked) ? '' : 'Please select at least one service.');
+  services.forEach(input => input.addEventListener('change', validateServices));
+  const form = document.querySelector('.inquiry-form');
+  form.addEventListener('submit', (event) => {
+    validateServices();
+    if (!form.checkValidity()) {
+      event.preventDefault();
+      form.reportValidity();
+    }
+  });
+</script>
+</body>
+</html>

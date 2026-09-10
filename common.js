@@ -8,13 +8,12 @@
 // `hero`, `gallery` and `body` feed case-study.html, which is finished but not
 // linked from the site yet: those get filled in per project as case studies are written.
 const PROJECTS = [
-  { n: "01", name: "MOKE",          meta: "Web Design",           src: "assets/p-moke.webp",        site: "https://mokeinternational.com/",  gallery: [], body: "An electric-vehicle brand with a beach-club soul, brought to life through a playful and immersive website." },
-  { n: "02", name: "Moving Portal", meta: "Web Design",           src: "assets/moving-portal.webp", site: "https://themovingportal.co.uk/",  gallery: [], body: "" },
+  { n: "01", name: "MOKE",          meta: "Visual Identity & Web Design", src: "assets/p-moke.webp",        site: "https://mokeinternational.com/",  gallery: [], body: "An electric-vehicle brand with a beach-club soul, brought to life through a playful and immersive website." },
+  { n: "02", name: "Moving Portal", meta: "Visual Identity & Web Design", src: "assets/moving-portal.webp", site: "https://themovingportal.co.uk/",  gallery: [], body: "" },
   { n: "03", name: "Bytek",         meta: "Branding & Web Design", src: "assets/bytek.webp",         site: "https://bytek.ba/",               gallery: [], body: "" },
-  { n: "04", name: "Rello",         meta: "Web Design",           src: "assets/rello.webp",         site: "https://rello.co.uk/",            gallery: [], body: "" },
+  { n: "04", name: "Rello",         meta: "Visual Identity & Web Design", src: "assets/rello.webp",         site: "https://rello.co.uk/",            gallery: [], body: "" },
   { n: "05", name: "SHe2",          meta: "Branding & Web Design", src: "assets/p-wonderwomen.webp", site: "https://she2leadership.com/wp-content/uploads/2023/07/SHe2-Leadership-Brief-Overview.pdf", gallery: [], body: "A community platform for women in business, built around bold editorial type, generous space and a confident digital presence." },
-  { n: "06", name: "Quackables",    meta: "Web Design",           src: "assets/quackables.webp",    site: "https://quackables.vercel.app/",  gallery: [], body: "" },
-  { n: "07", name: "Teatar Dankan", meta: "Branding & Web Design", src: "assets/teatar-dankan.webp", site: "https://dankanbanjaluka.com/",    gallery: [], body: "" }
+  { n: "06", name: "Quackables",    meta: "Branding & Web Design", src: "assets/quackables.webp",    site: "https://quackables.vercel.app/",  gallery: [], body: "" }
 ];
 
 // Hover-only behaviour is gated on this: a touchscreen reports no hover, and
@@ -219,7 +218,7 @@ function renderFooter() {
 
         <div class="footer-bottom">
           <span>&copy; 2026 hipspacestudio</span>
-          <a href="mailto:alex@hipspacestudio.com">let's launch your brand</a>
+          <a href="inquiry.html">let's launch your brand</a>
         </div>
       </div>
     </footer>
@@ -238,7 +237,7 @@ function renderMobileNav() {
     .map(a => ({ href: a.getAttribute('href'), text: a.textContent.trim() }));
   if (!links.length) return;
 
-  const launch = document.querySelector('.nav-right a[href="#contact"]');
+  const launch = document.querySelector('.nav-right .nav-cta');
   const logo = document.querySelector('.logo');
   const logoHref = logo ? logo.getAttribute('href') : 'index.html';
 
