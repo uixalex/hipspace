@@ -70,7 +70,9 @@ function buildWorkRows(container, projects) {
     const row = document.createElement('div');
     row.className = 'work-row';
     // no image yet means no peek: the row still works, and dropping the file in
-    // later is all it takes to bring the saucer and card back
+    // later is all it takes to bring the saucer and card back.
+    // A real <img> rather than a background: it carries alt text, can turn up in
+    // image search, and lazy-loads instead of downloading behind an opacity:0 card.
     const peek = p.src ? `
         <div class="work-peek">
           <div class="work-peek-saucer-wrap">
@@ -78,7 +80,9 @@ function buildWorkRows(container, projects) {
           </div>
           <div class="work-peek-beam"></div>
           <div class="work-peek-card" style="animation-delay:${i * 0.4}s">
-            <div class="work-peek-img" style="background-image:url('${p.src}')"></div>
+            <img class="work-peek-img" src="${p.src}"
+                 alt="${p.name} — ${p.meta} by Hipspace"
+                 loading="lazy" decoding="async" />
           </div>
         </div>` : '';
     row.innerHTML = `
@@ -197,9 +201,9 @@ function renderFooter() {
     <footer id="contact" data-ink="pink">
       <div class="footer-inner">
         <div class="footer-links reveal">
-          <a href="mailto:hello@hipspace.studio">hello@hipspace.studio</a>
-          <a href="https://instagram.com">instagram</a>
-          <a href="https://linkedin.com">linkedin</a>
+          <a href="mailto:alex@hipspacestudio.com">alex@hipspacestudio.com</a>
+          <a href="https://www.instagram.com/hipspace.studio/" target="_blank" rel="noopener noreferrer">instagram</a>
+          <a href="https://www.linkedin.com/company/hipspace/" target="_blank" rel="noopener noreferrer">linkedin</a>
         </div>
 
         <div class="footer-logo">
@@ -215,7 +219,7 @@ function renderFooter() {
 
         <div class="footer-bottom">
           <span>&copy; 2026 hipspacestudio</span>
-          <a href="mailto:hello@hipspace.studio">let's launch your brand</a>
+          <a href="mailto:alex@hipspacestudio.com">let's launch your brand</a>
         </div>
       </div>
     </footer>

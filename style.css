@@ -351,7 +351,7 @@ body.menu-open { overflow: hidden; }
 }
 .work-row:hover .work-peek-card { clip-path: inset(0 0 0 0); transition: clip-path .7s cubic-bezier(.22,1,.36,1) .28s; }
 .work-peek-img {
-  width: 100%; aspect-ratio: 16/10; background-size: cover; background-position: center;
+  display: block; width: 100%; aspect-ratio: 16/10; object-fit: cover; object-position: center;
   transform: scale(1.16); transform-origin: center; will-change: transform;
   transition: transform .3s cubic-bezier(.4,0,1,1) 0s;
 }

@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# unlinked, and its case studies are not written yet
+Disallow: /case-study.html
+
+Sitemap: https://www.hipspacestudio.com/sitemap.xml
