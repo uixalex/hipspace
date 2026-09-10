@@ -13,7 +13,20 @@
 * { -webkit-tap-highlight-color: transparent; }
 /* limits the iOS rubber-band that exposes the blue body background at the ends */
 /* the page canvas itself, so an unpainted tile shows brand blue, never black */
-html { background: var(--blue); scroll-behavior: smooth; overscroll-behavior-y: none; }
+html {
+  background: var(--blue);
+  scroll-behavior: smooth;
+  overscroll-behavior-y: none;
+  /* proximity, never mandatory: #work and #faq are taller than the screen, and
+     mandatory would fight the reader halfway through the projects or the
+     questions. This way short sections click into place one at a time and the
+     tall ones are scrolled through freely, snapping only near their edges. */
+  scroll-snap-type: y proximity;
+}
+.page > section[id], #contact { scroll-snap-align: start; }
+/* an open accordion changes a section's height; without this the browser can
+   re-snap mid-animation and jump under the reader */
+.page > section[id] { scroll-snap-stop: normal; }
 body {
   margin: 0;
   background: var(--blue);
@@ -237,7 +250,9 @@ body.menu-open { overflow: hidden; }
 .ufo-bob.spin { transition: transform .7s cubic-bezier(.22,1,.36,1); }
 
 /* ---------- ABOUT ---------- */
-#about { position: relative; background: #fff; color: var(--blue); padding: clamp(64px,9vw,140px) 0; overflow: hidden; }
+/* min-height:auto beats .section-tall's 100svh, which held a heading and
+   three short paragraphs at a full screen tall */
+#about { position: relative; min-height: auto; background: #fff; color: var(--blue); padding: clamp(52px,6.5vw,96px) 0; overflow: hidden; }
 #about > .wrap { position: relative; z-index: 1; width: 100%; }
 .about-bg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
 /* light-mode starfield: no drift, only twinkle, and faint enough to stay behind the copy */
@@ -248,7 +263,7 @@ body.menu-open { overflow: hidden; }
 .mono-copy { display: flex; flex-direction: column; gap: clamp(18px,2vw,26px); font-family: 'IBM Plex Mono', monospace; font-size: clamp(16px,1.35vw,20px); font-weight: 500; line-height: 1.7; color: var(--ink-2); max-width: 50ch; min-height: 14em; }
 
 /* ---------- SERVICES ---------- */
-#services { position: relative; background: var(--pink); color: var(--blue); padding: clamp(64px,9vw,140px) 0; }
+#services { position: relative; background: var(--pink); color: var(--blue); padding: clamp(52px,6.5vw,96px) 0; }
 .services-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: clamp(28px,4vw,60px); }
 .services-head h2 { font-weight: 700; font-size: clamp(30px,3.6vw,54px); line-height: 1.2; letter-spacing: -.025em; }
 .label { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; }
@@ -279,7 +294,7 @@ body.menu-open { overflow: hidden; }
 .service-body-inner p { margin: 0 0 0 clamp(30px,5vw,66px); max-width: 56ch; font-family: 'IBM Plex Mono', monospace; font-size: clamp(15px,1.15vw,17px); font-weight: 500; line-height: 1.8; }
 
 /* ---------- WORK ---------- */
-#work { position: relative; background: #fff; color: var(--blue); padding: clamp(90px,10vw,160px) 0 clamp(56px,6.5vw,104px); overflow: hidden; }
+#work { position: relative; background: #fff; color: var(--blue); padding: clamp(56px,7vw,104px) 0 clamp(48px,5.5vw,84px); overflow: hidden; }
 #work > .wrap { margin-bottom: clamp(40px,5vw,80px); }
 #work h2 { max-width: 20ch; font-weight: 700; font-size: clamp(30px,3.6vw,54px); line-height: 1.18; letter-spacing: -.025em; }
 .work-list { border-bottom: 1px solid rgba(31,47,196,.16); }
@@ -293,7 +308,7 @@ body.menu-open { overflow: hidden; }
    so there is no dead strip left to click on */
 .work-row-inner {
   position: relative; width: 100%;
-  padding: clamp(34px,4.4vw,62px) max(var(--gutter), calc((100% - var(--shell)) / 2));
+  padding: clamp(26px,3.2vw,44px) max(var(--gutter), calc((100% - var(--shell)) / 2));
   display: flex; align-items: center; gap: clamp(18px,4vw,64px);
 }
 .work-n { flex: 0 0 auto; width: clamp(28px,4vw,54px); font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 500; letter-spacing: .14em; color: var(--blue); transition: color .35s ease; }
@@ -413,7 +428,7 @@ body.menu-open { overflow: hidden; }
 /* ---------- ABOUT ME ---------- */
 /* min-height:auto beats .section-tall 100svh, which was centring the content
    in a full-height box and leaving the gap above the heading */
-#alex { position: relative; min-height: auto; background: #fff; color: var(--blue); padding: clamp(44px,5.5vw,84px) 0 clamp(56px,7vw,104px); overflow: hidden; }
+#alex { position: relative; min-height: auto; background: #fff; color: var(--blue); padding: clamp(40px,5vw,72px) 0 clamp(44px,5.5vw,80px); overflow: hidden; }
 .alex-bg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
 .stars-alex { animation: starFly 90s linear infinite; }
 .stars-alex span { background: rgba(31,47,196,.26) !important; }   /* white section: stars go blue */
@@ -458,7 +473,7 @@ body.menu-open { overflow: hidden; }
 .alex-photo img { width: 100%; height: auto; display: block; transform-origin: 52% 9%; animation: idSwing 6s ease-in-out infinite; }
 
 /* ---------- FAQ ---------- */
-#faq { position: relative; background: var(--pink); color: var(--blue); padding: clamp(64px,9vw,140px) 0; }
+#faq { position: relative; background: var(--pink); color: var(--blue); padding: clamp(52px,6.5vw,96px) 0; }
 .faq-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(300px,1fr)); gap: clamp(32px,5vw,80px); align-items: start; }
 .faq-grid h2 { max-width: 18ch; font-weight: 700; font-size: clamp(30px,3.6vw,54px); line-height: 1.24; letter-spacing: -.02em; }
 .faq-item { border-top: 1px solid rgba(31,47,196,.28); }
@@ -477,7 +492,7 @@ body.menu-open { overflow: hidden; }
 
 /* ---------- CTA ---------- */
 /* white on purpose: #faq above it is pink and the footer below is blue */
-#cta { position: relative; background: #fff; color: var(--blue); padding: clamp(80px,11vw,160px) 0; overflow: hidden; }
+#cta { position: relative; background: #fff; color: var(--blue); padding: clamp(56px,7vw,100px) 0; overflow: hidden; }
 .cta-bg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
 .stars-cta { animation: starFly 80s linear infinite; }
 .stars-cta span { background: rgba(31,47,196,.26) !important; }   /* white section: stars go blue */
@@ -493,7 +508,7 @@ body.menu-open { overflow: hidden; }
 #contact {
   background: var(--blue); color: #fff;
   padding: clamp(52px,6.5vw,96px) var(--gutter) clamp(28px,3vw,44px);
-  display: flex; align-items: center; min-height: min(84svh, 760px);
+  display: flex; align-items: center; min-height: min(70svh, 640px);
 }
 .footer-inner { position: relative; z-index: 1; width: 100%; max-width: var(--shell); margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: clamp(16px,2.4vw,34px); }
 .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: clamp(20px,3vw,48px); font-size: 16px; }
