@@ -432,14 +432,15 @@ body.menu-open { overflow: hidden; }
 #alex.in-view:not(.seq-done) .alex-hello { transition-delay: 0ms; }
 #alex.in-view:not(.seq-done) .alex-copy { transition-delay: 260ms; }
 #alex.in-view:not(.seq-done) .cta-pill { transition-delay: 520ms; }
+/* the entrance rule above sets transform:none at (1,2,0) and was silently
+   cancelling the hover lift, which only scores (0,2,0) */
+#alex.in-view .cta-pill:hover { transform: translateY(-4px); }
 .pink-ink { color: var(--pink); }
 /* brand pink is unreadable on white, so the accent line goes blue and heavier instead */
 #alex .pink-ink { color: var(--blue); font-weight: 600; }
-.cta-pill { align-self: flex-start; background: var(--pink); color: var(--blue); font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; padding: 15px 26px; border-radius: 999px; transition: transform .5s cubic-bezier(.22,1,.36,1), background .3s ease, color .3s ease; }
-.cta-pill:hover { background: var(--blue); color: #fff; transform: translateY(-4px); }
+.cta-pill { align-self: flex-start; background: var(--blue); color: #fff; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; padding: 15px 26px; border-radius: 999px; transition: transform .5s cubic-bezier(.22,1,.36,1), background .3s ease, color .3s ease; }
+.cta-pill:hover { background: var(--pink); color: var(--blue); transform: translateY(-4px); }
 /* the About Me card is blue, so this one runs the palette the other way */
-#alex .cta-pill { background: var(--blue); color: #fff; }
-#alex .cta-pill:hover { background: var(--pink); color: var(--blue); }
 #alex-copy { display: flex; flex-direction: column; gap: clamp(14px,1.4vw,20px); font-family: 'IBM Plex Mono', monospace; font-size: clamp(14px,1.05vw,16.5px); font-weight: 500; line-height: 1.75; max-width: 50ch; color: var(--ink-2); }
 
 /* three icons sit in a row just above the portrait; the middle one a touch higher */
@@ -541,8 +542,7 @@ body.menu-open { overflow: hidden; }
 .choice-radio .choice-mark { border-radius: 50%; }
 .choice-radio .choice-mark::after { border-radius: 50%; }
 .form-send { padding-top: clamp(34px,4vw,52px); }
-.form-send .cta-pill { border: 0; background: var(--blue); color: #fff; cursor: inherit; }
-.form-send .cta-pill:hover { background: var(--pink); color: var(--blue); }
+.form-send .cta-pill { border: 0; cursor: inherit; }
 .form-send .cta-pill[disabled] { opacity: .6; }
 .form-status { margin-top: 18px; font-family: "IBM Plex Mono", monospace; font-size: 14px; line-height: 1.6; color: var(--ink-2); }
 .form-status.is-ok { color: var(--blue); font-weight: 600; }
@@ -660,8 +660,7 @@ body.menu-open { overflow: hidden; }
   .work-row:hover .work-n, .work-row:hover .work-name { color: var(--blue); }
   .work-row:hover .work-meta, .work-row:hover .work-arrow { color: var(--ink-2); }
   .work-row:hover .work-arrow { transform: none; }
-  .cta-pill:hover { background: var(--pink); color: var(--blue); transform: none; }
-  #alex .cta-pill:hover { background: var(--blue); color: #fff; }
+  .cta-pill:hover { background: var(--blue); color: #fff; transform: none; }
   .detail-related-card:hover .detail-related-image { transform: none; }
   .footer-logo .letter:hover { transform: none; }
   .beam-toggle:hover { border-color: rgba(255,255,255,.45); }
