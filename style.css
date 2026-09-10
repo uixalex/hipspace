@@ -12,7 +12,8 @@
    ring is untouched, only this highlight goes */
 * { -webkit-tap-highlight-color: transparent; }
 /* limits the iOS rubber-band that exposes the blue body background at the ends */
-html { scroll-behavior: smooth; overscroll-behavior-y: none; }
+/* the page canvas itself, so an unpainted tile shows brand blue, never black */
+html { background: var(--blue); scroll-behavior: smooth; overscroll-behavior-y: none; }
 body {
   margin: 0;
   background: var(--blue);
@@ -606,6 +607,13 @@ body.menu-open { overflow: hidden; }
   .detail-related-card:hover .detail-related-image { transform: none; }
   .footer-logo .letter:hover { transform: none; }
   .beam-toggle:hover { border-color: rgba(255,255,255,.45); }
+
+  /* WebKit gives every filtered / will-change element its own layer, and those
+     are what mispaint on first render. The nebulas are radial gradients that
+     already fade to nothing, so the blur is barely visible, and a plain
+     translate does not need a will-change hint. Desktop keeps both. */
+  .nebula { filter: none; }
+  .stars { will-change: auto; }
 
   /* a brief press state replaces the hover feedback a finger cannot get */
   .work-row:active { background: var(--blue); }
