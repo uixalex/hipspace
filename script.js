@@ -45,11 +45,14 @@ function buildStars(el, count, minSize, maxSize, dim) {
   }
   el.appendChild(frag);
 }
-buildStars(document.querySelector('.stars-far'), 90, 1, 1.6, true);
-buildStars(document.querySelector('.stars-near'), 45, 1.6, 2.6, false);
-buildStars(document.querySelector('.stars-alex'), 70, 1, 1.8, true);
-buildStars(document.querySelector('.stars-about'), 60, 1, 1.8, true);
-buildStars(document.querySelector('.stars-cta'), 50, 1, 1.8, true);
+// every star is cloned for the seamless loop, so these counts double in the DOM
+// and each one carries an infinite twinkle animation: halved on touch
+const S = CAN_HOVER ? 1 : 0.5;
+buildStars(document.querySelector('.stars-far'), 90 * S, 1, 1.6, true);
+buildStars(document.querySelector('.stars-near'), 45 * S, 1.6, 2.6, false);
+buildStars(document.querySelector('.stars-alex'), 70 * S, 1, 1.8, true);
+buildStars(document.querySelector('.stars-about'), 60 * S, 1, 1.8, true);
+buildStars(document.querySelector('.stars-cta'), 50 * S, 1, 1.8, true);
 
 // ---------- build services ----------
 const servicesList = document.getElementById('services-list');
@@ -67,15 +70,25 @@ SERVICES.forEach((s, i) => {
     </div>
     <div class="service-body-wrap"><div class="service-body-inner"><p>${s.body}</p></div></div>
   `;
+  const wrap = row.querySelector('.service-body-wrap');
+  const setOpen = (open) => {
+    row.classList.toggle('open', open);
+    setPanel(wrap, open);
+  };
   const toggle = () => {
     const willOpen = !row.classList.contains('open');
-    document.querySelectorAll('.service-row.open').forEach(r => r !== row && r.classList.remove('open'));
-    row.classList.toggle('open', willOpen);
+    // only one open at a time, and the others have to collapse their panel too
+    document.querySelectorAll('.service-row.open').forEach(r => {
+      if (r === row) return;
+      r.classList.remove('open');
+      setPanel(r.querySelector('.service-body-wrap'), false);
+    });
+    setOpen(willOpen);
   };
   row.addEventListener('click', toggle);
   if (CAN_HOVER) {
-    row.addEventListener('mouseenter', () => row.classList.add('open'));
-    row.addEventListener('mouseleave', () => row.classList.remove('open'));
+    row.addEventListener('mouseenter', () => setOpen(true));
+    row.addEventListener('mouseleave', () => setOpen(false));
   }
   servicesList.appendChild(row);
 });
@@ -98,7 +111,11 @@ FAQS.forEach((f, i) => {
     <div class="faq-a-wrap"><div class="faq-a-inner"><p>${f.a}</p></div></div>
   `;
   const q = item.querySelector(".faq-q");
-  const open = (willOpen) => item.classList.toggle("open", willOpen);
+  const wrap = item.querySelector('.faq-a-wrap');
+  const open = (willOpen) => {
+    item.classList.toggle("open", willOpen);
+    setPanel(wrap, willOpen);
+  };
   q.addEventListener('click', () => open(!item.classList.contains('open')));
   if (CAN_HOVER) {
     item.addEventListener('mouseenter', () => open(true));
@@ -148,15 +165,28 @@ let lastUfoPos = null;
 resizeCanvas(trailCanvas, trailCtx);
 window.addEventListener('resize', () => resizeCanvas(trailCanvas, trailCtx));
 
+// A phone does not need 2200 radial-gradient fills a frame to sell a dust trail.
+const TRAIL_MAX = CAN_HOVER ? 2200 : 300;
+
+// The loop used to run for the life of the page, redrawing the hero long after
+// it had been scrolled away. It now only runs while the hero is on screen.
+let trailRaf = null;
 function tick(t) {
-  requestAnimationFrame(tick);
+  trailRaf = requestAnimationFrame(tick);
   const cr = trailCanvas.getBoundingClientRect();
   const ur = ufoImg.getBoundingClientRect();
   const p = { x: ur.left - cr.left + ur.width * 0.5, y: ur.top - cr.top + ur.height * 0.72 };
   emit(trailPuffs, p, lastUfoPos, t, 34, 0.22, '254,181,234');
   lastUfoPos = p;
-  if (trailPuffs.length > 2200) trailPuffs.splice(0, trailPuffs.length - 2200);
+  if (trailPuffs.length > TRAIL_MAX) trailPuffs.splice(0, trailPuffs.length - TRAIL_MAX);
   paint(trailCtx, trailCanvas, trailPuffs, t, 9000, 3200);
   trailPuffs = trailPuffs.filter(q => t - q.born <= 9000);
 }
-requestAnimationFrame(tick);
+new IntersectionObserver(([e]) => {
+  if (e.isIntersecting) {
+    if (trailRaf === null) { lastUfoPos = null; trailRaf = requestAnimationFrame(tick); }
+  } else if (trailRaf !== null) {
+    cancelAnimationFrame(trailRaf);
+    trailRaf = null;
+  }
+}).observe(hero);

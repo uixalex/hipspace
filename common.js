@@ -157,6 +157,36 @@ function attachPeekParallax(row) {
   });
 }
 
+// ---------- accordion panels ----------
+// height: auto cannot be animated, so the open height is measured and set in px,
+// then swapped to auto once the transition lands (so the panel still reflows if
+// the window is resized). Closing goes back to px first, or there is nothing to
+// animate from.
+function setPanel(wrap, open) {
+  if (!wrap) return;
+  const inner = wrap.firstElementChild;
+  if (!inner) return;
+
+  if (open) {
+    wrap.style.height = inner.offsetHeight + 'px';
+    clearTimeout(wrap._panelT);
+    wrap._panelT = setTimeout(() => {
+      if (wrap.dataset.open === '1') wrap.style.height = 'auto';
+    }, 400);
+    wrap.dataset.open = '1';
+  } else {
+    // from auto there is no start value to ease out of: pin the current height,
+    // force a reflow, then collapse
+    if (wrap.style.height === 'auto') {
+      wrap.style.height = inner.offsetHeight + 'px';
+      void wrap.offsetHeight;
+    }
+    clearTimeout(wrap._panelT);
+    wrap.dataset.open = '0';
+    requestAnimationFrame(() => { wrap.style.height = '0px'; });
+  }
+}
+
 // ---------- footer ----------
 // One source of truth: every page carries an empty #site-footer and gets the
 // markup from here, so a new page never has to copy it.
