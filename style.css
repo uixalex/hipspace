@@ -17,16 +17,7 @@ html {
   background: var(--blue);
   scroll-behavior: smooth;
   overscroll-behavior-y: none;
-  /* proximity, never mandatory: #work and #faq are taller than the screen, and
-     mandatory would fight the reader halfway through the projects or the
-     questions. This way short sections click into place one at a time and the
-     tall ones are scrolled through freely, snapping only near their edges. */
-  scroll-snap-type: y proximity;
 }
-.page > section[id], #contact { scroll-snap-align: start; }
-/* an open accordion changes a section's height; without this the browser can
-   re-snap mid-animation and jump under the reader */
-.page > section[id] { scroll-snap-stop: normal; }
 body {
   margin: 0;
   background: var(--blue);
@@ -525,12 +516,14 @@ body.menu-open { overflow: hidden; }
 .inquiry-hero .nav { position: relative; }
 .inquiry-hero .nav-right > a { color: #fff; }
 .inquiry-stars { position: absolute; inset: 0; opacity: .9; }
-.inquiry-hero-copy { position: relative; z-index: 1; max-width: var(--shell); margin: 0 auto; padding: clamp(56px,8vw,118px) var(--gutter) clamp(76px,10vw,132px); }
+/* same maths as .wrap: the gutter has to live inside max-width or the content
+   ends up one gutter further in than the logo above it */
+.inquiry-hero-copy { position: relative; z-index: 1; max-width: calc(var(--shell) + var(--gutter) * 2); margin: 0 auto; padding: clamp(56px,8vw,118px) var(--gutter) clamp(76px,10vw,132px); }
 .inquiry-kicker, .form-step, .inquiry-note, .next-n { font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
 .inquiry-kicker { color: var(--pink); }
 .inquiry-hero h1 { max-width: 12ch; margin-top: clamp(18px,2.4vw,30px); font-size: clamp(46px,7vw,96px); line-height: .98; letter-spacing: -.055em; }
 .inquiry-hero p { max-width: 58ch; margin-top: clamp(22px,3vw,34px); font-family: 'IBM Plex Mono', monospace; font-size: clamp(14px,1.15vw,17px); line-height: 1.7; color: rgba(255,255,255,.82); }
-.inquiry-main { position: relative; z-index: 1; max-width: var(--shell); margin: 0 auto; padding: clamp(64px,9vw,130px) var(--gutter) 0; }
+.inquiry-main { position: relative; z-index: 1; max-width: calc(var(--shell) + var(--gutter) * 2); margin: 0 auto; padding: clamp(64px,9vw,130px) var(--gutter) 0; }
 .inquiry-form { max-width: 900px; }
 .form-block { padding: clamp(32px,4.5vw,58px) 0; border-top: 1px solid rgba(31,47,196,.22); }
 .form-block:first-child { padding-top: 0; border-top: 0; }

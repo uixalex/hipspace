@@ -4,6 +4,9 @@
 
 
 // CAN_HOVER comes from common.js
+// How long the pointer has to settle on a row before it opens. Anything above
+// zero is enough to stop a list shifting under a pointer on its way past.
+const HOVER_INTENT = 110;
 
 // ---------- build starfield ----------
 // Each layer is 200% wide: stars are placed in the left half and cloned into the
@@ -60,8 +63,18 @@ document.querySelectorAll('.service-row').forEach(row => {
   };
   row.addEventListener('click', toggle);
   if (CAN_HOVER) {
-    row.addEventListener('mouseenter', () => setOpen(true));
-    row.addEventListener('mouseleave', () => setOpen(false));
+    // Hover opens, but only once the pointer settles. Opening the instant it
+    // crossed an item meant reaching for the fourth pushed everything down as
+    // you passed the second, and the list ran away from you.
+    let intent;
+    row.addEventListener('mouseenter', () => {
+      clearTimeout(intent);
+      intent = setTimeout(() => setOpen(true), HOVER_INTENT);
+    });
+    row.addEventListener('mouseleave', () => {
+      clearTimeout(intent);
+      setOpen(false);
+    });
   }
 });
 
@@ -79,8 +92,15 @@ document.querySelectorAll('.faq-item').forEach(item => {
   };
   q.addEventListener('click', () => open(!item.classList.contains('open')));
   if (CAN_HOVER) {
-    item.addEventListener('mouseenter', () => open(true));
-    item.addEventListener('mouseleave', () => open(false));
+    let intent;
+    item.addEventListener('mouseenter', () => {
+      clearTimeout(intent);
+      intent = setTimeout(() => open(true), HOVER_INTENT);
+    });
+    item.addEventListener('mouseleave', () => {
+      clearTimeout(intent);
+      open(false);
+    });
   }
 });
 
