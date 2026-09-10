@@ -543,6 +543,9 @@ body.menu-open { overflow: hidden; }
 .form-send { padding-top: clamp(34px,4vw,52px); }
 .form-send .cta-pill { border: 0; background: var(--blue); color: #fff; cursor: inherit; }
 .form-send .cta-pill:hover { background: var(--pink); color: var(--blue); }
+.form-send .cta-pill[disabled] { opacity: .6; }
+.form-status { margin-top: 18px; font-family: "IBM Plex Mono", monospace; font-size: 14px; line-height: 1.6; color: var(--ink-2); }
+.form-status.is-ok { color: var(--blue); font-weight: 600; }
 .inquiry-next { width: 100vw; margin-top: clamp(72px,9vw,120px); margin-inline: calc(50% - 50vw); background: var(--pink); color: var(--blue); }
 .inquiry-next-inner { max-width: var(--shell); margin: 0 auto; padding: clamp(68px,9vw,120px) var(--gutter); }
 .inquiry-next .inquiry-kicker { color: var(--blue); }
