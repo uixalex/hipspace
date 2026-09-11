@@ -243,11 +243,8 @@ body.menu-open { overflow: hidden; }
 /* ---------- ABOUT ---------- */
 /* min-height:auto beats .section-tall's 100svh, which held a heading and
    three short paragraphs at a full screen tall */
-#about { position: relative; min-height: auto; background: #fff; color: var(--blue); padding: clamp(52px,6.5vw,96px) 0; overflow: hidden; }
+#about { position: relative; min-height: auto; background: var(--cream); color: var(--blue); padding: clamp(52px,6.5vw,96px) 0; overflow: hidden; }
 #about > .wrap { position: relative; z-index: 1; width: 100%; }
-.about-bg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
-/* light-mode starfield: no drift, only twinkle, and faint enough to stay behind the copy */
-.stars-about span { background: rgba(31,47,196,.30) !important; }
 .about-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: clamp(28px,5vw,72px); align-items: start; }
 /* type carries the full-height section instead of decoration */
 .about-grid h2 { font-weight: 700; font-size: clamp(32px,4.3vw,68px); line-height: 1.12; letter-spacing: -.03em; }
@@ -285,7 +282,7 @@ body.menu-open { overflow: hidden; }
 .service-body-inner p { margin: 0 0 0 clamp(30px,5vw,66px); max-width: 56ch; font-family: 'IBM Plex Mono', monospace; font-size: clamp(15px,1.15vw,17px); font-weight: 500; line-height: 1.8; }
 
 /* ---------- WORK ---------- */
-#work { position: relative; background: #fff; color: var(--blue); padding: clamp(56px,7vw,104px) 0 clamp(48px,5.5vw,84px); overflow: hidden; }
+#work { position: relative; background: var(--cream); color: var(--blue); padding: clamp(56px,7vw,104px) 0 clamp(48px,5.5vw,84px); overflow: hidden; }
 #work > .wrap { margin-bottom: clamp(40px,5vw,80px); }
 #work h2 { max-width: 20ch; font-weight: 700; font-size: clamp(30px,3.6vw,54px); line-height: 1.18; letter-spacing: -.025em; }
 .work-list { border-bottom: 1px solid rgba(31,47,196,.16); }
@@ -419,10 +416,7 @@ body.menu-open { overflow: hidden; }
 /* ---------- ABOUT ME ---------- */
 /* min-height:auto beats .section-tall 100svh, which was centring the content
    in a full-height box and leaving the gap above the heading */
-#alex { position: relative; min-height: auto; background: #fff; color: var(--blue); padding: clamp(40px,5vw,72px) 0 clamp(44px,5.5vw,80px); overflow: hidden; }
-.alex-bg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
-.stars-alex { animation: starFly 90s linear infinite; }
-.stars-alex span { background: rgba(31,47,196,.26) !important; }   /* white section: stars go blue */
+#alex { position: relative; min-height: auto; background: var(--cream); color: var(--blue); padding: clamp(56px,6.5vw,100px) 0 clamp(64px,7vw,112px); overflow: hidden; }
 .alex-wrap { position: relative; z-index: 1; width: 100%; }
 .alex-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: clamp(32px,6vw,80px); align-items: center; }
 .alex-lead { display: flex; flex-direction: column; align-items: flex-start; gap: clamp(22px,2.6vw,34px); }
@@ -450,7 +444,17 @@ body.menu-open { overflow: hidden; }
 #alex-copy { display: flex; flex-direction: column; gap: clamp(14px,1.4vw,20px); font-family: 'IBM Plex Mono', monospace; font-size: clamp(14px,1.05vw,16.5px); font-weight: 500; line-height: 1.75; max-width: 50ch; color: var(--ink-2); }
 
 /* three icons sit in a row just above the portrait; the middle one a touch higher */
-.alex-shot { position: relative; width: min(100%, 620px); margin-left: auto; }
+/* capped below the portrait's natural 465px so it never upscales and blurs.
+   the fixed right margin is what makes the drift responsive: the auto left
+   margin eats whatever slack is left over, so the photo hugs the copy on a
+   narrow laptop and slides further right as the column grows. it can never
+   overflow -- once the slack runs out the auto margin simply resolves to 0. */
+.alex-shot { position: relative; width: min(100%, 400px); margin-left: auto; margin-right: 130px; }
+/* laptop band: the column is tight enough here that the full 400px crowds the
+   copy, so the photo comes down a notch. full size returns above 1500. */
+@media (min-width: 1140px) and (max-width: 1500px) {
+  .alex-shot { width: min(100%, 360px); }
+}
 .alex-icons { display: none; }
 .alex-icon { display: block; width: clamp(44px,5.6vw,72px); color: var(--blue); }
 .alex-icon:nth-child(2) { margin-bottom: clamp(10px,1.8vw,24px); }
@@ -460,8 +464,7 @@ body.menu-open { overflow: hidden; }
 .alex-icon .fill-pink { fill: var(--pink); }
 
 .alex-photo { position: relative; width: 100%; overflow: visible; }
-/* origin sits on the clip's pivot (~52% across, ~9% down) so it pivots there */
-.alex-photo img { width: 100%; height: auto; display: block; transform-origin: 52% 9%; animation: idSwing 6s ease-in-out infinite; }
+.alex-photo img { width: 100%; height: auto; display: block; }
 
 /* ---------- FAQ ---------- */
 #faq { position: relative; background: var(--pink); color: var(--blue); padding: clamp(52px,6.5vw,96px) 0; }
@@ -482,11 +485,8 @@ body.menu-open { overflow: hidden; }
 .faq-a-inner p { margin: 0 0 clamp(18px,2.4vw,26px) 34px; max-width: 54ch; font-family: 'IBM Plex Mono', monospace; font-size: clamp(15px,1.15vw,17px); font-weight: 500; line-height: 1.8; color: var(--ink-2); }
 
 /* ---------- CTA ---------- */
-/* white on purpose: #faq above it is pink and the footer below is blue */
-#cta { position: relative; background: #fff; color: var(--blue); padding: clamp(56px,7vw,100px) 0; overflow: hidden; }
-.cta-bg { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
-.stars-cta { animation: starFly 80s linear infinite; }
-.stars-cta span { background: rgba(31,47,196,.26) !important; }   /* white section: stars go blue */
+/* light on purpose: #faq above it is pink and the footer below is blue */
+#cta { position: relative; background: var(--cream); color: var(--blue); padding: clamp(72px,8.5vw,132px) 0; overflow: hidden; }
 #cta > .wrap { position: relative; z-index: 1; }
 .cta-inner { display: flex; flex-direction: column; align-items: center; text-align: center; gap: clamp(26px,3.4vw,46px); }
 #cta h2 { font-weight: 700; font-size: clamp(32px,5vw,76px); line-height: 1.06; letter-spacing: -.035em; }
@@ -607,11 +607,6 @@ body.menu-open { overflow: hidden; }
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
-/* the card hangs from the clip at the top, so it swings around it */
-@keyframes idSwing {
-  0%, 100% { transform: rotate(-1.5deg); }
-  50%      { transform: rotate(1.5deg); }
-}
 @keyframes floaty {
   0%, 100% { transform: translate3d(0,0,0) rotate(0deg); }
   50%      { transform: translate3d(0,-14px,0) rotate(-.6deg); }
@@ -620,7 +615,7 @@ body.menu-open { overflow: hidden; }
 /* ---------- work: touch / narrow ---------- */
 @media (max-width: 720px) {
   .alex-grid { grid-template-columns: 1fr; gap: clamp(28px,6vw,44px); }
-  .alex-shot { width: 100%; margin: 0; }
+  .alex-shot { width: min(100%, 340px); margin: 0; }
 }
 @media (max-width: 720px) {
   /* links and CTA move into the burger overlay */

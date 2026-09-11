@@ -38,9 +38,6 @@ function buildStars(el, count, minSize, maxSize, dim) {
 const S = CAN_HOVER ? 1 : 0.5;
 buildStars(document.querySelector('.stars-far'), 90 * S, 1, 1.6, true);
 buildStars(document.querySelector('.stars-near'), 45 * S, 1.6, 2.6, false);
-buildStars(document.querySelector('.stars-alex'), 70 * S, 1, 1.8, true);
-buildStars(document.querySelector('.stars-about'), 60 * S, 1, 1.8, true);
-buildStars(document.querySelector('.stars-cta'), 50 * S, 1, 1.8, true);
 
 // ---------- services ----------
 // The rows live in index.html so search engines see the copy without running
