@@ -174,7 +174,7 @@ function tick(t) {
   const cr = trailCanvas.getBoundingClientRect();
   const ur = ufoImg.getBoundingClientRect();
   const p = { x: ur.left - cr.left + ur.width * 0.5, y: ur.top - cr.top + ur.height * 0.72 };
-  emit(trailPuffs, p, lastUfoPos, t, 34, 0.22, '254,181,234');
+  emit(trailPuffs, p, lastUfoPos, t, 38, 0.34, '254,181,234');
   lastUfoPos = p;
   if (trailPuffs.length > TRAIL_MAX) trailPuffs.splice(0, trailPuffs.length - TRAIL_MAX);
   paint(trailCtx, trailCanvas, trailPuffs, t, 9000, 3200);

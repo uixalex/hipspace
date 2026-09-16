@@ -94,12 +94,10 @@
 </head>
 <body>
 
-<canvas id="cursor-canvas"></canvas>
-
 <div class="page">
 
   <!-- HERO -->
-  <section id="hero" data-ink="pink">
+  <section id="hero">
     <div class="hero-bg">
       <div class="nebula nebula-1"></div>
       <div class="nebula nebula-2"></div>
@@ -129,37 +127,44 @@
 
     <div class="hero-content">
       <div class="hero-inner">
-        <div class="hero-text">
-          <h1>Launching brands beyond the orbit</h1>
-          <p class="mono">Tired of design that feels safe?</p>
-        </div>
-        <div class="ufo-wrap">
-          <div class="ufo-glow"></div>
-          <div class="ufo-fly" id="ufo-fly">
-            <div class="beam-cone"><div class="beam-fill" id="beam-fill"></div></div>
-            <img id="ufo-img" src="assets/saucer.png" alt="Flying saucer" class="ufo-bob" />
+        <div class="hero-grid">
+          <div class="hero-text">
+            <h1>Launching<br />brands beyond<br />the orbit</h1>
+          </div>
+          <div class="hero-aside">
+            <p class="mono hero-kicker">Tired of design that feels safe?</p>
+            <a href="inquiry.html" class="cta-pill hero-pill">let&rsquo;s launch &rarr;</a>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- outside .hero-inner: anchored to the hero itself so it always clears the
+         nav, instead of drifting with the vertically centred content box -->
+    <div class="ufo-wrap">
+      <div class="ufo-glow"></div>
+      <div class="ufo-fly" id="ufo-fly">
+        <div class="beam-cone"><div class="beam-fill" id="beam-fill"></div></div>
+        <img id="ufo-img" src="assets/saucer.png" alt="Flying saucer" class="ufo-bob" />
       </div>
     </div>
   </section>
 
   <!-- ABOUT -->
-  <section id="about" class="section-tall" data-ink="pink">
+  <section id="about" class="section-tall">
     <div class="wrap">
       <div class="about-grid">
         <h2 class="reveal">We're a small studio with a big appetite for unexplored space.</h2>
         <div class="mono-copy reveal" id="about-copy">
           <p>Hipspace is a branding and web design studio helping businesses turn what makes them different into a brand with a strong point of view.</p>
           <p>From brand strategy and visual identity to campaigns and websites, we create the essential pieces your brand needs to launch, grow and be recognised.</p>
-          <p>For founders and creative companies that want to stand out, without looking like everyone else.</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- SERVICES -->
-  <section id="services" data-ink="blue">
+  <section id="services">
     <div class="wrap">
       <div class="services-head reveal">
         <h2>What we launch.</h2>
@@ -203,7 +208,7 @@
   </section>
 
   <!-- WORK -->
-  <section id="work" data-ink="pink">
+  <section id="work">
     <div class="wrap">
       <h2 class="reveal">Missions we've completed.</h2>
     </div>
@@ -211,7 +216,7 @@
   </section>
 
   <!-- ABOUT ME -->
-  <section id="alex" class="section-tall" data-ink="pink">
+  <section id="alex" class="section-tall">
 
     <div class="wrap alex-wrap">
       <div class="alex-grid">
@@ -280,7 +285,7 @@
   </section>
 
   <!-- FAQ -->
-  <section id="faq" data-ink="blue">
+  <section id="faq">
     <div class="wrap faq-grid">
       <div class="reveal">
         <h2>Questions clients ask before we start.</h2>
@@ -371,7 +376,7 @@
   </section>
 
   <!-- CTA: white, because #faq above it is pink -->
-  <section id="cta" data-ink="pink">
+  <section id="cta">
     <div class="wrap">
       <div class="cta-inner reveal">
         <h2>Got something worth launching?<br />Let&rsquo;s put it into orbit.</h2>
