@@ -8,12 +8,14 @@
 // `hero`, `gallery` and `body` feed case-study.html, which is finished but not
 // linked from the site yet: those get filled in per project as case studies are written.
 const PROJECTS = [
-  { n: "01", name: "MOKE",          meta: "Visual Identity & Web Design", src: "assets/p-moke.webp",        site: "https://mokeinternational.com/",  gallery: [], body: "An electric-vehicle brand with a beach-club soul, brought to life through a playful and immersive website." },
+  { n: "01", name: "MOKE",          meta: "Visual Identity & Web Design", src: "assets/moke-cover.jpg",       site: "https://mokeinternational.com/",  gallery: [], body: "An electric-vehicle brand with a beach-club soul, brought to life through a playful and immersive website." },
   { n: "02", name: "Moving Portal", meta: "Visual Identity & Web Design", src: "assets/moving-portal.webp", site: "https://themovingportal.co.uk/",  gallery: [], body: "" },
   { n: "03", name: "Bytek",         meta: "Branding & Web Design", src: "assets/bytek.webp",         site: "https://bytek.ba/",               gallery: [], body: "" },
   { n: "04", name: "Rello",         meta: "Visual Identity & Web Design", src: "assets/rello.webp",         site: "https://rello.co.uk/",            gallery: [], body: "" },
-  { n: "05", name: "SHe2",          meta: "Branding & Web Design", src: "assets/p-wonderwomen.webp", site: "https://she2leadership.com/wp-content/uploads/2023/07/SHe2-Leadership-Brief-Overview.pdf", gallery: [], body: "A community platform for women in business, built around bold editorial type, generous space and a confident digital presence." },
-  { n: "06", name: "Quackables",    meta: "Branding & Web Design", src: "assets/quackables.webp",    site: "https://quackables.vercel.app/",  gallery: [], body: "" }
+  { n: "05", name: "OOEJ",          meta: "Web Design", src: "assets/ooej.webp",          site: "https://ooej.org/",               gallery: [], body: "" },
+  { n: "06", name: "RAWR",          meta: "Web Design", src: "assets/rawr.webp",          site: "https://rawr-fawn.vercel.app/",   gallery: [], body: "" },
+  { n: "07", name: "Rubedo",        meta: "Web Design", src: "assets/rubedo.webp",        site: "https://www.rubedolife.com/",     gallery: [], body: "" },
+  { n: "08", name: "Quackables",    meta: "Branding & Web Design", src: "assets/quackables.webp",    site: "https://quackables.vercel.app/",  gallery: [], body: "" }
 ];
 
 // Hover-only behaviour is gated on this: a touchscreen reports no hover, and
