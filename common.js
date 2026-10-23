@@ -8,61 +8,20 @@
 // `hero`, `gallery` and `body` feed case-study.html, which is finished but not
 // linked from the site yet: those get filled in per project as case studies are written.
 const PROJECTS = [
-  { n: "01", name: "MOKE",          meta: "Visual Identity & Web Design", src: "assets/moke-cover.jpg",       site: "https://mokeinternational.com/",  gallery: [], body: "An electric-vehicle brand with a beach-club soul, brought to life through a playful and immersive website." },
+  { n: "01", name: "MOKE",          meta: "Visual Identity & Web Design", src: "assets/moke-cover.webp",      site: "https://mokeinternational.com/",  gallery: [], body: "An electric-vehicle brand with a beach-club soul, brought to life through a playful and immersive website." },
   { n: "02", name: "Moving Portal", meta: "Visual Identity & Web Design", src: "assets/moving-portal.webp", site: "https://themovingportal.co.uk/",  gallery: [], body: "" },
   { n: "03", name: "Bytek",         meta: "Branding & Web Design", src: "assets/bytek.webp",         site: "https://bytek.ba/",               gallery: [], body: "" },
   { n: "04", name: "Rello",         meta: "Visual Identity & Web Design", src: "assets/rello.webp",         site: "https://rello.co.uk/",            gallery: [], body: "" },
   { n: "05", name: "OOEJ",          meta: "Web Design", src: "assets/ooej.webp",          site: "https://ooej.org/",               gallery: [], body: "" },
   { n: "06", name: "RAWR",          meta: "Web Design", src: "assets/rawr.webp",          site: "https://rawr-fawn.vercel.app/",   gallery: [], body: "" },
   { n: "07", name: "Rubedo",        meta: "Web Design", src: "assets/rubedo.webp",        site: "https://www.rubedolife.com/",     gallery: [], body: "" },
-  { n: "08", name: "Quackables",    meta: "Branding & Web Design", src: "assets/quackables.webp",    site: "https://quackables.vercel.app/",  gallery: [], body: "" }
+  { n: "08", name: "Quackables",    meta: "Branding & Web Design", src: "assets/quackables.webp",    site: "https://quackables.vercel.app/",  gallery: [], body: "" },
+  { n: "09", name: "Oxford Permanent Makeup", meta: "Web Design", src: "assets/oxford-pmu.webp", site: "https://oxfordpermanentmakeup.co.uk/", gallery: [], body: "" }
 ];
 
 // Hover-only behaviour is gated on this: a touchscreen reports no hover, and
 // the emulated mouse events it does fire would otherwise trigger mouse effects.
 const CAN_HOVER = window.matchMedia('(hover: hover)').matches;
-
-// ---------- canvas spray helpers ----------
-// Used by the hero saucer's dust trail in script.js.
-function resizeCanvas(canvas, ctx) {
-  const r = canvas.getBoundingClientRect();
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  canvas.width = Math.max(1, r.width * dpr);
-  canvas.height = Math.max(1, r.height * dpr);
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-}
-
-function emit(store, p, last, t, spread, alpha, ink) {
-  const moved = last ? Math.hypot(p.x - last.x, p.y - last.y) : 0;
-  if (moved < 0.7) return;
-  const steps = Math.max(1, Math.min(14, Math.round(moved / 4)));
-  for (let i = 0; i < steps; i++) {
-    const k = last ? i / steps : 1;
-    const x = last ? last.x + (p.x - last.x) * k : p.x;
-    const y = last ? last.y + (p.y - last.y) * k : p.y;
-    for (let j = 0; j < 2; j++) {
-      const a = Math.random() * Math.PI * 2, d = Math.random() * spread;
-      store.push({ x: x + Math.cos(a) * d, y: y + Math.sin(a) * d * 0.8, r: 4 + Math.random() * 16, a: alpha * (0.5 + Math.random() * 0.5), born: t, ink });
-    }
-  }
-}
-
-function paint(ctx, canvas, puffs, t, LIFE, FADE) {
-  const w = canvas.clientWidth, h = canvas.clientHeight;
-  ctx.clearRect(0, 0, w, h);
-  for (const q of puffs) {
-    const age = t - q.born;
-    if (age > LIFE) continue;
-    const fade = age > LIFE - FADE ? 1 - (age - (LIFE - FADE)) / FADE : 1;
-    const g = ctx.createRadialGradient(q.x, q.y, 0, q.x, q.y, q.r);
-    g.addColorStop(0, `rgba(${q.ink},${q.a * fade})`);
-    g.addColorStop(1, `rgba(${q.ink},0)`);
-    ctx.fillStyle = g;
-    ctx.beginPath();
-    ctx.arc(q.x, q.y, q.r, 0, Math.PI * 2);
-    ctx.fill();
-  }
-}
 
 // ---------- work rows ----------
 // Shared by the home work list and the “more work” list on a case study.
@@ -172,23 +131,35 @@ function setPanel(wrap, open) {
   const inner = wrap.firstElementChild;
   if (!inner) return;
 
+  // released to 'auto' only once the height has actually finished easing,
+  // so the text can still reflow (a resize) without the panel cutting it off
+  if (!wrap._panelEnd) {
+    wrap._panelEnd = (ev) => {
+      if (ev.target === wrap && ev.propertyName === 'height' && wrap.dataset.open === '1') {
+        wrap.style.height = 'auto';
+      }
+    };
+    wrap.addEventListener('transitionend', wrap._panelEnd);
+  }
+
+  clearTimeout(wrap._panelT);
   if (open) {
+    if (wrap.dataset.open === '1') return;
+    wrap.dataset.open = '1';
     wrap.style.height = inner.offsetHeight + 'px';
-    clearTimeout(wrap._panelT);
+    // backstop for when no transitionend comes (no transition to run, or
+    // reduced motion): release a little after the longest curve would end
     wrap._panelT = setTimeout(() => {
       if (wrap.dataset.open === '1') wrap.style.height = 'auto';
-    }, 400);
-    wrap.dataset.open = '1';
+    }, 900);
   } else {
-    // from auto there is no start value to ease out of: pin the current height,
-    // force a reflow, then collapse
-    if (wrap.style.height === 'auto') {
-      wrap.style.height = inner.offsetHeight + 'px';
-      void wrap.offsetHeight;
-    }
-    clearTimeout(wrap._panelT);
+    if (wrap.dataset.open !== '1') return;
     wrap.dataset.open = '0';
-    requestAnimationFrame(() => { wrap.style.height = '0px'; });
+    // from auto there is no start value to ease out of: pin the current
+    // height, force a reflow, then collapse
+    wrap.style.height = wrap.offsetHeight + 'px';
+    void wrap.offsetHeight;
+    wrap.style.height = '0px';
   }
 }
 
@@ -198,33 +169,56 @@ function setPanel(wrap, open) {
 function renderFooter() {
   const mount = document.getElementById('site-footer');
   if (!mount) return;
+  // menu, social, contact, then the launch block
+  // the menu column follows the page's own nav, so its hrefs stay right per page
+  const menu = [...document.querySelectorAll('.nav-links a')]
+    .map(a => `<a href="${a.getAttribute('href')}">${a.textContent.trim()}</a>`).join('');
   mount.innerHTML = `
     <footer id="contact">
-      <div class="footer-inner">
-        <div class="footer-links reveal">
-          <a href="mailto:alex@hipspacestudio.com">alex@hipspacestudio.com</a>
-          <a href="https://www.instagram.com/hipspace.studio/" target="_blank" rel="noopener noreferrer">instagram</a>
-          <a href="https://www.linkedin.com/company/hipspace/" target="_blank" rel="noopener noreferrer">linkedin</a>
+      <!-- black pixels breaking up into the white section above (gen.js) -->
+      <div class="footer-field" aria-hidden="true"><canvas class="px-edge"></canvas></div>
+      <div class="footer-top">
+        <div class="footer-col reveal" style="--d:0s">
+          <span class="footer-h">Menu</span>
+          ${menu}
         </div>
+        <div class="footer-col reveal" style="--d:.08s">
+          <span class="footer-h">Social</span>
+          <a href="https://www.instagram.com/hipspace.studio/" target="_blank" rel="noopener noreferrer">Instagram</a>
+          <a href="https://www.linkedin.com/company/hipspace/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        </div>
+        <div class="footer-col footer-contact reveal" style="--d:.16s">
+          <span class="footer-h">Contact</span>
+          <a class="footer-mail" href="mailto:alex@hipspacestudio.com">alex@hipspacestudio.com</a>
+        </div>
+        <div class="footer-launch-wrap reveal" style="--d:.24s"><a class="sys-btn footer-launch" href="inquiry.html">let's launch <span aria-hidden="true">&rarr;</span></a></div>
+      </div>
 
-        <div class="footer-logo">
-          <img class="letter" style="left:0%;top:0%;width:43.16%" src="assets/L-h.png" alt="h" />
-          <img class="letter" style="left:48.84%;top:9.97%;width:13.68%" src="assets/L-i.png" alt="i" />
-          <img class="letter" style="left:68.21%;top:28.21%;width:28.63%" src="assets/L-p.png" alt="p" />
-          <img class="letter" style="left:49.05%;top:81.77%;width:9.05%" src="assets/L-s.png" alt="s" />
-          <img class="letter" style="left:58.53%;top:81.77%;width:10.74%" src="assets/L-pk.png" alt="p" />
-          <img class="letter" style="left:69.47%;top:81.77%;width:10.53%" src="assets/L-a.png" alt="a" />
-          <img class="letter" style="left:80.42%;top:81.48%;width:9.68%" src="assets/L-c.png" alt="c" />
-          <img class="letter" style="left:90.32%;top:81.48%;width:9.68%" src="assets/L-e.png" alt="e" />
-        </div>
+      <!-- the wordmark across the full width (common.js fits it to the width) -->
+      <div class="footer-mark" id="footer-mark" aria-hidden="true">${[...'HIPSPACE'].map((c, k) => `<span style="--k:${k}">${c}</span>`).join('')}</div>
 
-        <div class="footer-bottom">
-          <span>&copy; 2026 hipspacestudio</span>
-          <a href="inquiry.html">let's launch your brand</a>
-        </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 hipspacestudio</span>
       </div>
     </footer>
   `;
+
+  // HIPSPACE runs exactly edge to edge, whatever the screen
+  const mark = document.getElementById('footer-mark');
+  const fit = () => {
+    mark.style.fontSize = '100px';
+    mark.style.display = 'inline-flex';
+    // the mark carries the side gutters as padding: measure the letters alone
+    const pad = parseFloat(getComputedStyle(mark).paddingLeft) * 2;
+    const w = mark.getBoundingClientRect().width - pad;
+    mark.style.display = '';
+    const avail = mark.parentElement.clientWidth - pad;
+    if (w) mark.style.fontSize = (100 * avail / w).toFixed(2) + 'px';
+  };
+  fit();
+  window.addEventListener('resize', fit);
+  if (document.fonts) document.fonts.ready.then(fit);
+
 }
 renderFooter();
 
@@ -256,7 +250,7 @@ function renderMobileNav() {
   mnav.hidden = false;
   mnav.innerHTML = `
     <div class="mnav-bar">
-      <a href="${logoHref}" class="logo"><img src="assets/logo.png" alt="hip space" /></a>
+      <a href="${logoHref}" class="logo">HIPSPACE</a>
       <button class="mnav-close" type="button" aria-label="Close menu"><span></span><span></span></button>
     </div>
     <nav class="mnav-links">
@@ -279,8 +273,22 @@ function renderMobileNav() {
 }
 renderMobileNav();
 
+// ---------- link roll ----------
+// After renderMobileNav(): it reads these labels, and must get them single.
+// Each nav label gets a copy underneath; on hover the pair slides up (CSS).
+function addLinkRoll() {
+  if (!window.matchMedia('(hover: hover)').matches) return;
+  document.querySelectorAll('.nav-links a, .nav-cta').forEach(a => {
+    if (a.querySelector('.roll')) return;
+    const label = a.textContent.trim();
+    a.setAttribute('aria-label', label);
+    a.innerHTML = `<span class="roll" aria-hidden="true"><span>${label}</span><span>${label}</span></span>`;
+  });
+}
+addLinkRoll();
+
 // ---------- scroll reveal ----------
-// After renderFooter(): .footer-links carries .reveal and must be observed too.
+// After renderFooter(): the footer columns carry .reveal and must be observed too.
 const io = new IntersectionObserver((entries) => {
   entries.forEach(e => {
     if (!e.isIntersecting) return;
@@ -318,6 +326,3 @@ window.addEventListener('scroll', () => {
   sweepQueued = true;
   requestAnimationFrame(() => { sweepQueued = false; revealVisible(); });
 }, { passive: true });
-
-// the rocket cursor stays, but it no longer trails a spray. emit()/paint()/
-// resizeCanvas() above are still used by the hero saucer's dust trail.

@@ -10,7 +10,7 @@
 <link rel="icon" href="assets/favicon-16.png" sizes="16x16" type="image/png" />
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
 <link rel="manifest" href="site.webmanifest" />
-<meta name="theme-color" content="#1F2FC4" />
+<meta name="theme-color" content="#3B43FE" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -23,12 +23,11 @@
     <div class="inquiry-stars stars stars-far"></div>
     <header class="nav">
       <div class="nav-inner">
-        <a href="index.html" class="logo"><img src="assets/logo.png" alt="hip space" /></a>
+        <a href="index.html" class="logo">HIPSPACE</a>
         <nav class="nav-links">
-          <a href="index.html#about">about</a>
+          <a href="index.html#hero-intro">about</a>
           <a href="index.html#services">services</a>
           <a href="index.html#work">work</a>
-          <a href="index.html#blog">blog</a>
         </nav>
         <div class="nav-right"><a href="inquiry.html" class="nav-cta">let's launch</a></div>
       </div>
@@ -61,6 +60,7 @@
           <label class="choice"><input type="checkbox" name="services" value="Branding &amp; Visual Identity" /><span class="choice-mark"></span>Branding &amp; Visual Identity</label>
           <label class="choice"><input type="checkbox" name="services" value="Social &amp; Campaign Design" /><span class="choice-mark"></span>Social &amp; Campaign Design</label>
           <label class="choice"><input type="checkbox" name="services" value="Web Design" /><span class="choice-mark"></span>Web Design</label>
+          <label class="choice"><input type="checkbox" name="services" value="Product Design" /><span class="choice-mark"></span>Product Design</label>
           <label class="choice"><input type="checkbox" name="services" value="Branding + Web Design" /><span class="choice-mark"></span>Branding + Web Design</label>
           <label class="choice"><input type="checkbox" name="services" value="Something else" /><span class="choice-mark"></span>Something else</label>
         </fieldset>
@@ -126,6 +126,7 @@
 <div id="site-footer"></div>
 
 <script src="common.js"></script>
+<script src="gen.js"></script>
 <script>
   // Make the group of service checkboxes required while retaining multi-select.
   const services = [...document.querySelectorAll('input[name="services"]')];

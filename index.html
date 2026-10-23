@@ -15,7 +15,7 @@
 <link rel="icon" href="assets/favicon-16.png" sizes="16x16" type="image/png" />
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
 <link rel="manifest" href="site.webmanifest" />
-<meta name="theme-color" content="#1F2FC4" />
+<meta name="theme-color" content="#3B43FE" />
 
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Hipspace" />
@@ -35,6 +35,21 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="style.css" />
+<script>
+  // The loading opening (HIPSPACE counter, reel curtain, typed headline) is
+  // switched off for now: the page opens finished. Set to true to bring it back.
+  const PLAY_OPENING = false;
+  // the opening only plays when JS is on and motion is welcome
+  const MOTION_OK = !matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (PLAY_OPENING && MOTION_OK) document.documentElement.classList.add('intro', 'intro-lock');
+  // Without the opening, the hero still eases in (script.js). Hidden from the
+  // first paint so nothing flashes in place first; if the script never runs,
+  // the safety timer shows everything anyway.
+  else if (MOTION_OK) {
+    document.documentElement.classList.add('enter');
+    setTimeout(() => document.documentElement.classList.remove('enter'), 4000);
+  }
+</script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -97,205 +112,115 @@
 <div class="page">
 
   <!-- HERO -->
+  <!-- One screen. The opening (script.js, GSAP): two labels type in and every
+       letter of HIPSPACE spins like a counter wheel until it lands, left to
+       right, while a counter runs to 100. Then the reel comes up from the
+       bottom like a curtain, stops at half the screen, and the headline types
+       in above it. Without JS or with reduced motion it simply starts finished. -->
   <section id="hero">
-    <div class="hero-bg">
-      <div class="nebula nebula-1"></div>
-      <div class="nebula nebula-2"></div>
-      <div class="stars stars-far"></div>
-      <div class="stars stars-near"></div>
-    </div>
-
-    <canvas id="trail-canvas"></canvas>
-
-    <header class="nav">
-      <div class="nav-inner">
-        <a href="index.html" class="logo"><img src="assets/logo.png" alt="hip space" /></a>
-        <nav class="nav-links">
-          <a href="#about">about</a>
-          <a href="#services">services</a>
-          <a href="#work">work</a>
-          <a href="#blog">blog</a>
-        </nav>
-        <div class="nav-right">
-          <a href="inquiry.html" class="nav-cta">let's launch</a>
-          <button id="beam-toggle" class="beam-toggle" title="beam on">
-            <img src="assets/saucer.png" alt="" />
-          </button>
-        </div>
-      </div>
-    </header>
-
-    <div class="hero-content">
-      <div class="hero-inner">
-        <div class="hero-grid">
-          <div class="hero-text">
-            <h1>Launching<br />brands beyond<br />the orbit</h1>
-          </div>
-          <div class="hero-aside">
-            <p class="mono hero-kicker">Tired of design that feels safe?</p>
-            <a href="inquiry.html" class="cta-pill hero-pill">let&rsquo;s launch &rarr;</a>
+    <div class="hero-panel">
+      <header class="nav">
+        <div class="nav-inner">
+          <a href="index.html" class="logo">HIPSPACE</a>
+          <nav class="nav-links">
+            <a href="#hero-intro">about</a>
+            <a href="#services">services</a>
+            <a href="#work">work</a>
+          </nav>
+          <div class="nav-right">
+            <a href="inquiry.html" class="nav-cta">let's launch</a>
           </div>
         </div>
-      </div>
+      </header>
+
     </div>
 
-    <!-- outside .hero-inner: anchored to the hero itself so it always clears the
-         nav, instead of drifting with the vertically centred content box -->
-    <div class="ufo-wrap">
-      <div class="ufo-glow"></div>
-      <div class="ufo-fly" id="ufo-fly">
-        <div class="beam-cone"><div class="beam-fill" id="beam-fill"></div></div>
-        <img id="ufo-img" src="assets/saucer.png" alt="Flying saucer" class="ufo-bob" />
-      </div>
+    <!-- the hero visual: a generative dither field in the brand colours
+         (gen.js) that drifts on its own and swells under the pointer -->
+    <div class="hero-media" id="hero-media">
+      <canvas class="gen-field" data-edge data-story aria-hidden="true"></canvas>
     </div>
-  </section>
 
-  <!-- ABOUT -->
-  <section id="about" class="section-tall">
-    <div class="wrap">
-      <div class="about-grid">
-        <h2 class="reveal">We're a small studio with a big appetite for unexplored space.</h2>
-        <div class="mono-copy reveal" id="about-copy">
-          <p>Hipspace is a branding and web design studio helping businesses turn what makes them different into a brand with a strong point of view.</p>
-          <p>From brand strategy and visual identity to campaigns and websites, we create the essential pieces your brand needs to launch, grow and be recognised.</p>
-        </div>
+    <!-- under the field: the headline on the left, the intro on the right -->
+    <div class="hero-intro sec-grid" id="hero-intro">
+      <div class="hero-title sec-left">
+        <h1 id="hero-h1">Launching brands<br />beyond the orbit.</h1>
       </div>
+      <p class="hero-lede sec-right">Hipspace is a small branding and web design studio. We help businesses with strategy, identity, web and product design, turning what makes them different into a brand with a strong point of view.</p>
+    </div>
+
+    <div class="loader" id="loader" aria-hidden="true">
+      <div class="loader-meta"><span class="loader-count" id="loader-count">000</span><span></span><span class="type">hip space</span><span class="type">branding &amp; web design studio</span></div>
+      <!-- the reels are filled in by script.js; without it the plain word shows -->
+      <div class="loader-word" id="loader-word"><span class="loader-base">HIPSPACE</span></div>
     </div>
   </section>
 
   <!-- SERVICES -->
-  <section id="services">
+  <!-- three columns split by hairlines; each opens with its own element in
+       the hero's pixel style, free-standing on the white (gen.js) -->
+  <section id="services" class="sec sec-light">
     <div class="wrap">
-      <div class="services-head reveal">
-        <h2>What we launch.</h2>
+      <div class="sec-grid svc-head">
+        <h2 class="sec-title sec-left reveal">What we launch.</h2>
       </div>
-      <div class="services-list reveal" id="services-list">
-        <div class="service-row">
-          <div class="service-head">
-            <span class="service-n mono">01</span>
-            <div class="service-title-wrap"><h3>Branding &amp; visual identity</h3></div>
-          </div>
-          <div class="alien-peek">
-            <div class="speech-bubble">Be seen from orbit</div>
-            <img src="assets/alien.png" alt="" />
-          </div>
-          <div class="service-body-wrap"><div class="service-body-inner"><p>From brand strategy and positioning to logos, visual systems, packaging and print, we build brands that feel distinctive, recognisable and memorable.</p></div></div>
-        </div>
-        <div class="service-row">
-          <div class="service-head">
-            <span class="service-n mono">02</span>
-            <div class="service-title-wrap"><h3>Social &amp; campaign design</h3></div>
-          </div>
-          <div class="alien-peek">
-            <div class="speech-bubble">Broadcast the signal</div>
-            <img src="assets/alien.png" alt="" />
-          </div>
-          <div class="service-body-wrap"><div class="service-body-inner"><p>A clear visual direction for social content, campaigns and launches that keeps your brand looking like itself everywhere.</p></div></div>
-        </div>
-        <div class="service-row">
-          <div class="service-head">
-            <span class="service-n mono">03</span>
-            <div class="service-title-wrap"><h3>Web design</h3></div>
-          </div>
-          <div class="alien-peek">
-            <div class="speech-bubble">Build the spacecraft</div>
-            <img src="assets/alien.png" alt="" />
-          </div>
-          <div class="service-body-wrap"><div class="service-body-inner"><p>Responsive websites that bring your brand to life and make it easy for people to understand, trust and choose you.</p></div></div>
-        </div>
+      <div class="svc-cols reveal">
+        <article class="svc-col">
+          <div class="svc-tile"><canvas class="svc-art" data-art="brand" aria-hidden="true"></canvas></div>
+          <span class="sec-label">01</span>
+          <h3>Branding &amp; visual identity</h3>
+          <p>From brand strategy and positioning to logos, visual systems, packaging and print, we build brands that feel distinctive, recognisable and memorable.</p>
+        </article>
+        <article class="svc-col">
+          <div class="svc-tile"><canvas class="svc-art" data-art="social" aria-hidden="true"></canvas></div>
+          <span class="sec-label">02</span>
+          <h3>Social &amp; campaign design</h3>
+          <p>A clear visual direction for social content, campaigns and launches that keeps your brand looking like itself everywhere.</p>
+        </article>
+        <article class="svc-col">
+          <div class="svc-tile"><canvas class="svc-art" data-art="web" aria-hidden="true"></canvas></div>
+          <span class="sec-label">03</span>
+          <h3>Web design</h3>
+          <p>Responsive websites that bring your brand to life and make it easy for people to understand, trust and choose you.</p>
+        </article>
+        <article class="svc-col">
+          <div class="svc-tile"><canvas class="svc-art" data-art="product" aria-hidden="true"></canvas></div>
+          <span class="sec-label">04</span>
+          <h3>Product design</h3>
+          <p>UI/UX for apps and digital products, from flows and wireframes to clear, polished interfaces people enjoy using.</p>
+        </article>
       </div>
     </div>
   </section>
 
   <!-- WORK -->
-  <section id="work">
-    <div class="wrap">
-      <h2 class="reveal">Missions we've completed.</h2>
-    </div>
-    <div class="work-list reveal" id="work-list"></div>
-  </section>
-
-  <!-- ABOUT ME -->
-  <section id="alex" class="section-tall">
-
-    <div class="wrap alex-wrap">
-      <div class="alex-grid">
-        <div class="alex-lead">
-          <h2 class="alex-hello alex-sequence">Hello, I am Alex</h2>
-
-          <div class="alex-copy alex-sequence" id="alex-copy">
-            <p>I've spent 7 years designing digital products, interfaces, and systems. But somewhere along the way, I realized what I really wanted was to work on brands and projects that actually matter, with character, creativity and authenticity. That is why I built Hipspace.</p>
-            <p class="pink-ink">If you want a partner who understands your vision and isn't afraid to go beyond ordinary, let's launch your brand into orbit!</p>
-          </div>
-
-          <a href="inquiry.html" class="cta-pill alex-sequence">let's talk &rarr;</a>
-        </div>
-
-        <div class="alex-shot reveal">
-
-          <!-- pencil · old pentium · alien brain, sitting above the portrait -->
-          <div class="alex-icons" aria-hidden="true">
-
-            <span class="alex-icon">
-              <svg viewBox="0 0 32 32" fill="none">
-                <path class="fill-pink" d="M8.16 20.16 20.16 8.16l3.68 3.68-12 12z" />
-                <path class="ln" d="M8.16 20.16 20.16 8.16l3.68 3.68-12 12z" />
-                <path class="dot" d="M20.16 8.16 22.99 5.33l3.68 3.68-2.83 2.83z" />
-                <path class="ln" d="M20.16 8.16 22.99 5.33l3.68 3.68-2.83 2.83z" />
-                <path class="dot" d="M8.16 20.16 11.84 23.84 6.46 25.54z" />
-                <path class="ln" d="M8.16 20.16 11.84 23.84 6.46 25.54z" />
-              </svg>
-            </span>
-
-            <span class="alex-icon">
-              <svg viewBox="0 0 32 32" fill="none">
-                <rect class="fill-pink" x="4" y="6" width="24" height="17" rx="2.6" />
-                <rect class="ln" x="4" y="6" width="24" height="17" rx="2.6" />
-                <rect class="ln" x="7.2" y="9" width="17.6" height="10.4" rx="1.5" fill="#fff" />
-                <path class="ln" d="M9.8 12.2h8.4M9.8 14.9h5.6M9.8 17.6h3.6" />
-                <circle class="dot" cx="25.4" cy="21.2" r=".95" />
-                <path class="ln" d="M12.8 23h6.4v3.1h-6.4z" />
-                <path class="fill-pink" d="M8.4 26.1h15.2a1.3 1.3 0 0 1 0 2.6H8.4a1.3 1.3 0 0 1 0-2.6z" />
-                <path class="ln" d="M8.4 26.1h15.2a1.3 1.3 0 0 1 0 2.6H8.4a1.3 1.3 0 0 1 0-2.6z" />
-              </svg>
-            </span>
-
-            <span class="alex-icon">
-              <svg viewBox="0 0 32 32" fill="none">
-                <path class="ln" d="M13 6.8 11.4 3.6M19 6.8l1.6-3.2" />
-                <circle class="fill-pink" cx="10.9" cy="2.6" r="1.5" />
-                <circle class="ln" cx="10.9" cy="2.6" r="1.5" />
-                <circle class="fill-pink" cx="21.1" cy="2.6" r="1.5" />
-                <circle class="ln" cx="21.1" cy="2.6" r="1.5" />
-                <path class="fill-pink" d="M16 6.6c2.9-2 6.7-1.1 8 1.8 2.6.2 4.4 2.2 4.4 4.6 0 1-.3 1.9-.8 2.7.6.8.9 1.7.9 2.7 0 2.6-2.2 4.7-5 4.7-.7 1.6-2.4 2.7-4.4 2.7-2 0-3.7-1.1-4.4-2.7-2.8 0-5-2.1-5-4.7 0-1 .3-1.9.9-2.7-.5-.8-.8-1.7-.8-2.7 0-2.4 1.8-4.4 4.4-4.6 1.3-2.9 5.1-3.8 8-1.8z" />
-                <path class="ln" d="M16 6.6c2.9-2 6.7-1.1 8 1.8 2.6.2 4.4 2.2 4.4 4.6 0 1-.3 1.9-.8 2.7.6.8.9 1.7.9 2.7 0 2.6-2.2 4.7-5 4.7-.7 1.6-2.4 2.7-4.4 2.7-2 0-3.7-1.1-4.4-2.7-2.8 0-5-2.1-5-4.7 0-1 .3-1.9.9-2.7-.5-.8-.8-1.7-.8-2.7 0-2.4 1.8-4.4 4.4-4.6 1.3-2.9 5.1-3.8 8-1.8z" />
-                <path class="ln" d="M16 7.6v17.2" />
-                <path class="ln" d="M12.4 10.6c-1.6.9-2.2 2.6-1.4 4M11 17.6c1.4-.8 3.2-.4 4 .9M19.6 10.6c1.6.9 2.2 2.6 1.4 4M21 17.6c-1.4-.8-3.2-.4-4 .9" />
-              </svg>
-            </span>
-
-          </div>
-
-          <div class="alex-photo"><img src="assets/aleksandra-hipspace-brand-designer.jpg" alt="Aleksandra, founder and brand designer at Hipspace" width="800" height="979" loading="lazy" decoding="async" /></div>
+  <!-- the same grid as the other sections: heading and the project rows on
+       the left, a sticky preview on the right (script.js) -->
+  <section id="work" class="sec sec-dark">
+    <div class="wrap sec-grid">
+      <div class="sec-left">
+        <h2 class="sec-title reveal">Missions we've completed.</h2>
+        <div class="wk-list reveal" id="wk-list"></div>
+      </div>
+      <div class="sec-right wk-side">
+        <div class="wk-preview" aria-hidden="true">
+          <img id="wk-img" alt="" />
+          <canvas id="wk-swap"></canvas>
         </div>
       </div>
-
-    
     </div>
   </section>
 
   <!-- FAQ -->
-  <section id="faq">
-    <div class="wrap faq-grid">
-      <div class="reveal">
-        <h2>Questions clients ask before we start.</h2>
-      </div>
-      <div class="faq-list reveal" id="faq-list">
+  <section id="faq" class="sec sec-light">
+    <div class="wrap sec-grid">
+      <h2 class="sec-title sec-left sec-sticky reveal">Questions clients ask before we start.</h2>
+      <div class="sec-right faq-list reveal" id="faq-list">
         <div class="faq-item">
           <div class="faq-q">
             <span class="faq-n">01</span>
             <h3>What does a project with Hipspace include?</h3>
-            <span class="faq-toggle">+</span>
+            <span class="faq-toggle" aria-hidden="true"></span>
           </div>
           <div class="faq-a-wrap"><div class="faq-a-inner"><p>Depends on the service. Branding includes strategy, positioning, logos, visual systems, packaging and print materials. Web design includes UI/UX, responsive design, prototypes and build. Social and campaign design includes visual direction and ongoing content design.</p></div></div>
         </div>
@@ -303,7 +228,7 @@
           <div class="faq-q">
             <span class="faq-n">02</span>
             <h3>Can I hire you for branding and a website together?</h3>
-            <span class="faq-toggle">+</span>
+            <span class="faq-toggle" aria-hidden="true"></span>
           </div>
           <div class="faq-a-wrap"><div class="faq-a-inner"><p>Yes. Many projects combine branding and web design. The visual identity informs the website.</p></div></div>
         </div>
@@ -311,7 +236,7 @@
           <div class="faq-q">
             <span class="faq-n">03</span>
             <h3>Can you build the website too?</h3>
-            <span class="faq-toggle">+</span>
+            <span class="faq-toggle" aria-hidden="true"></span>
           </div>
           <div class="faq-a-wrap"><div class="faq-a-inner"><p>For smaller projects, I can design and build websites in Framer and similar tools. For larger or more complex projects, I focus on the design, while development is handled separately by a developer chosen by the client or brought in for the project.</p></div></div>
         </div>
@@ -319,7 +244,7 @@
           <div class="faq-q">
             <span class="faq-n">04</span>
             <h3>What do you need from me to get started?</h3>
-            <span class="faq-toggle">+</span>
+            <span class="faq-toggle" aria-hidden="true"></span>
           </div>
           <div class="faq-a-wrap"><div class="faq-a-inner"><p>A brief about your business, goals, who you're trying to reach, and timeline. Plus inspiration or references if you have them.</p></div></div>
         </div>
@@ -327,7 +252,7 @@
           <div class="faq-q">
             <span class="faq-n">05</span>
             <h3>How long does a project take?</h3>
-            <span class="faq-toggle">+</span>
+            <span class="faq-toggle" aria-hidden="true"></span>
           </div>
           <div class="faq-a-wrap"><div class="faq-a-inner"><p>Varies. Branding typically 4–8 weeks. Web projects depend on complexity. Campaigns are ongoing. I give a clear timeline upfront.</p></div></div>
         </div>
@@ -335,7 +260,7 @@
           <div class="faq-q">
             <span class="faq-n">06</span>
             <h3>How much does a project cost?</h3>
-            <span class="faq-toggle">+</span>
+            <span class="faq-toggle" aria-hidden="true"></span>
           </div>
           <div class="faq-a-wrap"><div class="faq-a-inner"><p>Every project is different, so the cost depends on the scope, timeline and deliverables. Once I understand what you need, I’ll put together a tailored proposal.</p></div></div>
         </div>
@@ -343,7 +268,7 @@
           <div class="faq-q">
             <span class="faq-n">07</span>
             <h3>What if I don't like the first design direction?</h3>
-            <span class="faq-toggle">+</span>
+            <span class="faq-toggle" aria-hidden="true"></span>
           </div>
           <div class="faq-a-wrap"><div class="faq-a-inner"><p>The project includes revisions. Typically 2–3 rounds per phase to explore directions and refine. If we need additional revisions beyond that, we can discuss timeline and costs separately.</p></div></div>
         </div>
@@ -351,7 +276,7 @@
           <div class="faq-q">
             <span class="faq-n">08</span>
             <h3>What if I already have a brand? Can you work on specific services?</h3>
-            <span class="faq-toggle">+</span>
+            <span class="faq-toggle" aria-hidden="true"></span>
           </div>
           <div class="faq-a-wrap"><div class="faq-a-inner"><p>Absolutely. I work with existing brands too. Whether you need just a website, social media content, a brand refresh, or anything in between, we can focus on exactly what you need.</p></div></div>
         </div>
@@ -359,7 +284,7 @@
           <div class="faq-q">
             <span class="faq-n">09</span>
             <h3>Can you keep working with me after launch?</h3>
-            <span class="faq-toggle">+</span>
+            <span class="faq-toggle" aria-hidden="true"></span>
           </div>
           <div class="faq-a-wrap"><div class="faq-a-inner"><p>Yes. I offer post launch support for branding updates, new campaigns, website tweaks, or any design work you need. We can set that up as ongoing retainer or per project.</p></div></div>
         </div>
@@ -367,7 +292,7 @@
           <div class="faq-q">
             <span class="faq-n">10</span>
             <h3>Do you work with businesses outside your country?</h3>
-            <span class="faq-toggle">+</span>
+            <span class="faq-toggle" aria-hidden="true"></span>
           </div>
           <div class="faq-a-wrap"><div class="faq-a-inner"><p>Yes, I work remotely with clients everywhere.</p></div></div>
         </div>
@@ -375,22 +300,19 @@
     </div>
   </section>
 
-  <!-- CTA: white, because #faq above it is pink -->
-  <section id="cta">
-    <div class="wrap">
-      <div class="cta-inner reveal">
-        <h2>Got something worth launching?<br />Let&rsquo;s put it into orbit.</h2>
-        <a href="inquiry.html" class="cta-pill">let&rsquo;s launch &rarr;</a>
-      </div>
-    </div>
-  </section>
 
 </div>
 
 <!-- FOOTER: markup lives in renderFooter() in common.js, shared by every page -->
 <div id="site-footer"></div>
 
+<!-- GSAP runs the opening and the hero parallax, Lenis smooths the wheel;
+     if they fail to load the page just starts in its finished state -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
 <script src="common.js"></script>
+<script src="gen.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
