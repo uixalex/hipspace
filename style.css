@@ -1258,3 +1258,10 @@ html { background: #fff; }
 .hero-intro .hero-title { grid-column: 1 / 8; }
 .hero-title h1 { white-space: nowrap; font-size: clamp(40px,4.6vw,96px); }
 @media (max-width: 720px) { .hero-title h1 { white-space: normal; } }
+/* phones: the headline on top, the intro under it, both full width
+   (after the desktop width rules above, which would otherwise win) */
+@media (max-width: 900px) {
+  .hero-intro { grid-template-columns: 1fr; row-gap: 20px; align-items: start; }
+  .hero-intro .hero-title, .hero-lede { grid-column: 1 / -1; max-width: none; justify-self: start; }
+  .hero-intro .hero-title { order: -1; }
+}
