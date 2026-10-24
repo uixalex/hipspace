@@ -1554,7 +1554,7 @@ h1, h2, h3, .sec-title { font-weight: 800; }
 /* the pixel look is gone: tiles carry soft mesh gradients with film grain,
    the generative pieces are dot matrices, and corners and markers are round */
 :root {
-  --violet: #8C6BFF; --rose: #E68BE6; --coral: #FF6A3D;
+  --violet: #8C6BFF; --rose: #E68BE6; --coral: #D4F56C;   /* acid lime (the name stays, the old orange is gone) */
   --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   --mesh-blue: radial-gradient(circle at 18% 18%, var(--violet) 0, transparent 55%), radial-gradient(circle at 85% 92%, var(--coral) 0, transparent 48%), var(--blue);
   --mesh-ink: radial-gradient(circle at 78% 18%, var(--blue) 0, transparent 58%), radial-gradient(circle at 12% 95%, var(--rose) 0, transparent 46%), var(--ink);
@@ -1738,3 +1738,71 @@ body:has(.work-page) { background: #fff; }
 .mnav-bar { height: 64px; align-items: center; }
 .mnav-bar .logo, .mnav-bar .logo:hover { font-size: 26px; line-height: 1; height: 44px; display: flex; align-items: center; }
 .mnav-close { align-self: center; }
+
+/* ================= flat colour + halftone (the gradient lives in the hero only) ================= */
+/* tiles are one flat brand colour; a field of halftone dots in a second colour
+   fades in from one corner, the studio's signature instead of a blur */
+.svc-tile::after, .next-card::after { content: none; }
+#services .svc-col:nth-child(1) .svc-tile, .about-values .svc-col:nth-child(4) .svc-tile, .next-card:nth-child(1) { background: var(--blue); --dots: var(--pink); --corner: 100% 100%; }
+#services .svc-col:nth-child(2) .svc-tile, .about-values .svc-col:nth-child(1) .svc-tile, .next-card:nth-child(2) { background: var(--ink); --dots: var(--blue); --corner: 0% 100%; }
+#services .svc-col:nth-child(3) .svc-tile, .about-values .svc-col:nth-child(2) .svc-tile, .next-card:nth-child(3) { background: var(--pink); --dots: var(--coral); --corner: 100% 0%; }
+#services .svc-col:nth-child(4) .svc-tile, .about-values .svc-col:nth-child(3) .svc-tile { background: var(--coral); --dots: var(--ink); --corner: 0% 0%; }
+.svc-tile::before, .next-card::before {
+  content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(circle, var(--dots) 0 38%, transparent 42%) 0 0 / 11px 11px;
+  -webkit-mask-image: radial-gradient(circle at var(--corner), #000 0%, rgba(0,0,0,.55) 30%, transparent 62%);
+          mask-image: radial-gradient(circle at var(--corner), #000 0%, rgba(0,0,0,.55) 30%, transparent 62%);
+}
+.svc-tile canvas { z-index: 1; }
+.next-card:nth-child(3) h3, .next-card:nth-child(3) p, .next-card:nth-child(3) .next-n { color: var(--ink); }
+
+/* ================= hand-made bits ================= */
+/* handwritten notes with a drawn arrow, a little crooked on purpose */
+.hand-note { display: inline-flex; align-items: center; gap: 6px; font-family: 'Caveat', cursive; font-weight: 700; font-size: clamp(22px,1.8vw,30px); line-height: 1; letter-spacing: 0; text-transform: none; color: var(--pink); transform: rotate(-4deg); }
+.hand-arrow { width: 46px; height: 32px; flex: 0 0 auto; }
+.hand-note-work { align-self: flex-end; margin-bottom: 6px; }
+.about-portrait { position: relative; overflow: visible; }
+.about-portrait img { border-radius: 18px; }
+.hand-note-me { position: absolute; right: -18px; top: 18px; z-index: 2; color: var(--blue); transform: rotate(6deg); flex-direction: row; }
+.hand-note-me .hand-arrow { order: 0; }
+.hand-note-ufo { margin-left: auto; padding: 0; border: 0; background: none; cursor: pointer; font-size: 22px; color: var(--pink); }
+.hand-note-ufo:hover { color: #fff; }
+.footer-bottom { display: flex; align-items: center; gap: 16px; }
+.ufo-egg { position: fixed; left: 0; top: 0; z-index: 200; pointer-events: none; width: auto; }
+@media (max-width: 900px) {
+  .hand-note-me { right: 8px; top: -14px; }
+  .hand-note-work { align-self: flex-start; }
+}
+/* the corner halftone stays in the corner, clear of the drawing */
+.svc-tile::before, .next-card::before {
+  background-size: 9px 9px;
+  -webkit-mask-image: radial-gradient(circle at var(--corner), #000 0%, rgba(0,0,0,.4) 18%, transparent 38%);
+          mask-image: radial-gradient(circle at var(--corner), #000 0%, rgba(0,0,0,.4) 18%, transparent 38%);
+}
+
+/* no corner halftone on the tiles, no handwritten notes */
+.svc-tile::before, .next-card::before { content: none; }
+.hand-note { display: none !important; }
+
+/* ================= footer UFO ================= */
+/* flies across over the wordmark, hovers once in the middle and beams down */
+.footer-sky { position: relative; height: 0; z-index: 3; pointer-events: none; }
+.footer-ufo { position: absolute; left: 0; top: clamp(-10px,-1vw,0px); width: 96px; animation: ufoFly 18s linear infinite; }
+.footer-ufo canvas { display: block; width: 96px; height: 42px; animation: ufoBob 1.6s ease-in-out infinite; }
+.footer-ufo-beam {
+  position: absolute; left: 50%; top: 38px; width: 120px; height: clamp(60px,9vw,150px); margin-left: -60px;
+  background: radial-gradient(circle, var(--pink) 0 34%, transparent 40%) 0 0 / 8px 8px;
+  clip-path: polygon(38% 0, 62% 0, 100% 100%, 0 100%); opacity: 0;
+  animation: ufoBeam 18s linear infinite;
+}
+@keyframes ufoFly {
+  0%   { transform: translateX(-140px); }
+  42%  { transform: translateX(calc(50vw - 48px)); }
+  58%  { transform: translateX(calc(50vw - 48px)); }
+  100% { transform: translateX(calc(100vw + 40px)); }
+}
+@keyframes ufoBeam { 0%, 44% { opacity: 0; } 47%, 55% { opacity: .75; } 58%, 100% { opacity: 0; } }
+@keyframes ufoBob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -5px; } }
+#contact { overflow: hidden; }
+@media (prefers-reduced-motion: reduce) { .footer-sky { display: none; } }
+

@@ -95,6 +95,16 @@ function heroParallax() {
   if (video && video.tagName === 'VIDEO') gsap.to(video, { yPercent: 7, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } });
 }
 
+// ---- the headline waits for the orbit in the hero to open (gen.js sends
+// 'hero:opened'); without the animation, or if it never comes, it goes anyway
+function afterOrbit(fn) {
+  let done = false;
+  const go = () => { if (!done) { done = true; fn(); } };
+  if (window.heroOrbitOpen || STILL.matches || !document.querySelector('canvas[data-story]')) return go();
+  document.addEventListener('hero:opened', go, { once: true });
+  setTimeout(go, 8000);
+}
+
 // ---- entrance: the menu slides down, the headline rises line by line out of
 // its mask, the reel opens from the bottom and settles out of a slight zoom
 function enter() {
@@ -110,18 +120,29 @@ function enter() {
   gsap.timeline({
     defaults: { ease: 'expo.out' },
     onComplete() {
+      // the headline stays hidden by hand once the class goes, until the orbit opens
+      if (!headlineIn) gsap.set(h1, { visibility: 'hidden' });
       root.classList.remove('enter');
-      gsap.set([nav, media, ...lines], { clearProps: 'all' });
+      gsap.set([nav, media], { clearProps: 'all' });
       gsap.set(video, { clearProps: 'transform' });
       heroParallax();
     }
   })
     // y: 0 replaces the CSS hiding offset, or GSAP would add the two together
     .fromTo(nav, { y: 0, yPercent: -100 }, { y: 0, yPercent: 0, duration: 1.1 }, 0)
-    .set(h1, { visibility: 'visible' }, .15)
-    .fromTo(lines, { yPercent: 105 }, { yPercent: 0, duration: 1.2, stagger: .1 }, .15)
     .fromTo(media, { clipPath: 'inset(100% 0% 0% 0%)' }, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.4, ease: 'expo.inOut' }, .25)
     .fromTo(video, { scale: 1.15 }, { scale: 1, duration: 1.8 }, .25);
+  let headlineIn = false;
+  const lede = document.querySelector('.hero-lede');
+  gsap.set(lede, { autoAlpha: 0 });
+  afterOrbit(() => {
+    headlineIn = true;
+    gsap.timeline()
+      .set(h1, { visibility: 'visible' })
+      .fromTo(lines, { yPercent: 105 }, { yPercent: 0, duration: 1.2, stagger: .1, ease: 'expo.out',
+        onComplete: () => gsap.set(lines, { clearProps: 'all' }) })
+      .fromTo(lede, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 1, ease: 'expo.out', clearProps: 'all' }, .2);
+  });
 }
 
 (() => {
@@ -137,6 +158,9 @@ function enter() {
   const labels = gsap.utils.toArray('.loader-meta .type').map(splitForTyping);
   const h1 = document.getElementById('hero-h1');
   const titleLetters = splitForTyping(h1);
+  // the intro under the headline waits with it for the orbit
+  const lede = document.querySelector('.hero-lede');
+  gsap.set(lede, { autoAlpha: 0 });
   const nav = document.querySelector('.hero-panel .nav');
   const count = document.getElementById('loader-count');
 
@@ -210,9 +234,13 @@ function enter() {
       }
     });
     tl.to(media, { clipPath: 'inset(0% 0% 0% 0%)', duration: 1.6, ease: 'expo.inOut' }, 0)
-      .to(video, { scale: 1, duration: 2.2, ease: 'expo.out' }, .4)
-      .set(h1, { visibility: 'visible' }, 1.2);
-    typeInto(tl, titleLetters, 1.2, .045);
+      .to(video, { scale: 1, duration: 2.2, ease: 'expo.out' }, .4);
+    // the headline types in once the orbit in the hero has opened
+    afterOrbit(() => {
+      const t = gsap.timeline().set(h1, { visibility: 'visible' });
+      typeInto(t, titleLetters, 0, .045);
+      t.fromTo(lede, { autoAlpha: 0, y: 16 }, { autoAlpha: 1, y: 0, duration: 1, ease: 'expo.out', clearProps: 'all' }, .3);
+    });
     // the menu comes down once, as one bar, while the reel rises
     tl.fromTo(nav, { yPercent: -100 }, { yPercent: 0, duration: 1, ease: 'power3.out' }, .5);
   }

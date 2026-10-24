@@ -38,18 +38,19 @@ const GEN_DPR = Math.min(1.5, window.devicePixelRatio || 1);
 
   const clamp01 = v => Math.min(1, Math.max(0, v));
   const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-  // ---- the opening (data-story): a signal ----
-  // A dark screen and one pulsing dot in the middle, the transmitter. Then a
-  // wave of dots goes out from it like sound or radio, and the mesh comes alive
-  // behind the wave front, with two fainter echoes following it.
-  const SIGNAL_START = .8, SIGNAL_RUN = 2.6;
+  // ---- the opening (data-story): an orbit that opens ----
+  // A small halftone planet appears in the dark with a tilted orbit round it and
+  // a satellite going round. Then the orbit opens: it widens and turns to face
+  // the viewer until it runs off the screen, and the mesh comes alive inside it.
+  // The page is told ('hero:opened') so the headline can follow.
+  const SIGNAL_START = 1.6, SIGNAL_RUN = 2.4;
   const SIGNAL_END = SIGNAL_START + SIGNAL_RUN + .8;   // seconds; fully open by then
 
   // the mesh: a smooth gradient map from ink through blue and violet into pink
   // and coral, so the field reads as a soft mesh gradient, not a palette
   const STOPS = [
     [0, '#0B0B0F'], [.26, '#151C9C'], [.44, '#3B43FE'], [.6, '#8C6BFF'],
-    [.74, '#E68BE6'], [.87, '#FF6A3D'], [1, '#FFE1EE']
+    [.74, '#E68BE6'], [.87, '#FFB0E8'], [1, '#FFE1EE']
   ].map(([p, hex]) => [p, parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)]);
   const gmap = (v) => {
     let i = 1;
@@ -88,7 +89,7 @@ const GEN_DPR = Math.min(1.5, window.devicePixelRatio || 1);
 
     // data-story: plays the signal opening once, the first time it is on screen
     const STORY = canvas.hasAttribute('data-story') && !still;
-    let storyStart = null;
+    let storyStart = null, openedSent = false;
     // a click or tap anywhere on the field sends out a new signal from there
     const pulses = [];
     // data-edge: one edge of the field breaks up into halftone dots that shrink
@@ -99,6 +100,9 @@ const GEN_DPR = Math.min(1.5, window.devicePixelRatio || 1);
     const SEED = parseFloat(canvas.dataset.seed || 0);
     // data-shape="planet": the field cut to a disc with a tilted ring round it
     const PLANET = canvas.dataset.shape === 'planet';
+    // data-overlay: the field sits over a video and only draws its dot edge;
+    // above the band it is see-through, and the band darkens into ink
+    const OVERLAY = canvas.hasAttribute('data-overlay');
 
     function draw(t) {
       const time = t / 1000 + SEED;
@@ -108,15 +112,25 @@ const GEN_DPR = Math.min(1.5, window.devicePixelRatio || 1);
       const sc = 3.2 / Math.max(cols, rows) * 2.2;   // noise scale: same look at any size
       const rad = Math.max(cols, rows) * .14;
       // the opening: how far the first wave has travelled, in cells from the middle
-      let open = Infinity, s = 0;
+      let open = Infinity, s = 0, op = 0;
       const ocx = cols / 2, ocy = rows / 2, far = Math.hypot(ocx, ocy) + 6;
+      const Rp = Math.min(cols, rows) * .13;              // the planet
+      const tilt = -.32, tc = Math.cos(tilt), ts = Math.sin(tilt);
       if (STORY) {
-        // wait in the dark until the home opening (html.intro) has finished, so
-        // the signal goes out where it can be seen
-        if (storyStart === null && !document.documentElement.classList.contains('intro')) storyStart = t;
+        // start once the loader has let go of the page, so it plays where it can be seen
+        if (storyStart === null && !document.documentElement.classList.contains('intro-lock')) storyStart = t;
         s = storyStart === null ? 0 : (t - storyStart) / 1000;
-        if (s < SIGNAL_END) open = ease(clamp01((s - SIGNAL_START) / SIGNAL_RUN)) * (far + 12);
+        if (s < SIGNAL_END) {
+          op = ease(clamp01((s - SIGNAL_START) / SIGNAL_RUN));   // 0 closed … 1 open
+          open = Rp * 2.3 + op * (far * 1.15);                     // the orbit's long radius
+        }
+        if (!openedSent && s > SIGNAL_START + SIGNAL_RUN * .55) {
+          openedSent = true; window.heroOrbitOpen = true;
+          document.dispatchEvent(new Event('hero:opened'));
+        }
       }
+      // the orbit turns from a flat tilted ellipse to a full circle as it opens
+      const asp = .3 + .7 * op, sat = s * 2.2;
       const BAND = 7;   // cells of dots at the wave front
       for (let k = pulses.length - 1; k >= 0; k--) if (t - pulses[k].t0 > 2200) pulses.splice(k, 1);
       // dot paths, one per colour, filled once at the end
@@ -144,11 +158,21 @@ const GEN_DPR = Math.min(1.5, window.devicePixelRatio || 1);
           let alpha = 255;
           // halftone patches drifting over the mesh: lighter dots of its own colour
           const h = noise(x * sc * 1.6 - time * .06 + 40, y * sc * 1.6 + time * .05) + near * .6;
-          let dr = full * Math.min(1, Math.max(0, (h - .58) / .3));
+          let dr = full * Math.min(1, Math.max(0, (h - .5) / .3));
           let dcol = DOT[Math.min(23, Math.round(Math.min(1, v + .22) * 23))];
+          // some patches drift through in lime instead, an accent on top of the mesh
+          if (!PLANET && noise(x * sc * 1.1 + 90 + time * .04, y * sc * 1.1 - time * .03) > .6) dcol = '#D4F56C';
           if (EDGE) {
             const band = rows * (TOP ? .4 : .26), from = rows - band;
             const k = TOP ? 1 - y / band : (y - from) / band;   // 0 inside … 1 at the edge
+            if (OVERLAY) {
+              if (k <= 0) { buf[i] = 0; continue; }
+              // the video sinks into ink while the dots grow and then shrink away
+              const wave = 1 + .25 * Math.sin(x * .45 + time * 1.4);
+              buf[i] = (Math.round(255 * clamp01((k - .15) / .55)) << 24) | 0x0F0B0B;
+              dot(x, y, full * clamp01(k / .3) * clamp01((1 - k * wave) / .7), DOT[Math.min(23, Math.round(Math.min(1, v + .25) * 23))]);
+              continue;
+            }
             if (k > 0) {
               // no hard line: the mesh fades out over the first part of the band
               // while dots of its own colour grow in, then the dots shrink to nothing
@@ -176,24 +200,28 @@ const GEN_DPR = Math.min(1.5, window.devicePixelRatio || 1);
             if (e < 1.3 && (w > 0 || d > 1)) { dr = full * (e < .6 ? 1 : .7); dcol = e < .6 ? '#FFFFFF' : PALETTE[2]; }
           }
           if (open !== Infinity) {
-            const d = Math.hypot(x + .5 - ocx, y + .5 - ocy), f = d - open;
-            if (f > BAND || open <= 0) {
-              // not reached yet: dark, apart from the pulsing transmitter
-              alpha = 0;
-              const beat = .55 + .45 * Math.sin(s * 6);
-              dr = d < 1.6 ? full * (s < SIGNAL_START ? clamp01(s / .4) : 1) * beat : 0;
-              dcol = '#FFFFFF';
-            } else if (f > 0) {
-              // the wave front: dots of the mesh's colour, biggest at the very front
-              alpha = 0;
-              dr = full * (.35 + .65 * (1 - f / BAND));
-              dcol = DOT[Math.min(23, Math.round(Math.min(1, v + .3) * 23))];
-            } else {
-              // behind the front the mesh is live; two echoes ride through it
-              for (const lag of [9, 18]) {
-                const e = Math.abs(f + lag);
-                if (e < 1.4) { dr = Math.max(dr, full * (1 - e / 1.4) * (lag === 9 ? .9 : .6)); dcol = DOT[Math.min(23, Math.round(Math.min(1, v + .3) * 23))]; }
+            const px = x + .5 - ocx, py = y + .5 - ocy, d = Math.hypot(px, py);
+            const u = px * tc + py * ts, w = -px * ts + py * tc;
+            const f = Math.hypot(u, w / asp) - open;      // distance to the orbit, in cells
+            const grow = clamp01(s / .6), mcol = DOT[Math.min(23, Math.round(Math.min(1, v + .3) * 23))];
+            // still closed, or outside the opening orbit: dark
+            if (f > 0 || op < .02) {
+              alpha = 0; dr = 0;
+              // the orbit line: dots, its far half hidden behind the planet while closed
+              if (Math.abs(f) < 1.6 && (op > .05 || w > 0 || d > Rp)) { dr = full * (1 - Math.abs(f) / 1.6) * grow; dcol = op > .05 ? mcol : '#FFFFFF'; }
+              // the planet, a halftone disc, before the orbit opens round it
+              if (op < .05 && d < Rp * grow) { dr = full * (.45 + .55 * (1 - d / Rp)); dcol = mcol; }
+              // the satellite going round the orbit
+              if (op < .05) {
+                const sx = Math.cos(sat) * open, sy = Math.sin(sat) * open * asp;
+                const gx = sx * tc - sy * ts, gy = sx * ts + sy * tc;
+                if (Math.hypot(px - gx, py - gy) < 1.3 * grow && (Math.sin(sat) > 0 || Math.hypot(gx, gy) > Rp)) { dr = full; dcol = '#FFFFFF'; }
               }
+            } else if (f > -BAND && op > 0) {
+              // just inside the opening orbit: dots of the mesh's colour, biggest at the edge
+              alpha = Math.round(255 * clamp01(-f / BAND));
+              dr = Math.max(dr, full * (1 + f / BAND));
+              dcol = mcol;
             }
           }
           // signals sent by a click: a ring of dots travelling out from the point

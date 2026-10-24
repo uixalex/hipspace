@@ -178,6 +178,8 @@ function renderFooter() {
       </div>
 
       <!-- the wordmark across the full width (common.js fits it to the width) -->
+      <!-- a dot UFO keeps flying over the wordmark, stopping once to beam it -->
+      <div class="footer-sky" aria-hidden="true"><div class="footer-ufo"><canvas width="96" height="42"></canvas><span class="footer-ufo-beam"></span></div></div>
       <div class="footer-mark" id="footer-mark" aria-hidden="true">${[...'HIPSPACE'].map((c, k) => `<span style="--k:${k}">${c}</span>`).join('')}</div>
 
       <div class="footer-bottom">
@@ -185,6 +187,17 @@ function renderFooter() {
       </div>
     </footer>
   `;
+
+  // the footer UFO: the same dot sprite as the easter egg, drawn once
+  const ufoCv = mount.querySelector('.footer-ufo canvas');
+  if (ufoCv) {
+    const SPR = ['.....wwwwww.....', '....wbbbbbbw....', '..pppppppppppp..', '.bbbbbbbbbbbbbb.', 'bbwbbwbbwbbwbbwb', '.bbbbbbbbbbbbbb.', '...pppp..pppp...'];
+    const COLS = { w: '#FFFFFF', b: '#3B43FE', p: '#F28AD9' }, S = 6, x = ufoCv.getContext('2d');
+    SPR.forEach((row, j) => [...row].forEach((ch, i) => {
+      if (ch === '.') return;
+      x.fillStyle = COLS[ch]; x.beginPath(); x.arc(i * S + S / 2, j * S + S / 2, S * .42, 0, Math.PI * 2); x.fill();
+    }));
+  }
 
   // HIPSPACE runs exactly edge to edge, whatever the screen
   const mark = document.getElementById('footer-mark');
@@ -309,3 +322,54 @@ window.addEventListener('scroll', () => {
   sweepQueued = true;
   requestAnimationFrame(() => { sweepQueued = false; revealVisible(); });
 }, { passive: true });
+
+// ---------- easter egg: a UFO ----------
+// Type "ufo" anywhere (or press the note in the footer) and a dot-matrix UFO
+// flies across the screen, stops for a quick look with its beam, and leaves.
+(() => {
+  const UFO = ['.....wwwwww.....', '....wbbbbbbw....', '..pppppppppppp..', '.bbbbbbbbbbbbbb.', 'bbwbbwbbwbbwbbwb', '.bbbbbbbbbbbbbb.', '...pppp..pppp...'];
+  const COL = { w: '#FFFFFF', b: '#3B43FE', p: '#F28AD9' };
+  let flying = false;
+  function fly() {
+    if (flying || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    flying = true;
+    const S = 7, W = UFO[0].length * S, H = UFO.length * S, BEAM = 120;
+    const cv = document.createElement('canvas');
+    cv.className = 'ufo-egg'; cv.width = W; cv.height = H + BEAM;
+    cv.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(cv);
+    const ctx = cv.getContext('2d'), t0 = performance.now(), DUR = 4200, y0 = innerHeight * .28;
+    const frame = (t) => {
+      const k = (t - t0) / DUR;
+      if (k >= 1) { cv.remove(); flying = false; return; }
+      // in from the left, a pause in the middle, then off up and to the right
+      const e = k < .35 ? k / .35 * .5 : k < .65 ? .5 : .5 + (k - .65) / .35 * .7;
+      const x = -W + e * (innerWidth + W), y = y0 - (k > .65 ? Math.pow((k - .65) / .35, 2) * y0 * 1.4 : 0) + Math.sin(t / 180) * 4;
+      cv.style.transform = `translate(${x}px, ${y}px)`;
+      ctx.clearRect(0, 0, cv.width, cv.height);
+      UFO.forEach((row, j) => [...row].forEach((ch, i) => {
+        if (ch === '.') return;
+        ctx.fillStyle = COL[ch]; ctx.beginPath(); ctx.arc(i * S + S / 2, j * S + S / 2, S * .42, 0, Math.PI * 2); ctx.fill();
+      }));
+      // the beam, only while it hovers in the middle
+      if (k > .38 && k < .62) {
+        ctx.fillStyle = 'rgba(242,138,217,.55)';
+        for (let y = 0; y < BEAM; y += S) {
+          const half = (1.5 + y / BEAM * 5) * S;
+          for (let xx = W / 2 - half; xx < W / 2 + half; xx += S) {
+            if ((xx / S + y / S + Math.floor(t / 90)) % 2 < 1) { ctx.beginPath(); ctx.arc(xx, H + y, S * .3, 0, Math.PI * 2); ctx.fill(); }
+          }
+        }
+      }
+      requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+  }
+  let typed = '';
+  window.addEventListener('keydown', (e) => {
+    if (e.target.closest && e.target.closest('input, textarea')) return;
+    typed = (typed + (e.key || '').toLowerCase()).slice(-3);
+    if (typed === 'ufo') fly();
+  });
+  document.addEventListener('click', (e) => { if (e.target.closest('[data-ufo]')) fly(); });
+})();
