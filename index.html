@@ -33,7 +33,7 @@
 <meta name="twitter:image" content="https://www.hipspacestudio.com/assets/og-cover.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="style.css" />
 <script>
   // The loading opening (HIPSPACE counter, reel curtain, typed headline) is
@@ -102,7 +102,7 @@
   /* the copy is in the HTML, but .reveal starts at opacity:0 and JS uncovers it;
      with JS off it would be present and still invisible */
   .reveal, .reveal-lines > *,
-  .reveal .work-row, .reveal .service-row, .reveal .faq-item {
+  .reveal .work-row, .reveal .service-row, .reveal .faq-item, .reveal .pr-step {
     opacity: 1 !important; transform: none !important;
   }
 </style></noscript>
@@ -123,9 +123,9 @@
         <div class="nav-inner">
           <a href="index.html" class="logo">HIPSPACE</a>
           <nav class="nav-links">
-            <a href="#hero-intro">about</a>
+            <a href="about.html">about</a>
             <a href="#services">services</a>
-            <a href="#work">work</a>
+            <a href="work.html">work</a>
           </nav>
           <div class="nav-right">
             <a href="inquiry.html" class="nav-cta">let's launch</a>
@@ -194,19 +194,68 @@
   </section>
 
   <!-- WORK -->
-  <!-- the same grid as the other sections: heading and the project rows on
-       the left, a sticky preview on the right (script.js) -->
+  <!-- big project cards on an asymmetric grid, wide and narrow swapping sides
+       row by row; filled from PROJECTS by script.js -->
   <section id="work" class="sec sec-dark">
-    <div class="wrap sec-grid">
-      <div class="sec-left">
-        <h2 class="sec-title reveal">Missions we've completed.</h2>
-        <div class="wk-list reveal" id="wk-list"></div>
+    <div class="wrap">
+      <div class="wk-head reveal">
+        <h2 class="sec-title">Missions we've completed.</h2>
       </div>
-      <div class="sec-right wk-side">
-        <div class="wk-preview" aria-hidden="true">
-          <img id="wk-img" alt="" />
-          <canvas id="wk-swap"></canvas>
+      <div class="wk-grid2 reveal" id="wk-grid"></div>
+      <div class="wk-all reveal"><a href="work.html" class="pr-cta">all work <span aria-hidden="true">→</span></a></div>
+    </div>
+    <!-- follows the pointer over a card -->
+    <div class="wk-cursor" id="wk-cursor" aria-hidden="true">View project</div>
+  </section>
+
+  <!-- PROCESS -->
+  <!-- the four stages every project moves through: heading and intro on top,
+       then the steps side by side on one timeline -->
+  <section id="process" class="sec sec-light">
+    <div class="wrap">
+      <div class="sec-grid pr-head reveal">
+        <h2 class="sec-title sec-left">How a mission takes off.</h2>
+        <div class="sec-right pr-intro">
+          <p>Whether it's a brand, a website or a digital product like a web or mobile app, every project moves through the same four stages, so you always know what's happening and what comes next.</p>
         </div>
+      </div>
+      <!-- the timeline is a launch: the rocket flies along the line as you scroll (gen.js) -->
+      <div class="pr-track">
+      <canvas class="pr-launch" aria-hidden="true"></canvas>
+      <ol class="pr-list reveal" id="pr-list">
+        <li class="pr-step">
+          <span class="pr-n">01</span>
+          <div class="pr-body">
+            <h3>Discover &amp; define</h3>
+            <p>We start with a call and a short brief to get to know your business, your goals and your audience. Then we define what makes you different and, for websites and apps, who will use them and which features matter most.</p>
+            <ul class="pr-tags"><li>Kick-off call</li><li>Research</li><li>Positioning</li><li>Messaging</li><li>User research</li><li>Feature scope</li></ul>
+          </div>
+        </li>
+        <li class="pr-step">
+          <span class="pr-n">02</span>
+          <div class="pr-body">
+            <h3>Concept &amp; UX</h3>
+            <p>We explore creative directions through moodboards and choose the strongest one together. For websites and apps we map the user flows and wireframes, then turn them into a clickable prototype you can try out and test.</p>
+            <ul class="pr-tags"><li>Moodboards</li><li>Creative direction</li><li>User flows</li><li>Wireframes</li><li>Clickable prototype</li><li>Usability testing</li></ul>
+          </div>
+        </li>
+        <li class="pr-step">
+          <span class="pr-n">03</span>
+          <div class="pr-body">
+            <h3>Design</h3>
+            <p>The chosen direction grows into the full system: identity, website and app UI for desktop and mobile, campaign assets and a design system of reusable components, refined over two to three rounds of feedback.</p>
+            <ul class="pr-tags"><li>Identity</li><li>UI design</li><li>Design system</li><li>Mobile &amp; desktop</li><li>Social</li></ul>
+          </div>
+        </li>
+        <li class="pr-step">
+          <span class="pr-n">04</span>
+          <div class="pr-body">
+            <h3>Launch &amp; beyond</h3>
+            <p>Smaller sites we build ourselves in Framer. For larger websites and apps we hand your developers everything they need. We test, launch, and can stay on for new features, campaigns and ongoing design work.</p>
+            <ul class="pr-tags"><li>Framer build</li><li>Dev handoff</li><li>Testing</li><li>Launch</li><li>Guidelines</li><li>Ongoing support</li></ul>
+          </div>
+        </li>
+      </ol>
       </div>
     </div>
   </section>
@@ -222,7 +271,7 @@
             <h3>What does a project with Hipspace include?</h3>
             <span class="faq-toggle" aria-hidden="true"></span>
           </div>
-          <div class="faq-a-wrap"><div class="faq-a-inner"><p>Depends on the service. Branding includes strategy, positioning, logos, visual systems, packaging and print materials. Web design includes UI/UX, responsive design, prototypes and build. Social and campaign design includes visual direction and ongoing content design.</p></div></div>
+          <div class="faq-a-wrap"><div class="faq-a-inner"><p>Depends on the service. Branding includes strategy, positioning, logos, visual systems, packaging and print materials. Web design includes UI/UX, responsive design, prototypes and build. Product design covers web and mobile apps: user research, user flows, wireframes, clickable prototypes and the final UI. Social and campaign design includes visual direction and ongoing content design.</p></div></div>
         </div>
         <div class="faq-item">
           <div class="faq-q">

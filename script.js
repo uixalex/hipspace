@@ -277,96 +277,11 @@ document.querySelectorAll('.service-row').forEach(row => {
   }
 });
 
-// ---------- work index ----------
-// Five projects as rows (number · name · kind of work · arrow), the same as the
-// FAQ and the services. Pointing at a row brings its picture into the preview
-// on the left: the old picture breaks into pixels that drop away in random
-// order over the new one. Each row links to the live site until the case
-// studies are in.
+// ---------- work ----------
+// The first projects on the home page; work.html shows them all (buildWorkGrid
+// lives in common.js).
 const HOME_WORK = 5;
-(() => {
-  const list = PROJECTS.slice(0, HOME_WORK);
-  const wrap = document.getElementById('wk-list');
-  const img = document.getElementById('wk-img');
-  const cv = document.getElementById('wk-swap');
-  const ctx = cv.getContext('2d');
-
-  list.forEach((p, i) => {
-    const a = document.createElement('a');
-    a.className = 'wk-row';
-    a.href = p.site;
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
-    a.innerHTML = `
-      ${p.src ? `<img class="wk-row-img" src="${p.src}" alt="${p.name} — ${p.meta} by Hipspace" loading="lazy" decoding="async" />` : ''}
-      <h3>${p.name}</h3>
-      <span class="sec-label wk-kind">${p.meta}</span>
-      <span class="wk-arrow" aria-hidden="true">&#8599;</span>`;
-    a.addEventListener('mouseenter', () => show(i));
-    a.addEventListener('focus', () => show(i));
-    wrap.appendChild(a);
-  });
-  // warm the cache so a swap never waits on the network
-  list.forEach(p => { if (p.src) { const im = new Image(); im.src = p.src; } });
-
-  // The picture changes with a short cross-fade. Its edges break up into the
-  // site's pixels: square blocks in the section's ink, with a few blue and
-  // lilac ones, thinning out toward the middle and re-rolling a few times a
-  // second, so the border is always gently alive. The window floats (CSS).
-  let current = -1;
-  const hash = (x, y, z) => { let h = (x * 374761393 + y * 668265263 + z * 1442695041) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0) / 4294967295; };
-  function show(i) {
-    if (i === current) return;
-    current = i;
-    wrap.querySelectorAll('.wk-row').forEach((r, k) => r.classList.toggle('is-on', k === i));
-    const next = list[i].src;
-    if (!img.getAttribute('src')) { img.src = next; return; }
-    img.style.opacity = 0;
-    setTimeout(() => {
-      if (list[current].src !== next) return;
-      img.src = next;
-      const on = () => { img.style.opacity = 1; };
-      if (img.complete) on(); else img.onload = on;
-    }, 160);
-  }
-  const box = img.parentElement;
-  // The picture's own edge breaks into pixels, like the bottom of the hero
-  // field: near the border the image turns into coarse blocks of its own
-  // colour, and toward the rim more and more of them drop out to the ink
-  // behind. It is still; it is only redrawn when the picture changes.
-  const BAND = 6, COLS = 52;
-  const tiny = document.createElement('canvas'), tctx = tiny.getContext('2d');
-  const drawEdge = () => {
-    const W = box.offsetWidth, H = box.offsetHeight, src = img;
-    if (!W || !H || !src.naturalWidth) return;
-    const cols = COLS, rows = Math.max(1, Math.round(cols * H / W));
-    cv.width = cols; cv.height = rows; tiny.width = cols; tiny.height = rows;
-    // the picture at one pixel per block, cropped like object-fit: cover
-    const sc = Math.max(W / src.naturalWidth, H / src.naturalHeight);
-    const sw = W / sc, sh = H / sc;
-    tctx.drawImage(src, (src.naturalWidth - sw) / 2, (src.naturalHeight - sh) / 2, sw, sh, 0, 0, cols, rows);
-    ctx.clearRect(0, 0, cols, rows);
-    const seed = current * 97 + 13;
-    for (let y = 0; y < rows; y++) for (let x = 0; x < cols; x++) {
-      const d = Math.min(x, y, cols - 1 - x, rows - 1 - y);
-      if (d >= BAND) continue;
-      const k = 1 - d / BAND;                       // 0 inside … 1 at the rim
-      // blocks a little bigger in clumps, so the edge is ragged, not even
-      const r = hash(x >> 1, y >> 1, seed) * .6 + hash(x, y, seed) * .4;
-      if (r < k * .9) { ctx.fillStyle = '#0B0B0F'; ctx.fillRect(x, y, 1, 1); }  // dropped out
-      else ctx.drawImage(tiny, x, y, 1, 1, x, y, 1, 1);                         // the picture, as a block
-    }
-  };
-  const startEdge = () => {};
-  const stopEdge = () => {};
-  // edge effect off for now: the picture shows clean and only floats
-  // img.addEventListener('load', drawEdge);
-  cv.style.opacity = 1;
-  // the window only shows while the pointer is on the list
-  wrap.addEventListener('mouseenter', () => { box.classList.add('is-open'); startEdge(); });
-  wrap.addEventListener('mouseleave', () => { box.classList.remove('is-open'); stopEdge(); });
-  show(0);
-})();
+buildWorkGrid(document.getElementById('wk-grid'), PROJECTS.filter(p => p.src).slice(0, HOME_WORK));
 
 // ---------- FAQ ----------
 document.querySelectorAll('.faq-item').forEach(item => {

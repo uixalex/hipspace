@@ -14,24 +14,22 @@
 <meta name="theme-color" content="#3B43FE" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
 <div class="page">
 
-  <!-- HERO: full-bleed project image with the nav sitting over it -->
-  <section class="cs-hero">
-    <div class="detail-image" id="detail-image"></div>
-
+  <!-- TOP: white; the cover picture first, then the project under it -->
+  <section class="cs-top">
     <header class="nav">
       <div class="nav-inner">
         <a href="index.html" class="logo">HIPSPACE</a>
         <nav class="nav-links">
-          <a href="index.html#hero-intro">about</a>
+          <a href="about.html">about</a>
           <a href="index.html#services">services</a>
-          <a href="index.html#work">work</a>
+          <a href="work.html">work</a>
         </nav>
         <div class="nav-right">
           <a href="inquiry.html" class="nav-cta">let's launch</a>
@@ -39,31 +37,36 @@
       </div>
     </header>
 
-    <!-- the image carries the page; the name is here for screen readers and SEO -->
-    <h1 class="sr-only" id="detail-name-sr"></h1>
+    <div class="wrap"><div class="cs-cover" id="detail-image"></div></div>
+    <!-- under the cover: name, kind of work and the live link on the left; the
+         story and what was done on the right -->
+    <div class="wrap cs-intro">
+      <div class="cs-intro-main">
+        <h1 id="detail-name"></h1>
+        <a class="pr-cta" id="detail-site" href="#" target="_blank" rel="noreferrer">visit site <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="cs-intro-side">
+        <p class="detail-description" id="detail-desc"></p>
+        <div class="cs-scope">
+          <span class="sec-label">What we did</span>
+          <ul class="cs-scope-list" id="detail-scope"></ul>
+        </div>
+      </div>
+    </div>
   </section>
 
   <div class="cs-body">
-    <div class="detail-info wrap">
-      <div class="detail-intro">
-        <h2 id="detail-name"></h2>
-        <a class="cta-pill" id="detail-site" href="#" target="_blank" rel="noreferrer">visit site <span aria-hidden="true">↗</span></a>
-      </div>
-      <p class="detail-description" id="detail-desc"></p>
-    </div>
-
     <div class="detail-gallery wrap" id="detail-gallery"></div>
 
-    <section class="detail-related">
+    <!-- more work: three project cards on white, which the footer's dot edge expects above it -->
+    <section class="detail-related sec sec-light">
       <div class="wrap">
-        <div class="detail-related-head">
-          <span class="mono">keep exploring</span>
-          <h2>More work from the studio.</h2>
+        <div class="detail-related-head reveal">
+          <span class="sec-label">keep exploring</span>
+          <h2 class="sec-title">More missions.</h2>
         </div>
+        <div class="cs-cards reveal" id="detail-related-list"></div>
       </div>
-      <!-- outside .wrap: .work-row-inner carries its own gutter so the blue
-           hover background can run edge to edge, exactly as on the home page -->
-      <div class="work-list reveal" id="detail-related-list"></div>
     </section>
   </div>
 

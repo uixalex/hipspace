@@ -5,13 +5,28 @@
 // Work rows link straight to `site` (the live project) for now. `src` is the
 // hover peek image — a project without one simply shows no peek card, so adding
 // the file later is enough to bring it back.
-// `hero`, `gallery` and `body` feed case-study.html, which is finished but not
-// linked from the site yet: those get filled in per project as case studies are written.
+// `hero`, `gallery` and `body` feed case-study.html; a project with
+// `caseStudy: true` links there instead of to its live site. A gallery entry is a
+// path, or { src, wide: true } for a full-width image (the first one always is).
+// `scope` lists what was done; without it the case study splits up `meta`.
 const PROJECTS = [
   { n: "01", name: "MOKE",          meta: "Visual Identity & Web Design", src: "assets/moke-cover.webp",      site: "https://mokeinternational.com/",  gallery: [], body: "An electric-vehicle brand with a beach-club soul, brought to life through a playful and immersive website." },
   { n: "02", name: "Moving Portal", meta: "Visual Identity & Web Design", src: "assets/moving-portal.webp", site: "https://themovingportal.co.uk/",  gallery: [], body: "" },
   { n: "03", name: "Bytek",         meta: "Branding & Web Design", src: "assets/bytek.webp",         site: "https://bytek.ba/",               gallery: [], body: "" },
-  { n: "04", name: "Rello",         meta: "Visual Identity & Web Design", src: "assets/rello.webp",         site: "https://rello.co.uk/",            gallery: [], body: "" },
+  { n: "04", name: "Rello",         meta: "Product, Web & Visual Identity", src: "assets/rello.webp",         site: "https://rello.co.uk/",
+    caseStudy: true, hero: "assets/rello-phone.jpg",
+    scope: ["Product strategy", "UX research & flows", "Web platform UI", "Mobile app UI", "Design system", "Visual identity", "Marketing website"],
+    gallery: [
+      "assets/case-rello-website.webp",
+      "assets/rello-app-icon.png",
+      "assets/rello-home-screen.jpg",
+      { src: "assets/rello-color.png", wide: true },
+      { src: "assets/rello-dashboard.jpg", wide: true },
+      { src: "assets/rello-desktop-screens.jpg", wide: true },
+      { src: "assets/rello-app-screens.jpg", wide: true },
+      { src: "assets/case-rello-social.jpg", wide: true }
+    ],
+    body: "Rello takes the stress out of buying and selling a home in the UK. We designed the product from the ground up: a web platform and a mobile app that let estate agents, lawyers and their clients follow the whole property chain in one place, with a status colour for every stage, so anyone can see at a glance who is ready to exchange. Around it we built the visual identity, from the house-shaped e of the logo to the navy and teal palette, and the marketing website that brings it all together." },
   { n: "05", name: "OOEJ",          meta: "Web Design", src: "assets/ooej.webp",          site: "https://ooej.org/",               gallery: [], body: "" },
   { n: "06", name: "RAWR",          meta: "Web Design", src: "assets/rawr.webp",          site: "https://rawr-fawn.vercel.app/",   gallery: [], body: "" },
   { n: "07", name: "Rubedo",        meta: "Web Design", src: "assets/rubedo.webp",        site: "https://www.rubedolife.com/",     gallery: [], body: "" },
@@ -23,102 +38,71 @@ const PROJECTS = [
 // the emulated mouse events it does fire would otherwise trigger mouse effects.
 const CAN_HOVER = window.matchMedia('(hover: hover)').matches;
 
-// ---------- work rows ----------
-// Shared by the home work list and the “more work” list on a case study.
-function buildWorkRows(container, projects) {
-  projects.forEach((p, i) => {
-    const row = document.createElement('div');
-    row.className = 'work-row';
-    // no image yet means no peek: the row still works, and dropping the file in
-    // later is all it takes to bring the saucer and card back.
-    // A real <img> rather than a background: it carries alt text, can turn up in
-    // image search, and lazy-loads instead of downloading behind an opacity:0 card.
-    const peek = p.src ? `
-        <div class="work-peek">
-          <div class="work-peek-saucer-wrap">
-            <img class="work-peek-saucer" src="assets/saucer-blue.png" alt="" style="animation-delay:${i * 0.3}s" />
-          </div>
-          <div class="work-peek-beam"></div>
-          <div class="work-peek-card" style="animation-delay:${i * 0.4}s">
-            <img class="work-peek-img" src="${p.src}"
-                 alt="${p.name} — ${p.meta} by Hipspace"
-                 loading="lazy" decoding="async" />
-          </div>
-        </div>` : '';
-    row.innerHTML = `
-      <a class="work-row-inner" href="${p.site}" target="_blank" rel="noopener noreferrer">
-        <span class="work-n">${p.n}</span>
-        <h3 class="work-name">${p.name}</h3>
-        <span class="work-end">
-          <span class="work-meta">${p.meta}</span>
-          <span class="work-arrow" aria-hidden="true">↗</span>
-        </span>
-${peek}
-      </a>
-    `;
-    attachPeekParallax(row);
-    container.appendChild(row);
+// where a work row goes: the case study once it's written, the live site until then
+function projectLink(p) {
+  return p.caseStudy
+    ? `href="case-study.html?p=${p.n}"`
+    : `href="${p.site}" target="_blank" rel="noopener noreferrer"`;
+}
+
+// ---------- work grid ----------
+// Big project cards: a wide one and a narrow one per row, the wide one
+// swapping sides each row. Hovering a card brings a pill to the pointer.
+function buildWorkGrid(grid, list) {
+  grid.innerHTML = list.map((p, i) => {
+    // rows go wide-narrow, narrow-wide, wide-narrow …
+    const wide = (i % 4 === 0 || i % 4 === 3);
+    // an odd last card has its row to itself, so it takes the full width
+    const full = list.length % 2 === 1 && i === list.length - 1;
+    return `
+    <a class="wk-card2${full ? ' is-full' : wide ? ' is-wide' : ''}" ${projectLink(p)}>
+      <span class="wk-media2">
+        <img src="${p.src}" alt="${p.name}: ${p.meta} by Hipspace" loading="lazy" decoding="async" />
+      </span>
+      <span class="wk-meta2">
+        <span class="wk-name2">${p.name}</span>
+        <span class="sec-label">${p.meta}</span>
+        <span class="wk-go" aria-hidden="true">${p.caseStudy ? '&#8594;' : '&#8599;'}</span>
+      </span>
+    </a>`;
+  }).join('');
+
+  // the pill trails the pointer a little, and only shows over a card
+  const pill = document.getElementById('wk-cursor');
+  if (!pill || !CAN_HOVER) return;
+  let x = 0, y = 0, tx = 0, ty = 0, raf = null;
+  const follow = () => {
+    x += (tx - x) * .2; y += (ty - y) * .2;
+    pill.style.transform = `translate(${x}px, ${y}px)`;
+    raf = Math.abs(tx - x) + Math.abs(ty - y) > .3 ? requestAnimationFrame(follow) : null;
+  };
+  grid.addEventListener('pointermove', (e) => {
+    tx = e.clientX; ty = e.clientY;
+    if (!pill.classList.contains('is-on')) { x = tx; y = ty; }
+    if (raf === null) raf = requestAnimationFrame(follow);
+  });
+  grid.querySelectorAll('.wk-card2').forEach(card => {
+    card.addEventListener('pointerenter', () => {
+      pill.textContent = card.getAttribute('target') ? 'Visit site' : 'View case study';
+      pill.classList.add('is-on');
+    });
+    card.addEventListener('pointerleave', () => pill.classList.remove('is-on'));
   });
 }
 
-// ---------- work peek parallax ----------
-const PEEK_X = 14, PEEK_Y = 8, PEEK_EASE = 0.12;
-let peekRow = null, peekSettleRow = null, peekRaf = null;
-const peekTarget = { x: 0, y: 0 };
-const peekCur = { x: 0, y: 0 };
-
-function peekLoop() {
-  peekCur.x += (peekTarget.x - peekCur.x) * PEEK_EASE;
-  peekCur.y += (peekTarget.y - peekCur.y) * PEEK_EASE;
-  const settled = Math.abs(peekTarget.x - peekCur.x) < 0.1 && Math.abs(peekTarget.y - peekCur.y) < 0.1;
-  if (peekRow) {
-    peekRow.style.setProperty('--px', peekCur.x.toFixed(2) + 'px');
-    peekRow.style.setProperty('--py', peekCur.y.toFixed(2) + 'px');
-    peekRaf = requestAnimationFrame(peekLoop);
-    return;
-  }
-  // no active row: keep easing the last one back to rest, then clean up
-  if (peekSettleRow) {
-    if (settled) {
-      peekSettleRow.style.removeProperty('--px');
-      peekSettleRow.style.removeProperty('--py');
-      peekSettleRow = null;
-    } else {
-      peekSettleRow.style.setProperty('--px', peekCur.x.toFixed(2) + 'px');
-      peekSettleRow.style.setProperty('--py', peekCur.y.toFixed(2) + 'px');
-    }
-  }
-  peekRaf = peekSettleRow ? requestAnimationFrame(peekLoop) : null;
-}
-
-function startPeekLoop() { if (peekRaf === null) peekRaf = requestAnimationFrame(peekLoop); }
-
-function attachPeekParallax(row) {
-  row.addEventListener('mouseenter', () => {
-    if (peekSettleRow && peekSettleRow !== row) {
-      peekSettleRow.style.removeProperty('--px');
-      peekSettleRow.style.removeProperty('--py');
-    }
-    peekSettleRow = null;
-    peekRow = row;
-    peekCur.x = 0; peekCur.y = 0;
-    peekTarget.x = 0; peekTarget.y = 0;
-    startPeekLoop();
-  });
-  row.addEventListener('mousemove', (e) => {
-    if (peekRow !== row) return;
-    const r = row.getBoundingClientRect();
-    peekTarget.x = ((e.clientX - r.left) / r.width * 2 - 1) * PEEK_X;
-    peekTarget.y = ((e.clientY - r.top) / r.height * 2 - 1) * PEEK_Y;
-    startPeekLoop();
-  }, { passive: true });
-  row.addEventListener('mouseleave', () => {
-    if (peekRow !== row) return;
-    peekRow = null;
-    peekSettleRow = row;
-    peekTarget.x = 0; peekTarget.y = 0;
-    startPeekLoop();
-  });
+// ---------- project cards ----------
+// The “more work” list under a case study: the same cards as the home work
+// grid, picture, name, kind of work and a round arrow.
+function buildProjectCards(container, projects) {
+  container.innerHTML = projects.map(p => `
+    <a class="wk-card2" ${projectLink(p)}>
+      <span class="wk-media2">${p.src ? `<img src="${p.src}" alt="${p.name}: ${p.meta} by Hipspace" loading="lazy" decoding="async" />` : ''}</span>
+      <span class="wk-meta2">
+        <span class="wk-name2">${p.name}</span>
+        <span class="sec-label">${p.meta}</span>
+        <span class="wk-go" aria-hidden="true">${p.caseStudy ? '&#8594;' : '&#8599;'}</span>
+      </span>
+    </a>`).join('');
 }
 
 // ---------- accordion panels ----------
@@ -294,7 +278,7 @@ const io = new IntersectionObserver((entries) => {
     if (!e.isIntersecting) return;
     // rows are built by the page script after this observer is set up, so the
     // cascade delays are stamped on here, once the list is actually on screen
-    e.target.querySelectorAll(':scope > .work-row, :scope > .service-row, :scope > .faq-item')
+    e.target.querySelectorAll(':scope > .work-row, :scope > .service-row, :scope > .faq-item, :scope > .pr-step, :scope > .wk-card2')
       .forEach((row, i) => row.style.setProperty('--rd', Math.min(i, 8) * 80 + 'ms'));
     e.target.classList.add('in-view');
     io.unobserve(e.target);
