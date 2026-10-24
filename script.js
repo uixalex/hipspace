@@ -280,7 +280,7 @@ document.querySelectorAll('.service-row').forEach(row => {
 // ---------- work ----------
 // The first projects on the home page; work.html shows them all (buildWorkGrid
 // lives in common.js).
-const HOME_WORK = 5;
+const HOME_WORK = 4;
 buildWorkGrid(document.getElementById('wk-grid'), PROJECTS.filter(p => p.src).slice(0, HOME_WORK));
 
 // ---------- FAQ ----------

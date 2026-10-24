@@ -1692,7 +1692,7 @@ body:has(.cs-top) { background: #fff; }
 .work-page { padding-top: clamp(64px,7vw,120px); }
 .work-page .wk-head .sec-title { max-width: none; font-size: clamp(56px,8vw,152px); line-height: .9; }
 .work-intro { max-width: 34ch; margin: 0; font-family: var(--f-body); font-size: clamp(16px,1.2vw,19px); line-height: 1.6; color: var(--sec-soft); }
-body:has(.work-page) { background: var(--ink); }
+body:has(.work-page) { background: #fff; }
 /* mobile menu: the close button round, like the burger it replaces */
 /* the bar keeps the gutter on both sides: logo left, close button at the far right */
 .mnav-bar { height: 64px; padding: 0 var(--gutter); justify-content: space-between; align-items: center; }
@@ -1710,3 +1710,31 @@ body:has(.work-page) { background: var(--ink); }
 #contact { position: relative; }
 .wk-card2.is-full { grid-column: 1 / -1; }
 @media (max-width: 900px) { .wk-card2.is-full { grid-column: auto; } }
+
+/* about, what we do: the services as pills in the palette, one after another */
+.about-pills { display: flex; flex-wrap: wrap; gap: 10px; list-style: none; margin: clamp(32px,3.4vw,56px) 0 0; padding: 0; }
+.about-pills li {
+  padding: 12px 20px; border-radius: 999px; font-family: var(--f-head); font-weight: 700;
+  font-size: clamp(16px,1.3vw,21px); letter-spacing: -.01em; line-height: 1.1;
+  transition: transform .4s cubic-bezier(.22,1,.36,1);
+}
+.about-pills li:hover { transform: translateY(-3px) rotate(-1.5deg); }
+.about-pills li:nth-child(5n+1) { background: var(--blue); color: #fff; }
+.about-pills li:nth-child(5n+2) { background: var(--pink); color: var(--ink); }
+.about-pills li:nth-child(5n+3) { background: var(--coral); color: var(--ink); }
+.about-pills li:nth-child(5n+4) { background: var(--violet); color: #fff; }
+.about-pills li:nth-child(5n+5) { background: #F2F2F5; color: var(--ink); }
+/* work page on white: the footer's dot edge needs white above it */
+.work-page.sec-light { background: #fff; color: var(--ink); }
+.work-page .wk-go { background: rgba(11,11,15,.06); }
+.work-page .wk-media2 { background: var(--soft); }
+/* phones: a larger logo in the bar, and in the open menu the logo and the
+   close button share one centre line */
+@media (max-width: 720px) {
+  .nav-inner { height: 64px; }
+  .logo, .logo:hover { font-size: 24px; gap: 10px; }
+  .nav-burger { width: 44px; height: 44px; }
+}
+.mnav-bar { height: 64px; align-items: center; }
+.mnav-bar .logo, .mnav-bar .logo:hover { font-size: 26px; line-height: 1; height: 44px; display: flex; align-items: center; }
+.mnav-close { align-self: center; }

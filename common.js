@@ -30,8 +30,7 @@ const PROJECTS = [
   { n: "05", name: "OOEJ",          meta: "Web Design", src: "assets/ooej.webp",          site: "https://ooej.org/",               gallery: [], body: "" },
   { n: "06", name: "RAWR",          meta: "Web Design", src: "assets/rawr.webp",          site: "https://rawr-fawn.vercel.app/",   gallery: [], body: "" },
   { n: "07", name: "Rubedo",        meta: "Web Design", src: "assets/rubedo.webp",        site: "https://www.rubedolife.com/",     gallery: [], body: "" },
-  { n: "08", name: "Quackables",    meta: "Branding & Web Design", src: "assets/quackables.webp",    site: "https://quackables.vercel.app/",  gallery: [], body: "" },
-  { n: "09", name: "Oxford Permanent Makeup", meta: "Web Design", src: "assets/oxford-pmu.webp", site: "https://oxfordpermanentmakeup.co.uk/", gallery: [], body: "" }
+  { n: "08", name: "Quackables",    meta: "Branding & Web Design", src: "assets/quackables.webp",    site: "https://quackables.vercel.app/",  gallery: [], body: "" }
 ];
 
 // Hover-only behaviour is gated on this: a touchscreen reports no hover, and
