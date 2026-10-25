@@ -1,26 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://www.hipspacestudio.com/</loc>
-    <lastmod>2026-09-10</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.hipspacestudio.com/" />
+    <xhtml:link rel="alternate" hreflang="sr" href="https://www.hipspacestudio.com/sr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.hipspacestudio.com/" />
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://www.hipspacestudio.com/sr/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.hipspacestudio.com/" />
+    <xhtml:link rel="alternate" hreflang="sr" href="https://www.hipspacestudio.com/sr/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.hipspacestudio.com/" />
+    <lastmod>2026-10-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://www.hipspacestudio.com/work.html</loc>
-    <lastmod>2026-10-24</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.hipspacestudio.com/work.html" />
+    <xhtml:link rel="alternate" hreflang="sr" href="https://www.hipspacestudio.com/sr/work.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.hipspacestudio.com/work.html" />
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.hipspacestudio.com/sr/work.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.hipspacestudio.com/work.html" />
+    <xhtml:link rel="alternate" hreflang="sr" href="https://www.hipspacestudio.com/sr/work.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.hipspacestudio.com/work.html" />
+    <lastmod>2026-10-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://www.hipspacestudio.com/about.html</loc>
-    <lastmod>2026-10-24</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.hipspacestudio.com/about.html" />
+    <xhtml:link rel="alternate" hreflang="sr" href="https://www.hipspacestudio.com/sr/about.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.hipspacestudio.com/about.html" />
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.hipspacestudio.com/sr/about.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.hipspacestudio.com/about.html" />
+    <xhtml:link rel="alternate" hreflang="sr" href="https://www.hipspacestudio.com/sr/about.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.hipspacestudio.com/about.html" />
+    <lastmod>2026-10-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://www.hipspacestudio.com/inquiry.html</loc>
-    <lastmod>2026-09-10</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.hipspacestudio.com/inquiry.html" />
+    <xhtml:link rel="alternate" hreflang="sr" href="https://www.hipspacestudio.com/sr/inquiry.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.hipspacestudio.com/inquiry.html" />
+    <lastmod>2026-10-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.hipspacestudio.com/sr/inquiry.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.hipspacestudio.com/inquiry.html" />
+    <xhtml:link rel="alternate" hreflang="sr" href="https://www.hipspacestudio.com/sr/inquiry.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.hipspacestudio.com/inquiry.html" />
+    <lastmod>2026-10-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

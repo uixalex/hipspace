@@ -1806,3 +1806,20 @@ body:has(.work-page) { background: #fff; }
 #contact { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) { .footer-sky { display: none; } }
 
+
+/* ================= language switch ================= */
+/* EN / SR next to the call to action; on a phone it sits in the overlay */
+.nav-lang {
+  display: flex; align-items: center; height: 40px; margin-right: 6px; padding: 0 14px;
+  font-family: var(--f-pixel); font-size: 11.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+  color: var(--ink); border-radius: 999px; transition: color .3s ease, background .3s ease;
+}
+.nav-lang:hover { color: var(--blue); background: rgba(59,67,254,.08); }
+.mnav-foot { align-items: center; gap: 20px; }
+.mnav-lang {
+  font-family: var(--f-pixel); font-size: 12.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+  color: var(--ink); text-decoration: underline; text-underline-offset: 4px;
+}
+
+/* the city under the email: where the studio is, for people and for search */
+.footer-col .footer-city { font-family: var(--f-pixel); font-size: 11.5px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; color: rgba(255,255,255,.6); }

@@ -22,7 +22,7 @@ gallery.innerHTML = project.gallery.map((image, index) => {
   const { src, wide } = typeof image === 'string' ? { src: image } : image;
   return `
   <figure class="detail-gallery-item${index === 0 || wide ? ' detail-gallery-item-wide' : ''}">
-    <img src="${src}" alt="${project.name} project image ${index + 1}" loading="${index ? 'lazy' : 'eager'}" decoding="async" />
+    <img src="${src}" alt="${project.name}, ${T.image} ${index + 1}" loading="${index ? 'lazy' : 'eager'}" decoding="async" />
   </figure>`;
 }).join('');
 

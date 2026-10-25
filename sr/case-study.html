@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Projekat | Hipspace</title>
+<!-- not linked from anywhere yet and the descriptions are still empty:
+     keep it out of the index until the case studies are written -->
+<meta name="robots" content="noindex, follow" />
+<link rel="icon" href="../assets/favicon-32.png" sizes="32x32" type="image/png" />
+<link rel="icon" href="../assets/favicon-16.png" sizes="16x16" type="image/png" />
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
+<link rel="manifest" href="../site.webmanifest" />
+<meta name="theme-color" content="#3B43FE" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Caveat:wght@500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+
+<div class="page">
+
+  <!-- TOP: white; the cover picture first, then the project under it -->
+  <section class="cs-top">
+    <header class="nav">
+      <div class="nav-inner">
+        <a href="index.html" class="logo">HIPSPACE</a>
+        <nav class="nav-links">
+          <a href="about.html">o nama</a>
+          <a href="index.html#services">usluge</a>
+          <a href="work.html">radovi</a>
+        </nav>
+        <div class="nav-right">
+          <a href="../case-study.html" class="nav-lang" hreflang="en" lang="en" aria-label="English">EN</a>
+          <a href="inquiry.html" class="nav-cta">lansirajmo</a>
+        </div>
+      </div>
+    </header>
+
+    <div class="wrap"><div class="cs-cover" id="detail-image"></div></div>
+    <!-- under the cover: name, kind of work and the live link on the left; the
+         story and what was done on the right -->
+    <div class="wrap cs-intro">
+      <div class="cs-intro-main">
+        <h1 id="detail-name"></h1>
+        <a class="pr-cta" id="detail-site" href="#" target="_blank" rel="noreferrer">pogledaj sajt <span aria-hidden="true">↗</span></a>
+      </div>
+      <div class="cs-intro-side">
+        <p class="detail-description" id="detail-desc"></p>
+        <div class="cs-scope">
+          <span class="sec-label">Šta smo radili</span>
+          <ul class="cs-scope-list" id="detail-scope"></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="cs-body">
+    <div class="detail-gallery wrap" id="detail-gallery"></div>
+
+    <!-- more work: three project cards on white, which the footer's dot edge expects above it -->
+    <section class="detail-related sec sec-light">
+      <div class="wrap">
+        <div class="detail-related-head reveal">
+          <span class="sec-label">istraži dalje</span>
+          <h2 class="sec-title">Još misija.</h2>
+        </div>
+        <div class="cs-cards reveal" id="detail-related-list"></div>
+      </div>
+    </section>
+  </div>
+
+</div>
+
+<div id="site-footer"></div>
+
+<script src="../common.js"></script>
+<script src="../gen.js"></script>
+<script src="../case-study.js"></script>
+</body>
+</html>

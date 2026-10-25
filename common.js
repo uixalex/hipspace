@@ -2,6 +2,20 @@
 // Loaded before the per-page script (script.js on home, case-study.js on a case
 // study), so anything declared here is available to it.
 
+// ---------- language ----------
+// The Serbian pages live in sr/ and load these same scripts from one folder up;
+// <html lang> says which copy to use and how far away the assets are.
+const LANG = document.documentElement.lang === 'sr' ? 'sr' : 'en';
+const ROOT = LANG === 'sr' ? '../' : '';
+const T = {
+  en: { visit: 'Visit site', caseStudy: 'View case study', by: 'by Hipspace', image: 'project image',
+        menu: 'Menu', social: 'Social', contact: 'Contact', launch: "let's launch", city: '',
+        openMenu: 'Open menu', closeMenu: 'Close menu' },
+  sr: { visit: 'Pogledaj sajt', caseStudy: 'Pogledaj projekat', by: 'Hipspace', image: 'slika projekta',
+        menu: 'Meni', social: 'Mreže', contact: 'Kontakt', launch: 'lansirajmo', city: 'Banja Luka, BiH',
+        openMenu: 'Otvori meni', closeMenu: 'Zatvori meni' }
+}[LANG];
+
 // Work rows link straight to `site` (the live project) for now. `src` is the
 // hover peek image — a project without one simply shows no peek card, so adding
 // the file later is enough to bring it back.
@@ -33,6 +47,27 @@ const PROJECTS = [
   { n: "08", name: "Quackables",    meta: "Branding & Web Design", src: "assets/quackables.webp",    site: "https://quackables.vercel.app/",  gallery: [], body: "" }
 ];
 
+// The Serbian copy, by project number; anything left out stays as above.
+const PROJECTS_SR = {
+  "01": { meta: "Vizuelni identitet i web dizajn", body: "Brend električnih vozila sa dušom beach cluba, oživljen kroz razigran sajt koji te uvlači u svoj svet." },
+  "02": { meta: "Vizuelni identitet i web dizajn" },
+  "03": { meta: "Brending i web dizajn" },
+  "04": { meta: "Proizvod, web i vizuelni identitet",
+    scope: ["Strategija proizvoda", "UX istraživanje i tokovi", "UI web platforme", "UI mobilne aplikacije", "Dizajn sistem", "Vizuelni identitet", "Marketinški sajt"],
+    body: "Rello skida stres sa kupovine i prodaje nekretnina u Velikoj Britaniji. Proizvod smo dizajnirali od nule: web platformu i mobilnu aplikaciju u kojima agenti za nekretnine, advokati i njihovi klijenti prate ceo lanac kupoprodaje na jednom mestu, sa bojom statusa za svaku fazu, tako da svako na prvi pogled vidi ko je spreman za potpisivanje. Oko toga smo izgradili vizuelni identitet, od slova e u obliku kuće u logotipu do teget i tirkizne palete, i marketinški sajt koji sve to povezuje." },
+  "05": { meta: "Web dizajn" },
+  "06": { meta: "Web dizajn" },
+  "07": { meta: "Web dizajn" },
+  "08": { meta: "Brending i web dizajn" }
+};
+if (LANG === 'sr') PROJECTS.forEach(p => Object.assign(p, PROJECTS_SR[p.n]));
+// the image paths above are written from the site root
+PROJECTS.forEach(p => {
+  if (p.src) p.src = ROOT + p.src;
+  if (p.hero) p.hero = ROOT + p.hero;
+  p.gallery = p.gallery.map(g => typeof g === 'string' ? ROOT + g : { ...g, src: ROOT + g.src });
+});
+
 // Hover-only behaviour is gated on this: a touchscreen reports no hover, and
 // the emulated mouse events it does fire would otherwise trigger mouse effects.
 const CAN_HOVER = window.matchMedia('(hover: hover)').matches;
@@ -56,7 +91,7 @@ function buildWorkGrid(grid, list) {
     return `
     <a class="wk-card2${full ? ' is-full' : wide ? ' is-wide' : ''}" ${projectLink(p)}>
       <span class="wk-media2">
-        <img src="${p.src}" alt="${p.name}: ${p.meta} by Hipspace" loading="lazy" decoding="async" />
+        <img src="${p.src}" alt="${p.name}: ${p.meta}, ${T.by}" loading="lazy" decoding="async" />
       </span>
       <span class="wk-meta2">
         <span class="wk-name2">${p.name}</span>
@@ -82,7 +117,7 @@ function buildWorkGrid(grid, list) {
   });
   grid.querySelectorAll('.wk-card2').forEach(card => {
     card.addEventListener('pointerenter', () => {
-      pill.textContent = card.getAttribute('target') ? 'Visit site' : 'View case study';
+      pill.textContent = card.getAttribute('target') ? T.visit : T.caseStudy;
       pill.classList.add('is-on');
     });
     card.addEventListener('pointerleave', () => pill.classList.remove('is-on'));
@@ -95,7 +130,7 @@ function buildWorkGrid(grid, list) {
 function buildProjectCards(container, projects) {
   container.innerHTML = projects.map(p => `
     <a class="wk-card2" ${projectLink(p)}>
-      <span class="wk-media2">${p.src ? `<img src="${p.src}" alt="${p.name}: ${p.meta} by Hipspace" loading="lazy" decoding="async" />` : ''}</span>
+      <span class="wk-media2">${p.src ? `<img src="${p.src}" alt="${p.name}: ${p.meta}, ${T.by}" loading="lazy" decoding="async" />` : ''}</span>
       <span class="wk-meta2">
         <span class="wk-name2">${p.name}</span>
         <span class="sec-label">${p.meta}</span>
@@ -162,19 +197,20 @@ function renderFooter() {
       <div class="footer-field" aria-hidden="true"><canvas class="px-edge"></canvas></div>
       <div class="footer-top">
         <div class="footer-col reveal" style="--d:0s">
-          <span class="footer-h">Menu</span>
+          <span class="footer-h">${T.menu}</span>
           ${menu}
         </div>
         <div class="footer-col reveal" style="--d:.08s">
-          <span class="footer-h">Social</span>
+          <span class="footer-h">${T.social}</span>
           <a href="https://www.instagram.com/hipspace.studio/" target="_blank" rel="noopener noreferrer">Instagram</a>
           <a href="https://www.linkedin.com/company/hipspace/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
         </div>
         <div class="footer-col footer-contact reveal" style="--d:.16s">
-          <span class="footer-h">Contact</span>
+          <span class="footer-h">${T.contact}</span>
           <a class="footer-mail" href="mailto:alex@hipspacestudio.com">alex@hipspacestudio.com</a>
+          ${T.city ? `<span class="footer-city">${T.city}</span>` : ''}
         </div>
-        <div class="footer-launch-wrap reveal" style="--d:.24s"><a class="sys-btn footer-launch" href="inquiry.html">let's launch <span aria-hidden="true">&rarr;</span></a></div>
+        <div class="footer-launch-wrap reveal" style="--d:.24s"><a class="sys-btn footer-launch" href="inquiry.html">${T.launch} <span aria-hidden="true">&rarr;</span></a></div>
       </div>
 
       <!-- the wordmark across the full width (common.js fits it to the width) -->
@@ -218,6 +254,11 @@ function renderFooter() {
 }
 renderFooter();
 
+// ---------- language switch ----------
+// Each page links to its own copy in the other language; a case study keeps
+// its ?p= so it lands on the same project.
+document.querySelectorAll('.nav-lang').forEach(a => { a.href += location.search; });
+
 // ---------- mobile nav ----------
 // Built from the nav that is already on the page, so each page keeps its own
 // hrefs (the case study points back at index.html) with no duplicated markup.
@@ -230,13 +271,14 @@ function renderMobileNav() {
   if (!links.length) return;
 
   const launch = document.querySelector('.nav-right .nav-cta');
+  const lang = document.querySelector('.nav-right .nav-lang');
   const logo = document.querySelector('.logo');
   const logoHref = logo ? logo.getAttribute('href') : 'index.html';
 
   const burger = document.createElement('button');
   burger.type = 'button';
   burger.className = 'nav-burger';
-  burger.setAttribute('aria-label', 'Open menu');
+  burger.setAttribute('aria-label', T.openMenu);
   burger.setAttribute('aria-expanded', 'false');
   burger.innerHTML = '<span></span><span></span><span></span>';
   navInner.appendChild(burger);
@@ -247,12 +289,12 @@ function renderMobileNav() {
   mnav.innerHTML = `
     <div class="mnav-bar">
       <a href="${logoHref}" class="logo">HIPSPACE</a>
-      <button class="mnav-close" type="button" aria-label="Close menu"><span></span><span></span></button>
+      <button class="mnav-close" type="button" aria-label="${T.closeMenu}"><span></span><span></span></button>
     </div>
     <nav class="mnav-links">
       ${links.map((l, i) => `<a href="${l.href}" style="--d:${i * 70}ms"><span class="n">${String(i + 1).padStart(2, '0')}</span>${l.text}</a>`).join('')}
     </nav>
-    <div class="mnav-foot">${launch ? `<a class="cta-pill" href="${launch.getAttribute('href')}">${launch.textContent.trim()}</a>` : ''}</div>
+    <div class="mnav-foot">${launch ? `<a class="cta-pill" href="${launch.getAttribute('href')}">${launch.textContent.trim()}</a>` : ''}${lang ? lang.outerHTML.replace('nav-lang', 'mnav-lang') : ''}</div>
   `;
   document.body.appendChild(mnav);
 
