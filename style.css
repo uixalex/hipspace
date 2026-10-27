@@ -1287,7 +1287,8 @@ html { background: #fff; }
 /* ================= process: four stages on one timeline ================= */
 /* brand blue, so it parts the dark work section from the white faq */
 #process.sec-light { background: var(--blue); color: #fff; --sec-ink: #fff; --sec-line: rgba(255,255,255,.35); --sec-soft: rgba(255,255,255,.78); }
-.pr-head { align-items: start; margin-bottom: clamp(48px,5vw,88px); }
+/* the intro sits on the title's last line, as the hero lede does */
+.pr-head { align-items: end; margin-bottom: clamp(48px,5vw,88px); }
 .pr-intro { display: flex; flex-direction: column; align-items: flex-start; gap: clamp(16px,1.6vw,24px); }
 .pr-intro > p { max-width: 46ch; margin: 0; font-family: var(--f-body); font-size: clamp(14px,1vw,16px); font-weight: 500; line-height: 1.7; color: var(--sec-soft); }
 .pr-cta {
@@ -1593,6 +1594,10 @@ h1, h2, h3, .sec-title { font-weight: 800; }
 /* ================= work: big cards on an asymmetric grid ================= */
 .wk-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; margin-bottom: clamp(36px,4vw,64px); }
 .wk-head .sec-title { max-width: 12ch; }
+/* home: the same size and spacing as the other section titles, past the old
+   #work h2 rule and its margin (the work page keeps its own, bigger title) */
+#work:not(.work-page) .wk-head { margin-bottom: clamp(40px,4.4vw,72px); }
+#work:not(.work-page) .wk-head .sec-title { margin-bottom: 0;font-size: clamp(40px,5vw,92px); line-height: .98; letter-spacing: -.03em; }
 .wk-head .sec-label { font-size: clamp(14px,1.1vw,18px); color: var(--sec-soft); }
 /* 12 columns: a wide card takes 7, a narrow one 5; the ratios (7/5 and 1/1)
    give both cards in a row the same height */
@@ -1612,6 +1617,8 @@ h1, h2, h3, .sec-title { font-weight: 800; }
   background: rgba(255,255,255,.08); font-size: 18px; transition: background .3s ease, color .3s ease, transform .5s cubic-bezier(.22,1,.36,1);
 }
 .wk-card2:hover .wk-go { background: var(--pink); color: var(--ink); transform: scale(1.08); }
+.wk-go svg { display: block; transition: transform .5s cubic-bezier(.22,1,.36,1); }
+.wk-card2:hover .wk-go svg { transform: translate(2px,-2px); }
 /* the pill that follows the pointer over a card */
 .wk-cursor {
   position: fixed; left: 0; top: 0; z-index: 50; pointer-events: none; margin: -22px 0 0 -60px;
@@ -1727,10 +1734,11 @@ body:has(.work-page) { background: #fff; }
 .about-pills li:nth-child(5n+3) { background: var(--coral); color: var(--ink); }
 .about-pills li:nth-child(5n+4) { background: var(--violet); color: #fff; }
 .about-pills li:nth-child(5n+5) { background: #F2F2F5; color: var(--ink); }
-/* work page on white: the footer's dot edge needs white above it */
+/* work on white: the work page (the footer's dot edge needs white above it)
+   and the work section on home share the light card styles */
 .work-page.sec-light { background: #fff; color: var(--ink); }
-.work-page .wk-go { background: rgba(11,11,15,.06); }
-.work-page .wk-media2 { background: var(--soft); }
+.sec-light .wk-go { background: rgba(11,11,15,.06); }
+.sec-light .wk-media2 { background: var(--soft); }
 /* phones: a larger logo in the bar, and in the open menu the logo and the
    close button share one centre line */
 @media (max-width: 720px) {

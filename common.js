@@ -25,8 +25,6 @@ const T = {
 // `scope` lists what was done; without it the case study splits up `meta`.
 const PROJECTS = [
   { n: "01", name: "MOKE",          meta: "Visual Identity & Web Design", src: "assets/moke-cover.webp",      site: "https://mokeinternational.com/",  gallery: [], body: "An electric-vehicle brand with a beach-club soul, brought to life through a playful and immersive website." },
-  { n: "02", name: "Moving Portal", meta: "Visual Identity & Web Design", src: "assets/moving-portal.webp", site: "https://themovingportal.co.uk/",  gallery: [], body: "" },
-  { n: "03", name: "Bytek",         meta: "Branding & Web Design", src: "assets/bytek.webp",         site: "https://bytek.ba/",               gallery: [], body: "" },
   { n: "04", name: "Rello",         meta: "Product, Web & Visual Identity", src: "assets/rello.webp",         site: "https://rello.co.uk/",
     caseStudy: true, hero: "assets/rello-phone.jpg",
     scope: ["Product strategy", "UX research & flows", "Web platform UI", "Mobile app UI", "Design system", "Visual identity", "Marketing website"],
@@ -41,6 +39,8 @@ const PROJECTS = [
       { src: "assets/case-rello-social.jpg", wide: true }
     ],
     body: "Rello takes the stress out of buying and selling a home in the UK. We designed the product from the ground up: a web platform and a mobile app that let estate agents, lawyers and their clients follow the whole property chain in one place, with a status colour for every stage, so anyone can see at a glance who is ready to exchange. Around it we built the visual identity, from the house-shaped e of the logo to the navy and teal palette, and the marketing website that brings it all together." },
+  { n: "03", name: "Bytek",         meta: "Branding & Web Design", src: "assets/bytek.webp",         site: "https://bytek.ba/",               gallery: [], body: "" },
+  { n: "02", name: "Moving Portal", meta: "Visual Identity & Web Design", src: "assets/moving-portal.webp", site: "https://themovingportal.co.uk/",  gallery: [], body: "" },
   { n: "05", name: "OOEJ",          meta: "Web Design", src: "assets/ooej.webp",          site: "https://ooej.org/",               gallery: [], body: "" },
   { n: "06", name: "RAWR",          meta: "Web Design", src: "assets/rawr.webp",          site: "https://rawr-fawn.vercel.app/",   gallery: [], body: "" },
   { n: "07", name: "Rubedo",        meta: "Web Design", src: "assets/rubedo.webp",        site: "https://www.rubedolife.com/",     gallery: [], body: "" },
@@ -79,6 +79,9 @@ function projectLink(p) {
     : `href="${p.site}" target="_blank" rel="noopener noreferrer"`;
 }
 
+// the round arrow on every work card, the same whether it opens a case study or the live site
+const ARROW_ICON = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M8.5 7H17v8.5"/></svg>`;
+
 // ---------- work grid ----------
 // Big project cards: a wide one and a narrow one per row, the wide one
 // swapping sides each row. Hovering a card brings a pill to the pointer.
@@ -96,7 +99,7 @@ function buildWorkGrid(grid, list) {
       <span class="wk-meta2">
         <span class="wk-name2">${p.name}</span>
         <span class="sec-label">${p.meta}</span>
-        <span class="wk-go" aria-hidden="true">${p.caseStudy ? '&#8594;' : '&#8599;'}</span>
+        <span class="wk-go" aria-hidden="true">${ARROW_ICON}</span>
       </span>
     </a>`;
   }).join('');
@@ -134,7 +137,7 @@ function buildProjectCards(container, projects) {
       <span class="wk-meta2">
         <span class="wk-name2">${p.name}</span>
         <span class="sec-label">${p.meta}</span>
-        <span class="wk-go" aria-hidden="true">${p.caseStudy ? '&#8594;' : '&#8599;'}</span>
+        <span class="wk-go" aria-hidden="true">${ARROW_ICON}</span>
       </span>
     </a>`).join('');
 }
