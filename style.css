@@ -1533,6 +1533,9 @@ body:has(#faq) .footer-field { background: var(--pink); }
 h1, h2, h3, .sec-title { font-weight: 800; }
 .sec .sec-title { max-width: 14ch; font-size: clamp(40px,5vw,92px); line-height: .98; }
 .hero-title h1 { font-size: clamp(48px,6vw,124px); line-height: .95; }
+/* "Lansiramo brendove" is longer than "Launching brands", so the Serbian
+   headline runs a size smaller to keep clear of the intro beside it */
+html[lang="sr"] .hero-title h1 { font-size: clamp(40px,5vw,104px); }
 .wk-row h3 { font-size: clamp(32px,3.6vw,64px); line-height: 1; }
 .pr-body h3, .svc-col h3 { line-height: 1.02; }
 .about-hero h1 { font-weight: 800; }
@@ -1694,6 +1697,20 @@ body:has(.cs-top) { background: #fff; }
 .cs-scope-list { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0; padding: 0; }
 .cs-scope-list li { padding: 9px 14px; border-radius: 999px; background: var(--soft); color: var(--ink); font-family: var(--f-body); font-size: 15px; font-weight: 500; }
 @media (max-width: 900px) { .cs-intro-main, .cs-intro-side { grid-column: 1 / -1; } }
+/* the story under the intro: a ruled row per part, label left, text in the intro's right column */
+.cs-story { padding-top: clamp(8px,1vw,16px); padding-bottom: clamp(48px,6vw,104px); }
+.cs-story:empty { display: none; }
+.cs-story-row {
+  display: grid; grid-template-columns: repeat(12, minmax(0,1fr)); column-gap: clamp(16px,2vw,32px); row-gap: 16px;
+  padding: clamp(28px,3vw,48px) 0; border-top: 1px solid var(--line-ink);
+}
+.cs-story-label { grid-column: 1 / 7; display: flex; align-items: baseline; gap: 14px; margin: 0; color: var(--ink); font-weight: 700; font-size: clamp(24px,2.2vw,38px); line-height: 1.1; letter-spacing: -.03em; }
+.cs-story-label span { font-family: var(--f-body); font-size: 14px; font-weight: 500; letter-spacing: 0; color: var(--ink-soft); }
+.cs-story-text, .cs-story-list { grid-column: 8 / 13; margin: 0; font-family: var(--f-body); font-size: clamp(16px,1.2vw,19px); line-height: 1.6; color: var(--ink); }
+.cs-story-list { display: flex; flex-direction: column; gap: 14px; list-style: none; padding: 0; }
+.cs-story-list li { position: relative; padding-left: 22px; }
+.cs-story-list li::before { content: ''; position: absolute; left: 0; top: .62em; width: 8px; height: 8px; border-radius: 50%; background: var(--blue); }
+@media (max-width: 900px) { .cs-story-label, .cs-story-text, .cs-story-list { grid-column: 1 / -1; } }
 
 /* work: the link to every project, and the work page itself */
 .wk-all { display: flex; justify-content: center; margin-top: clamp(48px,5vw,88px); }
@@ -1718,8 +1735,6 @@ body:has(.work-page) { background: #fff; }
 .footer-field { margin-bottom: -2px; }
 .footer-field canvas { bottom: -1px; height: calc(100% + 1px); }
 #contact { position: relative; }
-.wk-card2.is-full { grid-column: 1 / -1; }
-@media (max-width: 900px) { .wk-card2.is-full { grid-column: auto; } }
 
 /* about, what we do: the services as pills in the palette, one after another */
 .about-pills { display: flex; flex-wrap: wrap; gap: 10px; list-style: none; margin: clamp(32px,3.4vw,56px) 0 0; padding: 0; }

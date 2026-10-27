@@ -73,6 +73,42 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://www.hipspacestudio.com/case-study.html?p=01</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.hipspacestudio.com/case-study.html?p=01" />
+    <xhtml:link rel="alternate" hreflang="sr" href="https://www.hipspacestudio.com/sr/case-study.html?p=01" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.hipspacestudio.com/case-study.html?p=01" />
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.hipspacestudio.com/sr/case-study.html?p=01</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.hipspacestudio.com/case-study.html?p=01" />
+    <xhtml:link rel="alternate" hreflang="sr" href="https://www.hipspacestudio.com/sr/case-study.html?p=01" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.hipspacestudio.com/case-study.html?p=01" />
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.hipspacestudio.com/case-study.html?p=02</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.hipspacestudio.com/case-study.html?p=02" />
+    <xhtml:link rel="alternate" hreflang="sr" href="https://www.hipspacestudio.com/sr/case-study.html?p=02" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.hipspacestudio.com/case-study.html?p=02" />
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.hipspacestudio.com/sr/case-study.html?p=02</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.hipspacestudio.com/case-study.html?p=02" />
+    <xhtml:link rel="alternate" hreflang="sr" href="https://www.hipspacestudio.com/sr/case-study.html?p=02" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.hipspacestudio.com/case-study.html?p=02" />
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://www.hipspacestudio.com/case-study.html?p=04</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://www.hipspacestudio.com/case-study.html?p=04" />
     <xhtml:link rel="alternate" hreflang="sr" href="https://www.hipspacestudio.com/sr/case-study.html?p=04" />
@@ -86,6 +122,24 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://www.hipspacestudio.com/case-study.html?p=04" />
     <xhtml:link rel="alternate" hreflang="sr" href="https://www.hipspacestudio.com/sr/case-study.html?p=04" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.hipspacestudio.com/case-study.html?p=04" />
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.hipspacestudio.com/case-study.html?p=09</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.hipspacestudio.com/case-study.html?p=09" />
+    <xhtml:link rel="alternate" hreflang="sr" href="https://www.hipspacestudio.com/sr/case-study.html?p=09" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.hipspacestudio.com/case-study.html?p=09" />
+    <lastmod>2026-10-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.hipspacestudio.com/sr/case-study.html?p=09</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.hipspacestudio.com/case-study.html?p=09" />
+    <xhtml:link rel="alternate" hreflang="sr" href="https://www.hipspacestudio.com/sr/case-study.html?p=09" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.hipspacestudio.com/case-study.html?p=09" />
     <lastmod>2026-10-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>

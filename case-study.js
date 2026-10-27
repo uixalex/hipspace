@@ -25,13 +25,24 @@ if (project.caseStudy && project.n === requested) {
 }
 document.getElementById('detail-name').textContent = project.name;
 document.getElementById('detail-desc').textContent = project.body;
-document.getElementById('detail-site').href = project.site;
+// an app with no public site has no link to show
+const siteLink = document.getElementById('detail-site');
+if (project.site) siteLink.href = project.site; else siteLink.remove();
 // what was done: the project's own scope list, or its kind of work split up
-const scope = project.scope || project.meta.split(/s*(?:&|,)s*/);
+const scope = project.scope || project.meta.split(/\s*(?:&|,)\s*/);
 document.getElementById('detail-scope').innerHTML = scope.map(s => `<li>${s}</li>`).join('');
 // a project with no artwork yet keeps the plain cover colour rather than url('')
 const heroImg = project.hero || project.src;
 if (heroImg) document.getElementById('detail-image').style.backgroundImage = `url('${heroImg}')`;
+
+// the longer write-up, a numbered row per part; a project without one shows nothing
+document.getElementById('detail-story').innerHTML = (project.story || []).map((row, i) => `
+  <div class="cs-story-row">
+    <h2 class="cs-story-label"><span>${String(i + 1).padStart(2, '0')}</span>${row.label}</h2>
+    ${row.list
+      ? `<ul class="cs-story-list">${row.list.map(item => `<li>${item}</li>`).join('')}</ul>`
+      : `<p class="cs-story-text">${row.text}</p>`}
+  </div>`).join('');
 
 const gallery = document.getElementById('detail-gallery');
 gallery.innerHTML = project.gallery.map((image, index) => {
