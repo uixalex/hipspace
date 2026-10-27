@@ -33,7 +33,15 @@ const scope = project.scope || project.meta.split(/\s*(?:&|,)\s*/);
 document.getElementById('detail-scope').innerHTML = scope.map(s => `<li>${s}</li>`).join('');
 // a project with no artwork yet keeps the plain cover colour rather than url('')
 const heroImg = project.hero || project.src;
-if (heroImg) document.getElementById('detail-image').style.backgroundImage = `url('${heroImg}')`;
+// the cover shows once the picture has loaded, so no half-drawn image or empty
+// box flashes first
+if (heroImg) {
+  const cover = document.getElementById('detail-image');
+  cover.style.setProperty('--cover', `url('${heroImg}')`);
+  const img = new Image();
+  img.onload = img.onerror = () => cover.classList.add('is-loaded');
+  img.src = heroImg;
+}
 
 // the longer write-up, a numbered row per part; a project without one shows nothing
 document.getElementById('detail-story').innerHTML = (project.story || []).map((row, i) => `

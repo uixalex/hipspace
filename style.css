@@ -1660,7 +1660,11 @@ html[lang="sr"] .hero-title h1 { font-size: clamp(40px,5vw,104px); }
 .cs-intro-side { grid-column: 8 / 13; display: flex; flex-direction: column; align-items: flex-start; gap: 24px; }
 .cs-intro-side .detail-description { max-width: 46ch; margin: 0; font-family: var(--f-body); font-size: clamp(16px,1.2vw,19px); line-height: 1.6; color: var(--ink); }
 .cs-intro-side .detail-description:empty { display: none; }
-.cs-cover { aspect-ratio: 16 / 9; border-radius: 24px; background: var(--mesh-blue); background-size: cover; background-position: center; }
+/* a plain soft ground while the cover loads, then the picture fades in over it
+   (case-study.js sets --cover and .is-loaded) */
+.cs-cover { position: relative; overflow: hidden; aspect-ratio: 16 / 9; border-radius: 24px; background: var(--soft); }
+.cs-cover::after { content: ""; position: absolute; inset: 0; background: var(--cover, none) center / cover no-repeat; opacity: 0; transition: opacity .6s ease; }
+.cs-cover.is-loaded::after { opacity: 1; }
 .cs-body { background: #fff; }
 .detail-gallery { gap: clamp(14px,1.6vw,24px); padding-top: clamp(14px,1.6vw,24px); }
 .detail-gallery-item { border-radius: 22px; background: var(--soft); }
