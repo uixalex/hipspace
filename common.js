@@ -8,10 +8,10 @@
 const LANG = document.documentElement.lang === 'sr' ? 'sr' : 'en';
 const ROOT = LANG === 'sr' ? '../' : '';
 const T = {
-  en: { visit: 'Visit site', caseStudy: 'View case study', by: 'by Hipspace', image: 'project image',
+  en: { visit: 'Visit site', caseStudy: 'View case study', caseStudyTitle: 'Case study',by: 'by Hipspace', image: 'project image',
         menu: 'Menu', social: 'Social', contact: 'Contact', launch: "let's launch", city: '',
         openMenu: 'Open menu', closeMenu: 'Close menu' },
-  sr: { visit: 'Pogledaj sajt', caseStudy: 'Pogledaj projekat', by: 'Hipspace', image: 'slika projekta',
+  sr: { visit: 'Pogledaj sajt', caseStudy: 'Pogledaj projekat', caseStudyTitle: 'Projekat',by: 'Hipspace', image: 'slika projekta',
         menu: 'Meni', social: 'Mreže', contact: 'Kontakt', launch: 'lansirajmo', city: 'Banja Luka, BiH',
         openMenu: 'Otvori meni', closeMenu: 'Zatvori meni' }
 }[LANG];

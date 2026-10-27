@@ -6,7 +6,23 @@ const requested = new URLSearchParams(location.search).get('p');
 // unknown or missing ?p falls back to the first project rather than a blank page
 const project = PROJECTS.find(p => p.n === requested) || PROJECTS[0];
 
-document.title = `${project.name} — hip space`;
+// to search engines every case study is a page of its own: its own title,
+// description, canonical and language pair. A ?p without a written case study
+// (or no ?p at all) shows the fallback project, which stays out of the index.
+document.title = `${project.name} – ${T.caseStudyTitle} | Hipspace`;
+const pageUrl = lang => `https://www.hipspacestudio.com/${lang === 'sr' ? 'sr/' : ''}case-study.html?p=${project.n}`;
+const addToHead = (tag, attrs) => document.head.appendChild(Object.assign(document.createElement(tag), attrs));
+if (project.caseStudy && project.n === requested) {
+  // the body cut to a search-snippet length, at a word boundary
+  const summary = project.body.length > 155 ? project.body.slice(0, 155).replace(/\s+\S*$/, '') + '…' : project.body;
+  addToHead('meta', { name: 'description', content: summary });
+  addToHead('link', { rel: 'canonical', href: pageUrl(LANG) });
+  addToHead('link', { rel: 'alternate', hreflang: 'en', href: pageUrl('en') });
+  addToHead('link', { rel: 'alternate', hreflang: 'sr', href: pageUrl('sr') });
+  addToHead('link', { rel: 'alternate', hreflang: 'x-default', href: pageUrl('en') });
+} else {
+  addToHead('meta', { name: 'robots', content: 'noindex, follow' });
+}
 document.getElementById('detail-name').textContent = project.name;
 document.getElementById('detail-desc').textContent = project.body;
 document.getElementById('detail-site').href = project.site;
