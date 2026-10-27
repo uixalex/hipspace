@@ -882,7 +882,9 @@ html { background: #fff; }
 /* ================= ILSE-style hero + about, work grid ================= */
 /* hero: headline + intro first, the field band under them; the field's own
    bottom edge breaks into pixels (gen.js data-edge) onto the ink */
-.hero-intro { order: 2; padding: clamp(40px,4vw,72px) var(--gutter) clamp(56px,6vw,112px); align-items: end; }
+/* side padding as in .work-row-inner: on wide screens the text sits on --shell,
+   lined up with the .wrap sections below, while the field band stays full bleed */
+.hero-intro { order: 2; padding: clamp(40px,4vw,72px) max(var(--gutter), calc((100% - var(--shell)) / 2)) clamp(56px,6vw,112px); align-items: end; }
 .hero-media { order: 1; flex: 0 0 auto; min-height: 0; aspect-ratio: 16 / 6; background: transparent; }
 .hero-media canvas { top: 0; height: 100%; }
 #hero { min-height: 0; }
@@ -1405,7 +1407,8 @@ html { background: #fff; }
 /* white bar, ink type: the logo with a blue pixel, mono links like the
    section labels, and the same square ink button as the sections */
 .nav, #hero .nav { background: #fff; border-bottom: 1px solid rgba(11,11,15,.1); }
-.nav-inner { height: clamp(54px,3.8vw,64px); align-items: center; padding: 0 var(--gutter); }
+/* the bar runs full width; its content sits on --shell like the sections */
+.nav-inner { height: clamp(54px,3.8vw,64px); align-items: center; padding: 0 max(var(--gutter), calc((100% - var(--shell)) / 2)); }
 .logo, .logo:hover {
   gap: 10px; padding: 0; background: none; color: var(--ink);
   font-size: clamp(18px,1.35vw,23px); letter-spacing: -.02em;
