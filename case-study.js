@@ -1,10 +1,12 @@
 // ---------- case study page ----------
 // Same layout for every project; the content comes from PROJECTS (common.js),
-// picked by the ?p= number in the URL, e.g. case-study.html?p=02
+// picked by the ?p= number in the URL, e.g. case-study.html?p=02. It runs
+// before v2.js, so the titles and cards are in place when the motion starts.
 
 const requested = new URLSearchParams(location.search).get('p');
 // unknown or missing ?p falls back to the first project rather than a blank page
 const project = PROJECTS.find(p => p.n === requested) || PROJECTS[0];
+const $id = id => document.getElementById(id);
 
 // to search engines every case study is a page of its own: its own title,
 // description, canonical and language pair. A ?p without a written case study
@@ -23,45 +25,62 @@ if (project.caseStudy && project.n === requested) {
 } else {
   addToHead('meta', { name: 'robots', content: 'noindex, follow' });
 }
-document.getElementById('detail-name').textContent = project.name;
-document.getElementById('detail-desc').textContent = project.body;
+
+// ---- hero: the name and the kind of work ----
+$id('cs-name').textContent = project.name;
+$id('cs-meta').textContent = project.meta;
+
+// ---- cover ----
+const cover = project.hero || project.src;
+if (cover) $id('cs-cover').innerHTML = `<img src="${cover}" alt="${project.name}" decoding="async" />`;
+else $id('cs-cover').remove();
+
+// ---- the live link and what was done, right under the cover ----
 // an app with no public site has no link to show
-const siteLink = document.getElementById('detail-site');
+const siteLink = $id('cs-site');
 if (project.site) siteLink.href = project.site; else siteLink.remove();
-// what was done: the project's own scope list, or its kind of work split up
 const scope = project.scope || project.meta.split(/\s*(?:&|,)\s*/);
-document.getElementById('detail-scope').innerHTML = scope.map(s => `<li>${s}</li>`).join('');
-// a project with no artwork yet keeps the plain cover colour rather than url('')
-const heroImg = project.hero || project.src;
-// the cover shows once the picture has loaded, so no half-drawn image or empty
-// box flashes first
-if (heroImg) {
-  const cover = document.getElementById('detail-image');
-  cover.style.setProperty('--cover', `url('${heroImg}')`);
-  const img = new Image();
-  img.onload = img.onerror = () => cover.classList.add('is-loaded');
-  img.src = heroImg;
+$id('cs-scope').innerHTML = scope.map(s => `<li>${s}</li>`).join('');
+$id('cs-body').textContent = project.body;
+
+// ---- pictures and story, in turn ----
+// The pictures are cut into even groups with a part of the story (challenge,
+// approach, decisions) after each, so the text comes in small doses on the
+// way down instead of one long block before any picture.
+const story = project.story || [];
+const shots = (project.gallery || []).map((g, i) => ({ ...(typeof g === 'string' ? { src: g } : g), n: i + 1 }));
+const groups = Array.from({ length: story.length + 1 }, () => []);
+const per = Math.ceil(shots.length / groups.length) || 1;
+shots.forEach((s, i) => groups[Math.min(Math.floor(i / per), groups.length - 1)].push(s));
+
+// wide pictures take the full row, the rest pair up; a picture left without a
+// partner goes full width too, so a group never shows an empty half
+function shotsHtml(list) {
+  let run = [];
+  const closeRun = () => { if (run.length % 2) run[run.length - 1].wide = true; run = []; };
+  list.forEach(g => { if (g.wide) closeRun(); else run.push(g); });
+  closeRun();
+  return `<div class="cs-shots">${list.map(({ src, wide, n }) => `
+    <figure class="cs-shot${wide ? ' cs-shot-wide' : ''}" data-fade>
+      <img src="${src}" alt="${project.name}, ${T.image} ${n}" loading="lazy" decoding="async" />
+    </figure>`).join('')}</div>`;
 }
-
-// the longer write-up, a numbered row per part; a project without one shows nothing
-document.getElementById('detail-story').innerHTML = (project.story || []).map((row, i) => `
-  <div class="cs-story-row">
-    <h2 class="cs-story-label"><span>${String(i + 1).padStart(2, '0')}</span>${row.label}</h2>
+const storyHtml = (row, i) => `
+  <div class="cs-part" data-fade>
+    <h2 class="cs-part-title"><span class="cs-n">${String(i + 1).padStart(2, '0')}</span>${row.label}</h2>
     ${row.list
-      ? `<ul class="cs-story-list">${row.list.map(item => `<li>${item}</li>`).join('')}</ul>`
-      : `<p class="cs-story-text">${row.text}</p>`}
-  </div>`).join('');
+      ? `<ul class="cs-points">${row.list.map(item => `<li>${item}</li>`).join('')}</ul>`
+      : `<p class="cs-part-text">${row.text}</p>`}
+  </div>`;
+$id('cs-flow').innerHTML = groups.map((g, i) =>
+  (g.length ? shotsHtml(g) : '') + (story[i] ? storyHtml(story[i], i) : '')).join('');
 
-const gallery = document.getElementById('detail-gallery');
-gallery.innerHTML = project.gallery.map((image, index) => {
-  const { src, wide } = typeof image === 'string' ? { src: image } : image;
-  return `
-  <figure class="detail-gallery-item${index === 0 || wide ? ' detail-gallery-item-wide' : ''}">
-    <img src="${src}" alt="${project.name}, ${T.image} ${index + 1}" loading="${index ? 'lazy' : 'eager'}" decoding="async" />
-  </figure>`;
+// ---- more work: the other written case studies, as the work page's cards ----
+const others = PROJECTS.filter(p => p.caseStudy && p !== project);
+$id('cs-more-grid').innerHTML = others.map((p, i) => {
+  const shots = [p.hero || p.src, ...p.gallery.map(g => typeof g === 'string' ? g : g.src)].filter(Boolean);
+  return `<a href="case-study.html?p=${p.n}" class="proj${i % 3 === 0 ? ' proj-wide' : ''}" data-gallery="${shots.join(', ')}">
+    <div class="proj-media"><img src="${shots[0]}" alt="${p.name}" loading="lazy" /></div>
+    <div class="proj-meta"><h3>${p.name}</h3><span>${p.meta}</span></div>
+  </a>`;
 }).join('');
-
-// the next three projects in the list, wrapping round at the end
-const at = PROJECTS.indexOf(project);
-buildProjectCards(document.getElementById('detail-related-list'),
-                  [1, 2, 3].map(k => PROJECTS[(at + k) % PROJECTS.length]));
