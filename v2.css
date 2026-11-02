@@ -521,6 +521,11 @@ html.menu-open, html.menu-open body { overflow: hidden; }
 .hero.cs-hero { min-height: 70svh; }
 .cs-hero .hero-row { align-items: center; }
 .cs-hero .hero-lede { font-weight: 600; }
+/* on a phone the short heroes (about, work, case study) only need to hold
+   their title and intro, not most of the screen */
+@media (max-width: 760px) {
+  .hero.hero-short, .hero.work-hero, .hero.cs-hero { min-height: 52svh; }
+}
 
 /* one dark run: cover, then the link and pills, the summary, then pictures
    with the story's parts in between */
