@@ -591,13 +591,22 @@
   });
 
   /* ---------- process: the spring draws itself across the steps ----------
-     The section holds still while you scroll through it; the looping line is
-     drawn on over 01 → 03 and bounces once it reaches 04 Launch. Each number
-     the pen has reached turns blue, Launch pink. Numbers rise out of their masks first. */
+     Once the steps come into view the looping line runs from 01 to 04 Launch
+     in one go, nothing held or pinned, so the page keeps scrolling freely.
+     Each number the pen reaches turns blue, Launch pink. Numbers rise out of
+     their masks first. */
   if ($('#process')) {
   const steps = $$('.step');
   gsap.set($$('.step-n > span'), { yPercent: 105 });
   gsap.set(steps.flatMap(s => [$('h3', s), $('p', s)]), { y: 24, opacity: 0 });
+
+  const sp = { p: 0 };
+  const renderSpring = () => {
+    const end = spring.set(sp.p);
+    const oneRow = innerWidth > 800;   // on phones the steps stack, so go by progress
+    steps.forEach((s, i) => s.classList.toggle('is-on',
+      i === 3 ? sp.p > .98 : oneRow ? end >= s.offsetLeft + 24 : sp.p >= i * .3 + .02));
+  };
   ScrollTrigger.create({
     trigger: '#steps', start: 'top 82%', once: true,
     onEnter: () => {
@@ -606,28 +615,8 @@
         tl.to($('.step-n > span', s), { yPercent: 0, duration: 1.1, ease: 'expo.out' }, i * .12)
           .to([$('h3', s), $('p', s)], { y: 0, opacity: 1, duration: .9, ease: 'expo.out', stagger: .07 }, i * .12 + .15);
       });
+      tl.to(sp, { p: 1, duration: 2.4, ease: 'power2.inOut', onUpdate: renderSpring }, .3);
     }
-  });
-
-  const sp = { p: 0 };
-  let launched = false;
-  const renderSpring = () => {
-    const end = spring.set(sp.p);
-    const oneRow = innerWidth > 800;   // on phones the steps stack, so go by progress
-    if (!launched && sp.p > .985) {
-      launched = true;
-      gsap.fromTo(spring.svg, { y: -26 }, { y: 0, duration: 1.3, ease: 'elastic.out(1, .3)' });
-      gsap.fromTo('.step-launch .step-n', { y: -18 }, { y: 0, duration: 1.1, ease: 'elastic.out(1, .35)' });
-    } else if (launched && sp.p < .9) launched = false;
-    steps.forEach((s, i) => s.classList.toggle('is-on',
-      i === 3 ? launched : oneRow ? end >= s.offsetLeft + 24 : sp.p >= i * .3 + .02));
-  };
-  ScrollTrigger.create({
-    // held in place on wide screens; on phones the steps stack and simply scroll past
-    trigger: '#process', ...(innerWidth > 800
-      ? { start: 'center center', end: '+=1100', pin: true }
-      : { start: 'top 70%', end: 'bottom 55%' }),
-    onUpdate: self => gsap.to(sp, { p: self.progress, duration: .35, ease: 'power2.out', overwrite: true, onUpdate: renderSpring })
   });
   renderSpring();
   addEventListener('resize', () => { spring.build(); spring.set(sp.p); });
