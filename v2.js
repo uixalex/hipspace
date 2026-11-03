@@ -226,7 +226,7 @@
       }
       ctx.fillStyle = calm ? 'rgba(255,255,255,.16)' : soft ? 'rgba(255,255,255,.13)' : 'rgba(255,255,255,.24)';
       ctx.fill(dots);
-      ctx.fillStyle = '#F28AD9';
+      ctx.fillStyle = '#F95AD2';
       ctx.fill(hot);
     }
 
@@ -434,13 +434,15 @@
      The path is built for the svg's width; set(p) draws the first p of it on
      like a pen and returns where the pen is, in px from the left. Used above
      the steps on the home page (#spring) and as .spring-draw elsewhere. */
-  function makeSpring(svg) {
+  function makeSpring(svg, opts = {}) {
     const path = $('path', svg);
     let len = 0;
     const build = () => {
-      const W = svg.clientWidth, cy = svg.clientHeight / 2;
+      const W = opts.width ? opts.width() : svg.clientWidth, cy = svg.clientHeight / 2;
       const N = Math.max(2, Math.round(W / 150));                 // one loop per ~150px
-      const end = 2 * Math.PI * N + Math.PI;                       // finish on a downstroke, moving right
+      // finish on a downstroke, moving right; or, closed, at the bottom of a full last loop,
+      // the mirror image of how the line starts
+      const end = 2 * Math.PI * N + (opts.closed ? 0 : Math.PI);
       const a = W / end, R0 = a / .45;                             // wide loop sweep…
       const STEPS = N * 48;
       let d = '';
@@ -461,7 +463,10 @@
     build();
     return { svg, build, set };
   }
-  const spring = $('#spring') && makeSpring($('#spring'));
+  // the home page spring stops at 04 and curls up over it the way it began, as an ending
+  const lastN = $('.step-launch .step-n > span');
+  const spring = $('#spring') && makeSpring($('#spring'), {
+    closed: true, width: lastN ? () => lastN.closest('.step').offsetLeft + lastN.offsetWidth : null });
   const looseSprings = $$('.spring-draw').map(makeSpring);
 
   if (!MOTION) {
@@ -591,10 +596,11 @@
   });
 
   /* ---------- process: the spring draws itself across the steps ----------
-     Once the steps come into view the looping line runs from 01 to 04 Launch
-     in one go, nothing held or pinned, so the page keeps scrolling freely.
-     Each number the pen reaches turns blue, Launch pink. Numbers rise out of
-     their masks first. */
+     Numbers rise out of their masks as the steps come into view. On wide
+     screens the section then holds briefly while scrolling draws the spring
+     from 01 to 04 Launch, and lets go as soon as the last loop closes over 04, so it
+     never sits stuck there. On phones (no spring) it simply runs in one go.
+     Each number the pen reaches turns blue, Launch pink. */
   if ($('#process')) {
   const steps = $$('.step');
   gsap.set($$('.step-n > span'), { yPercent: 105 });
@@ -615,9 +621,20 @@
         tl.to($('.step-n > span', s), { yPercent: 0, duration: 1.1, ease: 'expo.out' }, i * .12)
           .to([$('h3', s), $('p', s)], { y: 0, opacity: 1, duration: .9, ease: 'expo.out', stagger: .07 }, i * .12 + .15);
       });
-      tl.to(sp, { p: 1, duration: 2.4, ease: 'power2.inOut', onUpdate: renderSpring }, .3);
+      if (innerWidth <= 800) tl.to(sp, { p: 1, duration: 2.4, ease: 'power2.inOut', onUpdate: renderSpring }, .3);
     }
   });
+  if (innerWidth > 800) {
+    const proc = $('#process');
+    gsap.timeline({
+      scrollTrigger: {
+        trigger: proc, pin: true, scrub: 1, anticipatePin: 1,
+        start: () => proc.offsetHeight > innerHeight ? 'top top' : 'center center',
+        end: '+=60%', invalidateOnRefresh: true
+      }
+    }).to(sp, { p: 1, duration: 1, ease: 'power1.inOut', onUpdate: renderSpring })
+      .to({}, { duration: .08 });   // a breath at 04, not a stall
+  }
   renderSpring();
   addEventListener('resize', () => { spring.build(); spring.set(sp.p); });
   }

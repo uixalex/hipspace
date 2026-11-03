@@ -75,11 +75,16 @@ const storyHtml = (row, i) => `
 $id('cs-flow').innerHTML = groups.map((g, i) =>
   (g.length ? shotsHtml(g) : '') + (story[i] ? storyHtml(story[i], i) : '')).join('');
 
-// ---- more work: the other written case studies, as the work page's cards ----
-const others = PROJECTS.filter(p => p.caseStudy && p !== project);
-$id('cs-more-grid').innerHTML = others.map((p, i) => {
+// ---- more work: two other written case studies, as the work page's cards ----
+// the two that come after this one in the list, wrapping round, so every page suggests different ones
+const studies = PROJECTS.filter(p => p.caseStudy);
+const at = studies.indexOf(project);
+const others = studies.filter(p => p !== project)
+  .sort((a, b) => (studies.indexOf(a) - at + studies.length) % studies.length - (studies.indexOf(b) - at + studies.length) % studies.length)
+  .slice(0, 2);
+$id('cs-more-grid').innerHTML = others.map(p => {
   const shots = [p.hero || p.src, ...p.gallery.map(g => typeof g === 'string' ? g : g.src)].filter(Boolean);
-  return `<a href="case-study.html?p=${p.n}" class="proj${i % 3 === 0 ? ' proj-wide' : ''}" data-gallery="${shots.join(', ')}">
+  return `<a href="case-study.html?p=${p.n}" class="proj" data-gallery="${shots.join(', ')}">
     <div class="proj-media"><img src="${shots[0]}" alt="${p.name}" loading="lazy" /></div>
     <div class="proj-meta"><h3>${p.name}</h3><span>${p.meta}</span></div>
   </a>`;

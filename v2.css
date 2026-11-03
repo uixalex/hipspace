@@ -1,9 +1,9 @@
 /* Hipspace v2 — experiment. Blue / pink / ink / white, no cream anywhere. */
 
 :root {
-  --blue: #3B43FE;
-  --blue-deep: #2D34E6;
-  --pink: #F28AD9;
+  --blue: #1F2BFF;
+  --blue-deep: #1822E0;
+  --pink: #F95AD2;
   --ink: #111114;
   --ink-2: #1C1C22;
   --white: #FFFFFF;
@@ -245,6 +245,11 @@ html.menu-open, html.menu-open body { overflow: hidden; }
   letter-spacing: -.05em;
 }
 .sec-sub { margin-top: 20px; max-width: 360px; font-size: 15px; }
+/* title on the left, the short line beside it on the right, sitting on the title's baseline */
+@media (min-width: 801px) {
+  .sec-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; }
+  .sec-head .sec-sub { margin-top: 0; margin-bottom: .5em; max-width: 380px; font-size: clamp(17px, 1.35vw, 22px); line-height: 1.4; text-wrap: pretty; }
+}
 .svc-list { margin-top: clamp(40px, 6vw, 80px); border-top: 1.5px solid var(--ink); }
 .svc-row {
   position: relative; isolation: isolate;
@@ -568,7 +573,12 @@ html.menu-open, html.menu-open body { overflow: hidden; }
 .cs-points li::before { content: ""; position: absolute; left: 0; top: .6em; width: 8px; height: 8px; border-radius: 50%; background: var(--pink); }
 
 .cs-more { padding-top: clamp(80px, 11vw, 160px); }
-.cs-more .sec-title { margin-bottom: clamp(32px, 4vw, 56px); }
+.cs-more .sec-title { margin-bottom: clamp(28px, 3vw, 44px); font-size: clamp(32px, 4vw, 64px); }
+/* two suggestions, side by side and the same size */
+.cs-more .work-grid { grid-template-columns: 1fr; }
+.cs-more .proj { grid-column: auto; align-self: start; }
+.cs-more .proj-media { aspect-ratio: 4 / 3; }
+@media (min-width: 801px) { .cs-more .work-grid { grid-template-columns: 1fr 1fr; } }
 
 @media (max-width: 800px) {
   .cs-part { grid-template-columns: 1fr; }

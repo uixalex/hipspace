@@ -15,7 +15,7 @@ const GEN_DPR = Math.min(1.5, window.devicePixelRatio || 1);
 // only animates while on screen, and draws a single still frame for reduced motion.
 
 (() => {
-  const PALETTE = ['#0B0B0F', '#3B43FE', '#F28AD9', '#FFFFFF'];
+  const PALETTE = ['#0B0B0F', '#1F2BFF', '#F95AD2', '#FFFFFF'];
   const CELL = 10;        // CSS px per cell (one mesh value, one dot)
   const FPS = GEN_LITE ? 12 : 20;   // it drifts slowly; more frames only cost CPU
 
@@ -49,7 +49,7 @@ const GEN_DPR = Math.min(1.5, window.devicePixelRatio || 1);
   // the mesh: a smooth gradient map from ink through blue and violet into pink
   // and coral, so the field reads as a soft mesh gradient, not a palette
   const STOPS = [
-    [0, '#0B0B0F'], [.26, '#151C9C'], [.44, '#3B43FE'], [.6, '#8C6BFF'],
+    [0, '#0B0B0F'], [.26, '#151C9C'], [.44, '#1F2BFF'], [.6, '#8C6BFF'],
     [.74, '#E68BE6'], [.87, '#FFB0E8'], [1, '#FFE1EE']
   ].map(([p, hex]) => [p, parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)]);
   const gmap = (v) => {
@@ -335,7 +335,7 @@ const GEN_DPR = Math.min(1.5, window.devicePixelRatio || 1);
 // and pieces for the about page: odd, orbit, link, plan, rocket
 // Drawn at one pixel per cell and scaled up; they animate only on screen.
 (() => {
-  const C = { k: '#0B0B0F', b: '#3B43FE', l: '#F28AD9', w: '#FFFFFF', g: '#1B1C3A' };
+  const C = { k: '#0B0B0F', b: '#1F2BFF', l: '#F95AD2', w: '#FFFFFF', g: '#1B1C3A' };
   const CELL = 7, FPS = GEN_LITE ? 8 : 15;
   const BAYER = [0, 8, 2, 10, 12, 4, 14, 6, 3, 11, 1, 9, 15, 7, 13, 5].map(v => (v + .5) / 16);
   const dith = (x, y, v) => v > BAYER[(y & 3) * 4 + (x & 3)];
@@ -640,7 +640,7 @@ const GEN_DPR = Math.min(1.5, window.devicePixelRatio || 1);
   const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const ctx = cv.getContext('2d');
   const CELL = 5;
-  const C = { k: '#0B0B0F', w: '#FFFFFF', p: '#F28AD9' };
+  const C = { k: '#0B0B0F', w: '#FFFFFF', p: '#F95AD2' };
   // pointing right; the nose is the last column
   const ROCKET = [
     'kk..........',
