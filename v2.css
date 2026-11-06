@@ -541,18 +541,25 @@ html.menu-open, html.menu-open body { overflow: hidden; }
 }
 
 /* ================= case study ================= */
-.hero.cs-hero { min-height: 70svh; }
-.cs-hero .hero-row { align-items: center; }
-.cs-hero .hero-lede { font-weight: 600; }
-/* on a phone the short heroes (about, work, case study) only need to hold
+/* on a phone the short heroes (about, work) only need to hold
    their title and intro, not most of the screen */
 @media (max-width: 760px) {
-  .hero.hero-short, .hero.work-hero, .hero.cs-hero { min-height: 52svh; }
+  .hero.hero-short, .hero.work-hero { min-height: 52svh; }
 }
 
-/* one dark run: cover, then the link and pills, the summary, then pictures
-   with the story's parts in between */
-.cs-main { padding-top: clamp(40px, 5vw, 72px); padding-bottom: 0; }
+/* one dark run with no hero: the cover right under the nav, then the name and
+   the kind of work, the link and pills, the summary, then pictures with the
+   story's parts in between */
+.cs-main { padding-top: clamp(96px, 9vw, 132px); padding-bottom: 0; }
+.cs-head { margin-top: clamp(28px, 3.4vw, 48px); }
+.cs-title {
+  font: 800 clamp(44px, 6.4vw, 110px)/.9 var(--f-display);
+  letter-spacing: -.05em;
+}
+.cs-meta {
+  margin-top: clamp(12px, 1.4vw, 20px);
+  font-size: clamp(18px, 1.6vw, 24px); font-weight: 600; line-height: 1.4; opacity: .85;
+}
 .cs-cover { overflow: hidden; border-radius: 6px; background: var(--ink-2); aspect-ratio: 16 / 9; }
 .cs-cover img { width: 100%; height: 100%; object-fit: cover; }
 .cs-bar {

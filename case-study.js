@@ -26,7 +26,7 @@ if (project.caseStudy && project.n === requested) {
   addToHead('meta', { name: 'robots', content: 'noindex, follow' });
 }
 
-// ---- hero: the name and the kind of work ----
+// ---- under the cover: the name and the kind of work ----
 $id('cs-name').textContent = project.name;
 $id('cs-meta').textContent = project.meta;
 

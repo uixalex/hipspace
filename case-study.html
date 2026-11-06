@@ -40,23 +40,16 @@
 
 <main>
 
-  <!-- HERO: the calm halftone, a short screen; the project name and the kind
-       of work are filled in by case-study.js -->
-  <section class="hero hero-short cs-hero" id="hero">
-    <canvas class="halftone" data-halftone="calm" aria-hidden="true"></canvas>
-    <div class="hero-inner">
-      <h1 class="hero-title" id="cs-name" data-plain></h1>
-      <div class="hero-row">
-        <p class="hero-lede" id="cs-meta" data-fade></p>
-      </div>
-    </div>
-  </section>
-
-  <!-- THE PROJECT: one dark run. The cover, the live link and what was done
-       right under it, the summary, then the pictures with the story's parts
-       (challenge, approach, decisions) set in between them by case-study.js -->
+  <!-- THE PROJECT: one dark run, no hero. The cover first, then the project
+       name and the kind of work, the live link and what was done, the summary,
+       then the pictures with the story's parts (challenge, approach,
+       decisions) set in between them by case-study.js -->
   <section class="cs-main dark">
     <figure class="cs-cover" id="cs-cover" data-fade></figure>
+    <div class="cs-head" data-fade>
+      <h1 class="cs-title" id="cs-name"></h1>
+      <p class="cs-meta" id="cs-meta"></p>
+    </div>
     <div class="cs-bar" data-fade>
       <ul class="svc-get cs-pills" id="cs-scope" aria-label="What we did"></ul>
       <a class="btn" id="cs-site" href="#" target="_blank" rel="noopener">Visit site</a>

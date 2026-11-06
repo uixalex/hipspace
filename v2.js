@@ -509,8 +509,10 @@
 
   /* ---------- hero intro ----------
      On the home page the words fade up into place; a title marked data-plain
-     (the about page) simply fades in, nothing moving. */
+     (the about page) simply fades in, nothing moving. The case study has no
+     hero at all, so this whole part is skipped there. */
   const heroTitle = $('.hero-title');
+  if (heroTitle) {
   const plain = heroTitle.hasAttribute('data-plain');
   const heroChars = plain ? [] : splitChars(heroTitle);
   const heroFades = $$('.hero [data-fade]');
@@ -530,6 +532,7 @@
   // leaving the hero: the headline drifts up and fades
   gsap.to('.hero-inner', { yPercent: -30, opacity: .2, ease: 'none',
     scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true } });
+  }
 
   /* ---------- generic reveals ---------- */
   // "Recent work" keeps the letters rising out of a mask; every other title
