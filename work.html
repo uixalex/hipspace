@@ -32,7 +32,7 @@
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
     document.documentElement.classList.add('motion');
     // safety: if the scripts never run, show everything anyway
-    setTimeout(() => document.documentElement.classList.add('motion-failsafe'), 3500);
+    setTimeout(() => window.hsMotionReady || document.documentElement.classList.add('motion-failsafe'), 3500);
   }
 </script>
 </head>

@@ -63,10 +63,14 @@
     const WRITE_PX = 1500;           // pointer travel that writes the whole loop
     const waves = [], WAVE_SPEED = 260, WAVE_LIFE = .85;
     let field = null;                // distance to the full loop, for the shaped waves
+    // the pen and field canvases are made once and reused: on phones the address
+    // bar resizes the hero on every scroll, and fresh canvases each time pile up
+    // until the browser (iOS Safari especially) blanks the field
+    let penSize = 0, penCanvas = null, fieldCanvas = null;
 
     function makePen(width) {
       const RES = .5, pad = 10, k = width / SARA.w;
-      const c = document.createElement('canvas');
+      const c = penCanvas || (penCanvas = document.createElement('canvas'));
       c.width = Math.ceil((width + pad * 2) * RES); c.height = Math.ceil((SARA.h * k + pad * 2) * RES);
       const x = c.getContext('2d', { willReadFrequently: true });
       x.filter = 'blur(2px)';        // soft edge, so the dots step up across it
@@ -91,7 +95,7 @@
     function makeField(width) {
       const RES = 1 / 3, M = WAVE_SPEED * WAVE_LIFE + 20, k = width / SARA.w;
       const W = Math.ceil((width + M * 2) * RES), H = Math.ceil((SARA.h * k + M * 2) * RES);
-      const c = document.createElement('canvas'); c.width = W; c.height = H;
+      const c = fieldCanvas || (fieldCanvas = document.createElement('canvas')); c.width = W; c.height = H;
       const x = c.getContext('2d', { willReadFrequently: true });
       x.setTransform(k * RES, 0, 0, k * RES, M * RES, M * RES);
       x.lineWidth = SARA.stroke; x.lineCap = x.lineJoin = 'round';
@@ -132,9 +136,9 @@
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       if (!soft) {
         // grows with the screen, so on a big monitor it isn't lost in the field
-        const size = Math.min(900, Math.max(260, w * .36));
-        makePen(size);
-        field = makeField(size);
+        const size = Math.round(Math.min(900, Math.max(260, w * .36)));
+        // only the width sets the loop's size, so a height-only resize keeps it
+        if (size !== penSize) { penSize = size; makePen(size); field = makeField(size); }
       }
       // measured against the canvas; padded so the calm fades out rather than stops at the text
       const lede = host.querySelector('.hero-lede');
@@ -469,7 +473,13 @@
     closed: true, width: lastN ? () => lastN.closest('.step').offsetLeft + lastN.offsetWidth : null });
   const looseSprings = $$('.spring-draw').map(makeSpring);
 
-  if (!MOTION) {
+  // On a slow first visit the CDN scripts can arrive after the 3.5s safety
+  // net has already shown everything; hiding it again to animate it in made
+  // sections vanish. In that case the page just stays as it is, static.
+  const LATE = document.documentElement.classList.contains('motion-failsafe');
+  window.hsMotionReady = true;
+
+  if (!MOTION || LATE) {
     // without motion the lines are simply there, drawn
     [spring, ...looseSprings].forEach(s => s && s.set(1));
     document.documentElement.classList.add('motion-failsafe');
@@ -575,19 +585,7 @@
       scrollTrigger: { trigger: p, start: 'top bottom', end: 'bottom top', scrub: true } });
   });
 
-  // a pink "View" bubble follows the pointer over a project
-  if (HOVER && $('#cursor-bubble')) {
-    const bub = $('#cursor-bubble');
-    // hidden until the pointer is over a project (GSAP can't read a CSS scale(0) back)
-    gsap.set(bub, { scale: 0, autoAlpha: 0 });
-    const bx = gsap.quickTo(bub, 'x', { duration: .5, ease: 'expo.out' });
-    const by = gsap.quickTo(bub, 'y', { duration: .5, ease: 'expo.out' });
-    addEventListener('pointermove', e => { bx(e.clientX); by(e.clientY); });
-    $$('.proj').forEach(p => {
-      p.addEventListener('mouseenter', () => gsap.to(bub, { scale: 1, autoAlpha: 1, duration: .5, ease: 'back.out(2)', overwrite: 'auto' }));
-      p.addEventListener('mouseleave', () => gsap.to(bub, { scale: 0, autoAlpha: 0, duration: .35, ease: 'expo.out', overwrite: 'auto' }));
-    });
-  }
+  // (the pointer circle / holographic lens lives in its own block at the end of the file)
 
   /* ---------- services ---------- */
   if ($('#svc-list')) gsap.from('.svc-row', {
@@ -654,6 +652,46 @@
     scrollTrigger: { trigger: '.studio', start: 'top bottom', end: 'bottom top', scrub: true } });
 
 
-  // images load late and change heights; re-measure once they're in
-  addEventListener('load', () => ScrollTrigger.refresh());
+  // images and fonts arrive late and change heights; re-measure once they're in.
+  // 'load' doesn't wait for lazy images, so each one re-measures as it lands,
+  // otherwise reveals further down fire in the wrong place or never.
+  let refreshT = 0;
+  const refreshSoon = () => { clearTimeout(refreshT); refreshT = setTimeout(() => ScrollTrigger.refresh(), 150); };
+  addEventListener('load', refreshSoon);
+  if (document.fonts) document.fonts.ready.then(refreshSoon);
+  $$('img').forEach(img => { if (!img.complete) img.addEventListener('load', refreshSoon, { once: true }); });
+  // back/forward cache: the page comes back as it was left, measure it again
+  addEventListener('pageshow', e => { if (e.persisted) refreshSoon(); });
+})();
+/* ---------------------------------------------------------------
+   CURSOR (as on alexlazarev.space)
+   A small circle trails the pointer (lerp .2) and inverts what's under it.
+   Over links it grows; over images it grows and turns pink.
+   --------------------------------------------------------------- */
+(() => {
+  if (!matchMedia('(pointer: fine)').matches || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const cur = document.createElement('div');
+  cur.className = 'hs-cursor';
+  cur.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(cur);
+
+  let x = innerWidth / 2, y = innerHeight / 2, cx = x, cy = y;
+  addEventListener('mousemove', e => { x = e.clientX; y = e.clientY; cur.classList.add('on'); });
+  document.addEventListener('mouseleave', () => cur.classList.remove('on'));
+  const loop = () => {
+    cx += (x - cx) * .2; cy += (y - cy) * .2;
+    cur.style.transform = `translate(${cx}px, ${cy}px)`;
+    requestAnimationFrame(loop);
+  };
+  loop();
+
+  const LINK = 'a, button, label, summary, [role="button"]';
+  const MEDIA = '.proj-media, img, video, [data-cursor="holo"]';
+  document.addEventListener('mouseover', e => {
+    const t = e.target;
+    const m = t.closest(MEDIA);
+    const media = !!m && m.offsetWidth > 120 && m.offsetHeight > 120;   // not logos/icons
+    cur.classList.toggle('pink', media);
+    cur.classList.toggle('big', media || !!t.closest(LINK));
+  });
 })();
