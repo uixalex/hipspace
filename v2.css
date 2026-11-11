@@ -10,7 +10,7 @@
   --line-dark: rgba(255, 255, 255, .14);
   --line-light: rgba(17, 17, 20, .9);
 
-  --f-display: "Bricolage Grotesque", system-ui, sans-serif;
+  --f-display: "Switzer", system-ui, sans-serif;
   --f-body: "Instrument Sans", system-ui, sans-serif;
 
   --gutter: clamp(16px, 4vw, 56px);
@@ -46,7 +46,7 @@ section { position: relative; padding: clamp(80px, 11vw, 160px) var(--gutter); }
 /* wide at the sides: with the tight tracking the last letter's curve reaches past its box */
 .split-line { display: inline-block; overflow: hidden; vertical-align: top; padding: .1em .14em .08em; margin: -.1em -.14em -.08em; }
 .split-word { display: inline-block; white-space: nowrap; }
-.split-char { display: inline-block; will-change: transform; }
+.split-char { display: inline-block; }
 /* fading titles: no mask needed, so nothing gets cut off */
 .split-soft .split-line { overflow: visible; }
 /* a full stop or comma gets a little air back from the tight tracking */
@@ -67,7 +67,7 @@ html.motion:not(.motion-failsafe) [data-fade]:not(.is-ready) { opacity: 0; }
   color: inherit;
   cursor: pointer;
 }
-.btn-scribble {
+.btn-scribble { display: none;
   position: absolute; left: 0; bottom: -28px;   /* clear of the descenders */
   width: 100%; height: 22px;
   overflow: visible; pointer-events: none;
@@ -214,7 +214,7 @@ html.menu-open, html.menu-open body { overflow: hidden; }
 }
 .proj { display: block; }
 .proj-media {
-  position: relative; overflow: hidden; border-radius: 6px;
+  position: relative; will-change: transform; overflow: hidden; border-radius: 6px;
   aspect-ratio: 1 / 1;
   background: var(--ink-2);
 }
@@ -316,7 +316,7 @@ html.menu-open, html.menu-open body { overflow: hidden; }
 .step-n span { display: inline-block; }
 .step:hover .step-n { transform: translateX(10px); }
 .step h3 { margin-top: clamp(14px, 1.6vw, 22px); font: 700 18px/1.15 var(--f-body); letter-spacing: -.01em; }
-.step p { margin-top: 8px; font-size: 14px; color: #55555e; max-width: 260px; }
+.step p { margin-top: 10px; font-size: clamp(16px, 1.2vw, 18px); line-height: 1.45; color: #55555e; max-width: 300px; }
 @media (max-width: 800px) {
   .steps { grid-template-columns: 1fr; row-gap: 40px; }
   .spring { display: none; }   /* a horizontal line has nothing to run across once the steps stack */
@@ -637,4 +637,17 @@ html.menu-open, html.menu-open body { overflow: hidden; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition-duration: .01ms !important; }
+}
+
+/* laptops (roughly 13"–16"): the big titles one step smaller, so they don't
+   crowd the screen; phones and big monitors keep the sizes above */
+@media (min-width: 801px) and (max-width: 1600px) {
+  .hero-title   { font-size: 7vw; }
+  .work-title   { font-size: 9vw; }
+  .sec-title    { font-size: 5.4vw; }
+  .studio-title { font-size: 7.4vw; }
+  .faq-title    { font-size: 4.6vw; }
+  .cs-title     { font-size: 5.3vw; }
+  .step-n       { font-size: 5.4vw; }
+  .statement-text { font-size: 3.5vw; }
 }

@@ -128,7 +128,7 @@
 
     function resize() {
       const r = canvas.getBoundingClientRect();
-      const dpr = Math.min(devicePixelRatio || 1, 2);
+      const dpr = Math.min(devicePixelRatio || 1, 1.25);
       w = r.width; h = r.height;
       cell = calm ? (w < 700 ? 6 : 7) : soft ? (w < 700 ? 11 : 14) : (w < 700 ? 9 : 11);
       canvas.width = Math.round(w * dpr);
@@ -138,7 +138,6 @@
         // grows with the screen, so on a big monitor it isn't lost in the field
         const size = Math.round(Math.min(900, Math.max(260, w * .36)));
         // only the width sets the loop's size, so a height-only resize keeps it
-        if (size !== penSize) { penSize = size; makePen(size); field = makeField(size); }
       }
       // measured against the canvas; padded so the calm fades out rather than stops at the text
       const lede = host.querySelector('.hero-lede');
@@ -170,7 +169,6 @@
       ptr.sx += (ptr.x - ptr.sx) * .14;
       ptr.sy += (ptr.y - ptr.sy) * .14;
       ptr.s += ((ptr.on ? 1 : 0) - ptr.s) * .06;
-      if (!soft) updatePen(t, dt);
       for (let k = waves.length - 1; k >= 0; k--) if (t - waves[k].t > WAVE_LIFE) waves.splice(k, 1);
 
       ctx.clearRect(0, 0, w, h);
@@ -222,19 +220,21 @@
 
           const q = Math.floor(v * LEVELS + BAYER[(j & 3) * 4 + (i & 3)] / 16) / LEVELS;
           if (q <= 0) continue;
-          const r = Math.min(q, 1) * half * .9;
+          const r = Math.min(q, 1) * half * .72;
           const path = p > .3 ? hot : dots;
           path.moveTo(x + r, y);
           path.arc(x, y, r, 0, 6.2832);
         }
       }
-      ctx.fillStyle = calm ? 'rgba(255,255,255,.16)' : soft ? 'rgba(255,255,255,.13)' : 'rgba(255,255,255,.24)';
+      ctx.fillStyle = calm ? 'rgba(255,255,255,.16)' : soft ? 'rgba(255,255,255,.13)' : 'rgba(255,255,255,.17)';
       ctx.fill(dots);
       ctx.fillStyle = '#F95AD2';
       ctx.fill(hot);
     }
 
-    function loop(now) { draw(now); raf = requestAnimationFrame(loop); }
+    // ~30fps: the field moves in steps anyway, and it halves the work while scrolling
+    let lastDraw = 0;
+    function loop(now) { if (now - lastDraw > 30) { lastDraw = now; draw(now); } raf = requestAnimationFrame(loop); }
     function start() { if (running || !MOTION) return; running = true; raf = requestAnimationFrame(loop); }
     function stop() { running = false; cancelAnimationFrame(raf); }
 
@@ -252,8 +252,6 @@
         ptr.on = true;
       });
       host.addEventListener('pointerleave', () => { ptr.on = false; });
-      // a click sends the loop's waves out right away
-      host.addEventListener('pointerdown', () => emit((performance.now() - t0) / 1000));
     }
   }
   $$('canvas[data-halftone]').forEach(halftone);
@@ -321,15 +319,6 @@
     }
     return d;
   }
-  const scribbles = $$('.btn').map(b => {
-    b.insertAdjacentHTML('beforeend', '<svg class="btn-scribble" aria-hidden="true"><path pathLength="1" /></svg>');
-    return $('.btn-scribble', b);
-  });
-  const drawScribbles = () => scribbles.forEach(svg => $('path', svg).setAttribute('d', scribblePath(svg.clientWidth, svg.clientHeight)));
-  drawScribbles();
-  addEventListener('resize', drawScribbles);
-  // the label's font arrives late and changes the width
-  if (document.fonts) document.fonts.ready.then(drawScribbles);
 
   /* ---------- inquiry form ----------
      Posted to Formspree in the background so the visitor stays on the page.
@@ -573,16 +562,16 @@
 
   /* ---------- work ---------- */
   if ($('.work-title')) {
-  gsap.fromTo('.wt-line:not(.wt-pink)', { xPercent: -12 }, { xPercent: 4, ease: 'none',
+  gsap.fromTo('.wt-line:first-child', { xPercent: -12 }, { xPercent: 4, ease: 'none',
     scrollTrigger: { trigger: '.work-title', start: 'top bottom', end: 'bottom top', scrub: true } });
-  gsap.fromTo('.wt-pink', { xPercent: 18 }, { xPercent: -4, ease: 'none',
+  gsap.fromTo('.wt-line:last-child', { xPercent: 18 }, { xPercent: -4, ease: 'none',
     scrollTrigger: { trigger: '.work-title', start: 'top bottom', end: 'bottom top', scrub: true } });
   }
 
   $$('.proj').forEach(p => {
     const media = $('.proj-media', p), img = $('img', media);
     gsap.timeline({ scrollTrigger: { trigger: p, start: 'top 95%', end: 'top 30%', scrub: .8 } })
-      .fromTo(media, { clipPath: 'inset(22% 14% 22% 14% round 24px)' }, { clipPath: 'inset(0% 0% 0% 0% round 6px)', ease: 'none' }, 0)
+      .fromTo(media, { scale: .82 }, { scale: 1, ease: 'none' }, 0)
       .fromTo(img, { scale: 1.4 }, { scale: 1.12, ease: 'none' }, 0);   // stays a bit over size so the parallax never shows an edge
     gsap.fromTo(img, { yPercent: -5 }, { yPercent: 5, ease: 'none',
       scrollTrigger: { trigger: p, start: 'top bottom', end: 'bottom top', scrub: true } });
@@ -607,37 +596,17 @@
   gsap.set($$('.step-n > span'), { yPercent: 105 });
   gsap.set(steps.flatMap(s => [$('h3', s), $('p', s)]), { y: 24, opacity: 0 });
 
-  const sp = { p: 0 };
-  const renderSpring = () => {
-    const end = spring.set(sp.p);
-    const oneRow = innerWidth > 800;   // on phones the steps stack, so go by progress
-    steps.forEach((s, i) => s.classList.toggle('is-on',
-      i === 3 ? sp.p > .98 : oneRow ? end >= s.offsetLeft + 24 : sp.p >= i * .3 + .02));
-  };
   ScrollTrigger.create({
     trigger: '#steps', start: 'top 82%', once: true,
     onEnter: () => {
       const tl = gsap.timeline();
       steps.forEach((s, i) => {
         tl.to($('.step-n > span', s), { yPercent: 0, duration: 1.1, ease: 'expo.out' }, i * .12)
-          .to([$('h3', s), $('p', s)], { y: 0, opacity: 1, duration: .9, ease: 'expo.out', stagger: .07 }, i * .12 + .15);
+          .to([$('h3', s), $('p', s)], { y: 0, opacity: 1, duration: .9, ease: 'expo.out', stagger: .07 }, i * .12 + .15)
+          .call(() => s.classList.add('is-on'), null, .5 + i * .35);
       });
-      if (innerWidth <= 800) tl.to(sp, { p: 1, duration: 2.4, ease: 'power2.inOut', onUpdate: renderSpring }, .3);
     }
   });
-  if (innerWidth > 800) {
-    const proc = $('#process');
-    gsap.timeline({
-      scrollTrigger: {
-        trigger: proc, pin: true, scrub: 1, anticipatePin: 1,
-        start: () => proc.offsetHeight > innerHeight ? 'top top' : 'center center',
-        end: '+=60%', invalidateOnRefresh: true
-      }
-    }).to(sp, { p: 1, duration: 1, ease: 'power1.inOut', onUpdate: renderSpring })
-      .to({}, { duration: .08 });   // a breath at 04, not a stall
-  }
-  renderSpring();
-  addEventListener('resize', () => { spring.build(); spring.set(sp.p); });
   }
 
   // loose springs draw themselves on as their section scrolls through
@@ -682,8 +651,10 @@
   addEventListener('mousemove', e => { x = e.clientX; y = e.clientY; cur.classList.add('on'); });
   document.addEventListener('mouseleave', () => cur.classList.remove('on'));
   const loop = () => {
-    cx += (x - cx) * .2; cy += (y - cy) * .2;
-    cur.style.transform = `translate(${cx}px, ${cy}px)`;
+    if (Math.abs(x - cx) > .1 || Math.abs(y - cy) > .1) {
+      cx += (x - cx) * .2; cy += (y - cy) * .2;
+      cur.style.transform = `translate(${cx}px, ${cy}px)`;
+    }
     requestAnimationFrame(loop);
   };
   loop();
